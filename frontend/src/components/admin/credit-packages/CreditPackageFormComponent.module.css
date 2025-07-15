@@ -1,0 +1,5 @@
+/* src/components/admin/credit-packages/CreditPackageFormComponent.module.css */
+.formPaper {
+  background-color: var(--mantine-color-body);
+}
+/* Puedes añadir más estilos si es necesario */

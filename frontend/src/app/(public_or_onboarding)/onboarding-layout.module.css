@@ -1,0 +1,16 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--mantine-spacing-md);
+  background-color: var(--mantine-color-gray-0);
+}
+:global(body.dark-theme) .wrapper {
+  background-color: var(--mantine-color-dark-8);
+}
+.content {
+  width: 100%;
+  max-width: 500px; /* O el ancho que necesites para set-country y login */
+}

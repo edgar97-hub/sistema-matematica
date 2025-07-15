@@ -1,0 +1,99 @@
+// src/app/theme-variables.scss
+
+// TEMA CLARO (se aplica a :root o html por defecto)
+:root {
+  --sys-primary: rgb(54 94 157); // Azul Principal
+  --sys-on-primary: rgb(255 255 255); // Texto sobre Primario (Blanco)
+  --sys-primary-container: rgb(214 227 255); // Contenedor Primario (Azul claro)
+  --sys-on-primary-container: rgb(0 27 62); // Texto sobre Contenedor Primario
+
+  --sys-secondary: rgb(81 95 121);
+  --sys-on-secondary: rgb(255 255 255);
+  --sys-secondary-container: rgb(217 228 255);
+  --sys-on-secondary-container: rgb(60 73 98);
+
+  --sys-tertiary: rgb(129 74 135);
+  --sys-on-tertiary: rgb(255 255 255);
+  --sys-tertiary-container: rgb(208 145 212);
+  --sys-on-tertiary-container: rgb(54 1 63);
+
+  --sys-error: rgb(186 26 26);
+  --sys-on-error: rgb(255 255 255);
+  --sys-error-container: rgb(255 218 214);
+  --sys-on-error-container: rgb(65 0 2);
+
+  --sys-background: rgb(
+    244 246 248
+  ); // Fondo general de la página (ej. #f4f6f8)
+  --sys-on-background: rgb(26 28 32); // Texto sobre el fondo general
+
+  --sys-surface: rgb(
+    255 255 255
+  ); // Fondo de elementos como cards, dialogs, menus (Blanco)
+  --sys-on-surface: rgb(26 28 32); // Texto sobre surface
+  --sys-surface-variant: rgb(223 226 238);
+  --sys-on-surface-variant: rgb(
+    67 71 80
+  ); // Para texto secundario o iconos sobre surface
+
+  --sys-outline: rgb(115 119 129); // Bordes
+  --sys-outline-variant: rgb(195 198 210);
+
+  // ... (completa con TODAS tus variables --sys-* para el tema claro de tu archivo 'colors')
+  --sys-surface-container-lowest: rgb(255 255 255);
+  --sys-surface-container-low: rgb(243 243 249);
+  --sys-surface-container: rgb(238 237 243);
+  --sys-surface-container-high: rgb(232 231 237);
+  --sys-surface-container-highest: rgb(226 226 232);
+
+  // Variables específicas de Tailwind (pueden heredar o ser específicas)
+  --color-primary: var(--sys-primary);
+  --color-background: var(--sys-background);
+  --color-surface: var(--sys-surface);
+  // ... (mapea las variables --color-* de Tailwind a tus --sys-*)
+  --color-gray-50: #f9fafb;
+  // ... (resto de tus --color-gray-*)
+}
+
+// TEMA OSCURO (se aplica cuando body tiene la clase .dark-theme)
+body.dark-theme,
+html.dark-theme {
+  // Usar .dark-theme para consistencia con ThemeService
+  --sys-primary: rgb(170 199 255);
+  --sys-on-primary: rgb(0 47 100);
+  --sys-primary-container: rgb(110 148 214); // Ajusta este si es necesario
+  --sys-on-primary-container: rgb(0 0 0); // O un color muy oscuro
+
+  --sys-secondary: rgb(185 199 229);
+  --sys-on-secondary: rgb(35 49 72);
+  // ... (completa con TODAS tus variables --sys-* para el tema oscuro de tu archivo 'colors')
+
+  --sys-background: #1e2c3c; // Fondo general oscuro
+  --sys-on-background: rgb(226 226 232); // Texto claro sobre fondo oscuro
+
+  --sys-surface: rgb(
+    30 32 36
+  ); // Fondo de cards/dialogs oscuro (un gris muy oscuro)
+  --sys-on-surface: rgb(226 226 232); // Texto claro sobre surface oscuro
+  --sys-surface-variant: rgb(67 71 80);
+  --sys-on-surface-variant: rgb(195 198 210);
+
+  --sys-outline: rgb(141 144 155);
+  --sys-outline-variant: rgb(67 71 80);
+
+  --sys-surface-container-lowest: rgb(12 14 18);
+  --sys-surface-container-low: rgb(26 28 32);
+  --sys-surface-container: rgb(30 32 36);
+  --sys-surface-container-high: rgb(40 42 46);
+  --sys-surface-container-highest: rgb(51 53 57);
+
+  // Variables específicas de Tailwind para tema oscuro
+  --color-primary: var(--sys-primary);
+  --color-background: var(--sys-background);
+  --color-surface: var(--sys-surface);
+  // ... (mapea las variables --color-* de Tailwind a tus --sys-* oscuras)
+  --color-gray-50: #030712; // Ejemplo de gris oscuro para el tema oscuro
+  // ... (resto de tus --color-gray-* para tema oscuro)
+  --mantine-color-body: #1f2937;
+}
+// #1f2937

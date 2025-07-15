@@ -1,0 +1,24 @@
+/* src/app/(admin_panel)/admin/settings/page.module.css */
+.settingsPageContainer {
+  /* Clase para el Box principal si necesitas estilos específicos */
+  /* background-color: var(--mantine-color-gray-0); */ /* Ejemplo */
+}
+
+.pageMainTitle {
+  display: flex;
+  align-items: center;
+  color: var(--mantine-color-blue-7); /* O tu color primario */
+}
+
+/* Estilos para Paper (si no los hereda bien de Mantine con tu tema) */
+/* .mantine-Paper-root {
+  background-color: var(--mantine-color-body);
+} */
+
+/* Ajustes para el Switch y NumberInput si es necesario */
+.mantine-Switch-root {
+  margin-bottom: var(--mantine-spacing-sm);
+}
+.mantine-NumberInput-root[data-disabled="true"] {
+  opacity: 0.6;
+}

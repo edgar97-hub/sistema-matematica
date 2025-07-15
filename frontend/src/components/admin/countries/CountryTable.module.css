@@ -1,0 +1,20 @@
+/* src/components/admin/countries/CountryTable.module.css */
+.tableWrapper {
+  border: 1px solid var(--mantine-color-gray-3);
+  border-radius: var(--mantine-radius-md);
+  overflow-x: auto;
+  background-color: var(--mantine-color-body);
+  margin-top: var(--mantine-spacing-md);
+}
+
+.tableHeader th {
+  background-color: var(--mantine-color-gray-0);
+  font-weight: 600;
+  font-size: var(--mantine-font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--mantine-color-gray-7);
+  position: sticky; /* Para cabeceras fijas si la tabla tiene scroll vertical */
+  top: 0;
+  z-index: 1;
+}

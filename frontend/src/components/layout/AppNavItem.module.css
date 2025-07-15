@@ -1,0 +1,153 @@
+/* src/components/layout/AppNavItem.module.css */
+.navLink,
+.navControl {
+  display: flex; /* Usar flex para alinear el contenido del Group */
+  align-items: center;
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: var(--mantine-radius-sm);
+  text-decoration: none;
+  color: var(--mantine-color-gray-7); /* Texto para tema claro */
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.navLink:hover,
+.navControl:hover {
+  background-color: var(--mantine-color-gray-0);
+  color: var(--mantine-color-black);
+}
+
+.navLink.active,
+.navControl.activeParent .linkContent /* Aplicar a linkContent si el padre está activo */ {
+  /* background-color: var(--mantine-color-blue-light); -> Demasiado fuerte para el padre */
+  /* color: var(--mantine-color-blue-filled); */
+}
+
+.navLink.active .linkContent .linkLabel, /* Solo el texto del enlace activo */
+.navLink.active .linkContent .mantine-ThemeIcon-root svg, /* Icono activo */
+.navControl.activeParent .linkContent .linkLabel,
+.navControl.activeParent .linkContent .mantine-ThemeIcon-root svg {
+  color: var(
+    --mantine-color-blue-6
+  ) !important; /* Un azul más oscuro y legible */
+  font-weight: 500;
+}
+.navLink.active .mantine-ThemeIcon-root {
+  /* Icono del item activo */
+  background-color: var(
+    --mantine-color-blue-0
+  ); /* Un fondo muy claro para el icono activo */
+  color: var(--mantine-color-blue-6);
+}
+
+.linkContent {
+  width: 100%; /* Para que el Group ocupe todo el UnstyledButton */
+}
+.linkLabel {
+  /* Estilos para el texto del label */
+}
+
+.chevron {
+  margin-left: auto; /* Empuja el chevron a la derecha */
+  color: var(--mantine-color-gray-6);
+  transition: transform 200ms ease;
+}
+
+/* Estado abierto para el navControl (agrupador) */
+.navControl:has(+ .mantine-Collapse-root[data-state="opened"]) .chevron svg {
+  transform: rotate(90deg);
+}
+
+.subItemsContainer {
+  padding-left: 20px; /* Indentación base para subítems */
+  /* La indentación adicional se maneja por el padding-left del .subItem */
+  margin-top: var(--mantine-spacing-xs);
+  margin-bottom: var(--mantine-spacing-xs);
+}
+
+.subItem .linkContent .mantine-ThemeIcon-root {
+  background-color: transparent; /* Los iconos de subitems no necesitan ThemeIcon con fondo por defecto */
+  color: var(
+    --mantine-color-gray-6
+  ); /* Un color más sutil para iconos de subitems */
+}
+.subItem .linkContent .mantine-ThemeIcon-root svg {
+  /* Ajustar si es necesario */
+}
+
+.subItem .linkContent .linkLabel {
+  font-size: calc(
+    var(--mantine-font-size-sm) * 0.95
+  ); /* Ligeramente más pequeño */
+  color: var(--mantine-color-gray-7);
+}
+
+/* Estilos para subitems activos */
+.subItem.active .linkContent .linkLabel,
+.subItem.active .linkContent .mantine-ThemeIcon-root svg {
+  color: var(--mantine-color-blue-6) !important;
+  font-weight: 500;
+}
+.subItem.active .mantine-ThemeIcon-root {
+  background-color: var(--mantine-color-blue-0);
+  color: var(--mantine-color-blue-6);
+}
+
+/* Tema Oscuro */
+:global(body.dark-theme) .navLink,
+:global(body.dark-theme) .navControl {
+  color: var(--mantine-color-dark-0);
+}
+
+:global(body.dark-theme) .navLink:hover,
+:global(body.dark-theme) .navControl:hover {
+  background-color: var(--mantine-color-dark-6);
+  color: var(--mantine-color-white);
+}
+
+:global(body.dark-theme) .navLink.active .linkContent .linkLabel,
+:global(body.dark-theme)
+  .navLink.active
+  .linkContent
+  .mantine-ThemeIcon-root
+  svg,
+:global(body.dark-theme) .navControl.activeParent .linkContent .linkLabel,
+:global(body.dark-theme)
+  .navControl.activeParent
+  .linkContent
+  .mantine-ThemeIcon-root
+  svg {
+  color: var(
+    --mantine-color-blue-4
+  ) !important; /* Un azul más brillante para tema oscuro */
+}
+:global(body.dark-theme) .navLink.active .mantine-ThemeIcon-root {
+  background-color: var(
+    --mantine-color-dark-5
+  ); /* Un fondo oscuro sutil para el icono activo */
+  color: var(--mantine-color-blue-4);
+}
+
+:global(body.dark-theme) .subItem .linkContent .mantine-ThemeIcon-root {
+  color: var(--mantine-color-dark-2);
+}
+:global(body.dark-theme) .subItem .linkContent .linkLabel {
+  color: var(--mantine-color-dark-1);
+}
+
+:global(body.dark-theme) .subItem.active .linkContent .linkLabel,
+:global(body.dark-theme)
+  .subItem.active
+  .linkContent
+  .mantine-ThemeIcon-root
+  svg {
+  color: var(--mantine-color-blue-4) !important;
+}
+:global(body.dark-theme) .subItem.active .mantine-ThemeIcon-root {
+  background-color: var(--mantine-color-dark-5);
+  color: var(--mantine-color-blue-4);
+}
+
+:global(body.dark-theme) .chevron {
+  color: var(--mantine-color-dark-2);
+}

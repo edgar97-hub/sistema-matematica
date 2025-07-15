@@ -1,0 +1,39 @@
+.formPageContainer {
+  /* O el nombre de clase que uses en el Box de EditCreditPackagePage */
+  max-width: 700px;
+  margin: 20px auto; /* Centrado */
+  background-color: var(
+    --mantine-color-body
+  ); /* O var(--mantine-color-white) si el fondo del body es claro */
+  padding: var(--mantine-spacing-xl);
+  border-radius: var(--mantine-radius-md);
+  border: 1px solid var(--mantine-color-gray-3);
+}
+
+/* Para tema oscuro */
+:global(body.dark-theme) .formPageContainer {
+  border-color: var(--mantine-color-dark-4);
+}
+
+/* Estilos para el header de la página de formulario (botón de volver y título) */
+/* Puedes ponerlos en el page.module.css de la página de edición o en un SCSS global para formularios */
+.pageHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--mantine-spacing-xl);
+  padding-bottom: var(--mantine-spacing-md);
+  border-bottom: 1px solid var(--mantine-color-gray-3);
+}
+:global(body.dark-theme) .pageHeader {
+  border-bottom-color: var(--mantine-color-dark-4);
+}
+
+.pageHeader h1,
+.pageHeader h2,
+.pageHeader h3 {
+  /* Títulos dentro del header */
+  margin: 0 0 0 var(--mantine-spacing-sm);
+  font-size: 1.5rem; /* Ajusta según el nivel del Title */
+  font-weight: 500;
+  /* color: var(--mantine-color-blue-7); // O tu color primario para títulos */
+}

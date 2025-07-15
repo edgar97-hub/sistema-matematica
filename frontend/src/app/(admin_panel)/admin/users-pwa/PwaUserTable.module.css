@@ -1,0 +1,76 @@
+/* src/components/admin/pwa-users/PwaUserTable.module.css */
+.tableWrapper {
+  border: 1px solid var(--mantine-color-gray-3);
+  border-radius: var(--mantine-radius-md);
+  overflow: hidden; /* Para los bordes redondeados y scrollarea */
+  background-color: var(--mantine-color-body);
+}
+
+.tableHeader th {
+  background-color: var(--mantine-color-gray-0);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.filterRow th {
+  background-color: var(--mantine-color-gray-1);
+  position: sticky;
+  top: 40px; /* Ajusta esto si la altura de tu header es diferente */
+  z-index: 1;
+}
+
+.headerButton {
+  padding: 0;
+  font-weight: inherit;
+  color: inherit;
+  width: 100%;
+  justify-content: flex-start; /* Para que el icono de sort quede al final del texto */
+}
+
+.headerButton .mantine-Group-root {
+  width: 100%;
+  justify-content: space-between; /* Para empujar el icono de sort a la derecha */
+}
+
+.sortIcon {
+  transition: transform 0.2s ease-in-out;
+  color: var(--mantine-color-blue-6); /* O tu color primario */
+}
+.sortIconDesc {
+  transform: rotate(180deg);
+}
+.sortIconPlaceholder {
+  color: var(--mantine-color-gray-5);
+  opacity: 0.6;
+}
+
+.dataRow:hover {
+  background-color: var(--mantine-color-gray-0);
+}
+
+.paginationFooter {
+  border-top: 1px solid var(--mantine-color-gray-3);
+  background-color: var(--mantine-color-gray-0);
+}
+
+/* Estilos para tema oscuro (si usas la clase .dark-theme en el body) */
+:global(body.dark-theme) .tableWrapper {
+  border-color: var(--mantine-color-dark-4);
+}
+:global(body.dark-theme) .tableHeader th {
+  background-color: var(--mantine-color-dark-6);
+}
+:global(body.dark-theme) .filterRow th {
+  background-color: var(--mantine-color-dark-5);
+}
+
+:global(body.dark-theme) .dataRow:hover {
+  background-color: var(--mantine-color-dark-5);
+}
+:global(body.dark-theme) .paginationFooter {
+  border-top-color: var(--mantine-color-dark-4);
+  background-color: var(--mantine-color-dark-6);
+}
+:global(body.dark-theme) .sortIconPlaceholder {
+  color: var(--mantine-color-dark-3);
+}

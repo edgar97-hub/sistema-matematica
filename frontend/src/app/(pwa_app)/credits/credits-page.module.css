@@ -1,0 +1,69 @@
+/* :root {
+  --package-card-border: var(--mantine-color-blue-2);
+  --buy-button-gradient: linear-gradient(to right, var(--mantine-color-blue-6), var(--mantine-color-green-6));
+  --empty-state-color: var(--mantine-color-gray-5);
+} */
+.creditsPageContainer {
+  background-color: var(--mantine-color-gray-0);
+  padding: var(--mantine-spacing-lg);
+  transition: all 0.3s ease;
+}
+
+.pageTitle {
+  display: flex;
+  align-items: center;
+  color: var(--mantine-color-blue-7); /* O tu color primario del tema */
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: var(--mantine-spacing-xl);
+  transition: all 0.3s ease;
+}
+:global(body.dark-theme) .pageTitle {
+  color: var(--mantine-color-blue-4);
+}
+
+.packageCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Empuja el botón hacia abajo */
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  height: 100%; /* Para que todas las tarjetas en SimpleGrid tengan la misma altura */
+  border: 1px solid var(--package-card-border);
+  box-shadow: var(--mantine-shadow-sm);
+}
+
+.packageCard:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--mantine-shadow-md);
+}
+
+.packageName {
+  font-weight: 600;
+  color: var(--mantine-color-dark-8);
+  line-height: 1.3;
+  font-size: 1.3rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+:global(body.dark-theme) .packageName {
+  color: var(--mantine-color-dark-0);
+}
+
+.packageDescription {
+  flex-grow: 1; /* Permite que la descripción ocupe espacio y empuje precio/botón */
+  min-height: 40px; /* Para asegurar algo de espacio incluso si no hay descripción */
+  line-height: 1.6;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+}
+
+.packagePrice {
+  color: var(--mantine-color-green-7); /* Un color destacado para el precio */
+  display: block;
+  font-size: 1.7rem;
+  font-weight: 700;
+  transition: all 0.3s ease;
+}
+:global(body.dark-theme) .packagePrice {
+  color: var(--mantine-color-green-5);
+}

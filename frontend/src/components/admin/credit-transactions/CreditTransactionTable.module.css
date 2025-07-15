@@ -1,0 +1,48 @@
+/* src/components/admin/credit-transactions/CreditTransactionTable.module.css */
+.tableWrapper {
+  border: 1px solid var(--mantine-color-gray-3);
+  border-radius: var(--mantine-radius-md);
+  overflow-x: auto; /* Scroll horizontal para tablas anchas */
+  background-color: var(--mantine-color-body);
+  margin-top: var(--mantine-spacing-md);
+}
+
+.tableHeader th {
+  background-color: var(--mantine-color-gray-0);
+  font-weight: 600;
+  font-size: var(--mantine-font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--mantine-color-gray-7);
+  white-space: nowrap; /* Evitar que los headers se rompan */
+}
+
+.dataRow td {
+  font-size: var(--mantine-font-size-sm);
+  vertical-align: middle; /* Alinear verticalmente en el centro */
+}
+
+.dataRow:hover {
+  background-color: var(--mantine-color-gray-0);
+}
+
+.descriptionCell,
+.gatewayIdCell {
+  /* Para truncar texto largo */
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Tema Oscuro */
+:global(body.dark-theme) .tableWrapper {
+  border-color: var(--mantine-color-dark-4);
+}
+:global(body.dark-theme) .tableHeader th {
+  background-color: var(--mantine-color-dark-6);
+  color: var(--mantine-color-dark-1);
+}
+:global(body.dark-theme) .dataRow:hover {
+  background-color: var(--mantine-color-dark-5);
+}

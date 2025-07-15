@@ -1,0 +1,31 @@
+// src/app/globals.scss
+@use "./theme-variables.scss"; // Importa tus variables de tema
+
+// Configuración base de Tailwind (si lo usas)
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// Estilos base del body (ya los tienes en tu styles.scss global que me pasaste)
+body {
+  font-family: "Montserrat", sans-serif; // Asegúrate que Montserrat esté importada
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--sys-background);
+  color: var(--sys-on-background);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+// Tus otros estilos globales que dependen de las variables de tema
+// (h1, h2, .text-title-main, etc.)
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Avantt", "Arial Narrow", sans-serif; // Asegúrate que Avantt esté importada
+  color: var(--sys-on-background); // O una variable específica para títulos
+  // ...
+}
