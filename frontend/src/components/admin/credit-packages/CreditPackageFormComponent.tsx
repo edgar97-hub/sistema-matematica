@@ -62,7 +62,7 @@ export function CreditPackageFormComponent({
           name: "",
           description: null,
           creditAmount: 1,
-          price: 0.0,
+          price: 1,
           isActive: true,
         },
     validate: zodResolver(packageSchema),

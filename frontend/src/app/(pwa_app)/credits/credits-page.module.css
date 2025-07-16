@@ -26,10 +26,30 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between; /* Empuja el botón hacia abajo */
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
   height: 100%; /* Para que todas las tarjetas en SimpleGrid tengan la misma altura */
   border: 1px solid var(--package-card-border);
-  box-shadow: var(--mantine-shadow-sm);
+  box-shadow: var(--mantine-shadow-md);
+}
+
+.packageCard:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--mantine-shadow-lg);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.packageCard {
+  animation: fadeIn 0.5s ease-in-out;
 }
 
 .packageCard:hover {

@@ -19,6 +19,7 @@ export class CreateCreditPackageDto {
   price: number;
 
   @IsString()
+  @IsOptional()
   description: string;
 
   @IsOptional()

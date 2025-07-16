@@ -1692,3 +1692,25 @@
 {"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-15T16:58:15.228Z"}
 {"context":"StripeService","level":"info","message":"Checkout session created: cs_test_a1vTu5FSsUlJl1LSkPAgmJUFSm42NOcyByksGGBzylnzzBsldGQxjX34dF","timestamp":"2025-07-15T16:58:48.502Z"}
 {"context":"StripeService","level":"info","message":"Checkout session created: cs_test_a1VtS7CHtzjpM7G2iuJUkn0Ctly7iXQqVgboqYbfV0c9VOqOXqctmIGw2e","timestamp":"2025-07-15T17:01:25.079Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-15T18:28:59.721Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-15T18:28:59.723Z"}
+{"context":"StripeService","level":"info","message":"Checkout session created: cs_test_a1paYlu2gnoczIr2LMq0At5NeHJm0GN6GOf9cDODacGMZ48XcJPOsT4uwc","timestamp":"2025-07-15T18:30:52.281Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-15T23:55:35.188Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-15T23:55:35.190Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-07-16T00:30:49.523Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-07-16T00:30:49.523Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-16T00:36:50.849Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-16T00:36:50.852Z"}
+{"context":"CreditPackageService","level":"info","message":"Created new credit package with id 10","timestamp":"2025-07-16T00:39:21.218Z"}
+{"context":"CreditPackageService","level":"info","message":"Created new credit package with id 11","timestamp":"2025-07-16T00:39:21.296Z"}
+{"context":"CreditPackageService","level":"info","message":"Removed credit package with id 11","timestamp":"2025-07-16T00:39:27.502Z"}
+{"context":"CreditPackageService","level":"info","message":"Removed credit package with id 9","timestamp":"2025-07-16T00:39:29.292Z"}
+{"context":"CreditPackageService","level":"info","message":"Removed credit package with id 6","timestamp":"2025-07-16T00:39:33.371Z"}
+{"context":"CreditPackageService","level":"info","message":"Removed credit package with id 10","timestamp":"2025-07-16T00:39:38.969Z"}
+{"context":"CreditPackageService","level":"info","message":"Updated credit package with id 5","timestamp":"2025-07-16T00:39:49.150Z"}
+{"context":"CreditPackageService","level":"info","message":"Updated credit package with id 5","timestamp":"2025-07-16T00:39:57.240Z"}
+{"context":"CreditPackageService","level":"info","message":"Updated credit package with id 5","timestamp":"2025-07-16T00:40:02.909Z"}
+{"context":"StripeService","level":"error","message":"Error creating checkout session: The Checkout Session's total amount must convert to at least 50 cents. S/.1.00 converts to approximately $0.28.","timestamp":"2025-07-16T00:57:07.733Z","trace":"Error: The Checkout Session's total amount must convert to at least 50 cents. S/.1.00 converts to approximately $0.28.\n    at generateV1Error (/home/edgar/Documents/projects/projects/nodejs/sistema-matematica/backend/node_modules/stripe/cjs/Error.js:11:20)\n    at res.toJSON.then.Error_js_1.StripeAPIError.message (/home/edgar/Documents/projects/projects/nodejs/sistema-matematica/backend/node_modules/stripe/cjs/RequestSender.js:108:62)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)"}
+{"context":"StripeService","level":"error","message":"Error creating checkout session: The Checkout Session's total amount must convert to at least 50 cents. S/.1.00 converts to approximately $0.28.","timestamp":"2025-07-16T00:57:14.482Z","trace":"Error: The Checkout Session's total amount must convert to at least 50 cents. S/.1.00 converts to approximately $0.28.\n    at generateV1Error (/home/edgar/Documents/projects/projects/nodejs/sistema-matematica/backend/node_modules/stripe/cjs/Error.js:11:20)\n    at res.toJSON.then.Error_js_1.StripeAPIError.message (/home/edgar/Documents/projects/projects/nodejs/sistema-matematica/backend/node_modules/stripe/cjs/RequestSender.js:108:62)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-16T00:57:49.523Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-16T00:57:49.526Z"}

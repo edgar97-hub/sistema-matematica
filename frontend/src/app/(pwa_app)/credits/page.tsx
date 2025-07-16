@@ -109,7 +109,7 @@ export default function CreditPackagesPage() {
   if (isLoadingPackages) {
     return (
       <Center style={{ height: "200px" }}>
-        <Loader />
+        <Loader color="blue" size="xl" type="dots" />
       </Center>
     );
   }
@@ -117,11 +117,17 @@ export default function CreditPackagesPage() {
   if (isPackagesError) {
     return (
       <Box p="lg">
-        <Alert icon={<IconAlertCircle size="1rem" />} title="Error" color="red">
-          No se pudieron cargar los paquetes de crédito.
+        <Alert
+          icon={<IconAlertCircle size="1rem" />}
+          title="Error"
+          color="red"
+          variant="filled"
+        >
+          No se pudieron cargar los paquetes de crédito. Por favor, inténtalo de
+          nuevo más tarde.
           {packagesError?.message && (
             <Text size="xs" mt="xs">
-              Detalle: {packagesError.message}
+              Detalle del error: {packagesError.message}
             </Text>
           )}
         </Alert>
@@ -140,17 +146,32 @@ export default function CreditPackagesPage() {
       </Title>
 
       {packages.length === 0 && !isLoadingPackages && (
-        <Paper withBorder p="xl" ta="center" c="dimmed">
-          <IconShoppingCart size={48} stroke={1.5} style={{ opacity: 0.6 }} />
-          <Text size="lg" mt="md">
-            No hay paquetes de crédito disponibles en este momento.
+        <Paper
+          withBorder
+          p="xl"
+          ta="center"
+          c="dimmed"
+          style={{ backgroundColor: "var(--mantine-color-gray-0)" }}
+        >
+          <IconShoppingCart
+            size={60}
+            stroke={1.2}
+            style={{ opacity: 0.5, color: "var(--empty-state-color)" }}
+          />
+          <Title order={3} mt="xl" c="dimmed">
+            No hay paquetes de crédito disponibles
+          </Title>
+          <Text size="lg" mt="md" c="dimmed">
+            En este momento no tenemos paquetes de crédito para ofrecer.
           </Text>
-          <Text size="sm">Por favor, vuelve a intentarlo más tarde.</Text>
+          <Text size="md" c="dimmed">
+            Por favor, contacta a soporte si crees que es un error.
+          </Text>
         </Paper>
       )}
 
       {packages.length > 0 && (
-        <SimpleGrid cols={{ base: 1, sm: 2, lg: 3 }} spacing="lg">
+        <SimpleGrid cols={{ base: 1, sm: 2, md: 2, lg: 3 }} spacing="xl">
           {packages.map((pkg) => (
             <Paper
               key={pkg.id}
@@ -187,9 +208,9 @@ export default function CreditPackagesPage() {
               </Text>
               <Button
                 fullWidth
-                color="blue"
                 size="lg"
-                variant="filled"
+                variant="gradient"
+                gradient={{ from: "blue", to: "green", deg: 90 }}
                 onClick={() => {
                   // handlePurchasePackage(pkg)
                 }}
