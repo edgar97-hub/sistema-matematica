@@ -73,39 +73,20 @@ export class OrdersController {
     }
   }
 
-  // @Get()
-  // async findAll(
-  //   @User() user: any,
-  //   @Query('page') page: string,
-  //   @Query('limit') limit: string,
-  // ) {
-  //   try {
-      
-  //     return await this.ordersService.findUserOrders(
-  //       user.id.toString(),
-  //       parseInt(page),
-  //       parseInt(limit),
-  //     );
-  //   } catch (error) {
-  //     throw new BadRequestException(error.message);
-  //   }
-  // }
-
-  // @Get(':id')
-  // async findOne(@Param('id') id: string, @User() user: any) {
-  //   try {
-  //     const order = await this.ordersService.findOrderByIdForUser(
-  //       id,
-  //       user.id.toString(),
-  //     );
-  //     if (!order) {
-  //       throw new NotFoundException(`Order with ID "${id}" not found`);
-  //     }
-  //     return order;
-  //   } catch (error) {
-  //     throw new BadRequestException(error.message);
-  //   }
-  // }
+  @Post('create-from-exercise')
+  async createFromExercise(
+    @User() user: any,
+    @Body('exerciseId') exerciseId: number,
+  ) {
+    try {
+      return await this.ordersService.createOrderFromExercise(
+        user.id,
+        exerciseId,
+      );
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
 
   @Get('admin/all')
   @UseGuards(JwtAuthGuard, AdminGuard)
@@ -157,8 +138,19 @@ export class OrdersController {
 
   @UseGuards(JwtAuthGuard)
   @Get('pwa/my-orders')
-  async getMyOrders(@User() user: any, @Query() paginationDto: PaginationDto) {
+  async getMyOrders(@User() user: any, @Query() query: any) {
     const userId = user.id;
+    const paginationDto: PaginationDto = {
+      page: parseInt(query.page, 10) || 1,
+      limit: parseInt(query.limit, 10) || 10,
+      filters: {
+        status: query['filters[status]'],
+      },
+      sort: {
+        field: query['sort[field]'],
+        direction: query['sort[direction]'],
+      },
+    };
     return this.ordersService.findUserOrdersPaginated(userId, paginationDto);
   }
 

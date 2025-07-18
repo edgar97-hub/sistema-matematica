@@ -4,7 +4,7 @@
   --empty-state-color: var(--mantine-color-gray-5);
 } */
 .creditsPageContainer {
-  background-color: var(--mantine-color-gray-0);
+  background-color: #f0f2f5;
   padding: var(--mantine-spacing-lg);
   transition: all 0.3s ease;
 }
@@ -12,7 +12,7 @@
 .pageTitle {
   display: flex;
   align-items: center;
-  color: var(--mantine-color-blue-7); /* O tu color primario del tema */
+  color: var(--mantine-color-blue-7);
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: var(--mantine-spacing-xl);
@@ -28,7 +28,7 @@
   justify-content: space-between; /* Empuja el botón hacia abajo */
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
   height: 100%; /* Para que todas las tarjetas en SimpleGrid tengan la misma altura */
-  border: 1px solid var(--package-card-border);
+  border: 2px solid var(--mantine-color-blue-5);
   box-shadow: var(--mantine-shadow-md);
 }
 
@@ -59,7 +59,7 @@
 
 .packageName {
   font-weight: 600;
-  color: var(--mantine-color-dark-8);
+  color: var(--mantine-color-blue-9);
   line-height: 1.3;
   font-size: 1.3rem;
   font-weight: 500;
@@ -78,7 +78,7 @@
 }
 
 .packagePrice {
-  color: var(--mantine-color-green-7); /* Un color destacado para el precio */
+  color: var(--mantine-color-grape-7); /* Un color destacado para el precio */
   display: block;
   font-size: 1.7rem;
   font-weight: 700;

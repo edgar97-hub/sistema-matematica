@@ -59,6 +59,7 @@ export interface OrderFE {
   finalVideoUrl?: string;
   createdAt: string; // o Date
   errorMessage?: string;
+  originalImageUrl?: string;
 }
 
 // Para respuestas paginadas

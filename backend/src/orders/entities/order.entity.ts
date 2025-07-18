@@ -10,6 +10,7 @@ import { BaseEntity } from '../../common/entities/base.entity';
 import { UserEntity } from '../../users/entities/user.entity';
 import { OrderPipelineStatus } from '../enums/order-pipeline-status.enum';
 import { CreditTransactionEntity } from 'src/credit-system/entities/credit-transaction.entity';
+import { Exercise } from 'src/exercises/entities/exercise.entity';
 
 @Entity('orders')
 export class OrderEntity extends BaseEntity {
@@ -30,14 +31,17 @@ export class OrderEntity extends BaseEntity {
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 
-  @Column({ type: 'varchar' })
-  countrySelected: string;
+  @Column({ type: 'int', nullable: true })
+  exerciseId: number;
 
-  @Column({ type: 'varchar' })
-  educationalStageSelected: string;
+  @ManyToOne(() => Exercise, (row) => row.exercises, {
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'exercise_id' })
+  exercise: Exercise;
 
   @Column({ type: 'varchar', nullable: true })
-  subdivisionGradeSelected: string;
+  countrySelected: string;
 
   @Column({ type: 'text' })
   topic: string;
@@ -45,17 +49,11 @@ export class OrderEntity extends BaseEntity {
   @Column({ type: 'text' })
   originalImageUrl: string;
 
+  @Column({ type: 'text' })
+  finalVideoUrl: string;
+
   @Column({ type: 'text', nullable: true })
   mathpixExtraction: string;
-
-  @Column({ type: 'json', nullable: true })
-  openAiSolution: any;
-
-  @Column({ type: 'text', nullable: true })
-  audioNarrationUrl: string;
-
-  @Column({ type: 'text', nullable: true })
-  finalVideoUrl: string;
 
   @Column({
     type: 'enum',

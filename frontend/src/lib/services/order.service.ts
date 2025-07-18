@@ -18,14 +18,19 @@ export const orderService = {
     return response.data;
   },
   async getMyOrdersPwa(
-    pagination: { page: number; limit: number },
+    params: {
+      page: number;
+      limit: number;
+      filters?: { status?: string };
+      sort?: { field: string; direction: string };
+    },
     token: string
   ): Promise<PaginatedResponse<OrderFE>> {
     const response = await apiClient.get<PaginatedResponse<OrderFE>>(
       "/orders/pwa/my-orders",
       {
         headers: { Authorization: `Bearer ${token}` },
-        params: pagination,
+        params,
       }
     );
     return response.data;

@@ -159,11 +159,22 @@ export default function EditExercisePage({
       return;
     }
 
-    setIsLoading(true);
     const formData = new FormData();
     formData.append("title", title);
-    if (imageFile1) formData.append("image1", imageFile1);
-    if (imageFile2) formData.append("image2", imageFile2);
+    if (imageFile1) {
+      formData.append("image1", imageFile1);
+    } else {
+      alert("Debe subir la imagen para la búsqueda");
+      return;
+    }
+    if (imageFile2) {
+      formData.append("image2", imageFile2);
+    } else {
+      alert("Debe subir la imagen de la resolución");
+      return;
+    }
+    setIsLoading(true);
+
     if (videoFile) formData.append("video", videoFile);
 
     try {

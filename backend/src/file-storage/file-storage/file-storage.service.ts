@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { fileTypeFromBuffer } from 'file-type';
 import * as fs from 'fs'; // Importa el módulo 'fs' de Node.js
 import { join, parse } from 'path'; // Importa 'join' y 'parse' de 'path'
 import { promisify } from 'util'; // Para convertir fs.readFile en promesa
@@ -36,9 +37,10 @@ export class FileStorageService {
     size: number;
   }> {
     const originalName = file.originalname;
-    const extension = parse(originalName).ext; // Obtiene .jpg, .png
+    const extension = await fileTypeFromBuffer(file.buffer);
+    // const extension = parse(originalName).ext; // Obtiene .jpg, .png
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    const filename = `${uniqueSuffix}${extension}`;
+    const filename = `${uniqueSuffix}.${extension?.ext}`;
 
     const directoryPath = join(this.uploadsBaseDir, pathPrefix);
     const filePath = join(directoryPath, filename); // Ruta absoluta para guardar

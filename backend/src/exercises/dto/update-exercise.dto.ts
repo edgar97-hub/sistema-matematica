@@ -7,4 +7,16 @@ export class UpdateExerciseDto {
     message: 'El título no puede tener más de 255 caracteres.',
   })
   title?: string;
+
+  @IsString()
+  @IsOptional()
+  enunciadoLatexOriginal?: string;
+
+  @IsString()
+  @IsOptional()
+  enunciadoLatexNormalizado?: string;
+
+  @IsString()
+  @IsOptional()
+  ngrams?: string;
 }

@@ -10,138 +10,410 @@ import {
   Grid,
   Card,
   Image,
+  Stack,
+  Textarea,
+  Modal,
+  Progress,
+  Group,
+  LoadingOverlay,
+  Skeleton,
+  Loader,
 } from "@mantine/core";
+import { IconTarget, IconList, IconX } from "@tabler/icons-react";
 import { useDropzone } from "react-dropzone";
+import { useAuthStore } from "project/store/auth.store";
+import { notifications } from "@mantine/notifications";
+import { UserPwaFE } from "project/types/user.types";
+import "katex/dist/katex.min.css";
+import Latex from "react-latex-next";
 
-const IMAGE_MIME_TYPES = [
-  "image/png",
-  "image/jpeg",
-  "image/gif",
-  "image/svg+xml",
-];
+const IMAGE_MIME_TYPES = ["image/png", "image/jpeg"];
 
 export default function NewOrderPage() {
+  const user = useAuthStore((state) => state.user);
+
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [searchResults, setSearchResults] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedExercise, setSelectedExercise] = useState<any>(null);
+  const [extractedLatex, setExtractedLatex] = useState("");
+  const [isExtracting, setIsExtracting] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    setSelectedImage(acceptedFiles[0]);
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
+    const file = acceptedFiles[0];
+    setSelectedImage(file);
+    setExtractedLatex("");
+    setSearchResults(null);
+
+    if (file) {
+      setIsExtracting(true);
+      const formData = new FormData();
+      formData.append("image", file);
+
+      try {
+        const token = useAuthStore.getState().token;
+        if (!token)
+          throw new Error("No se encontró el token de autenticación.");
+
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/exercises/extract-latex`,
+          {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}` },
+            body: formData,
+          }
+        );
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Error al extraer LaTeX");
+        }
+
+        const result = await response.json();
+        setExtractedLatex(result.latex);
+      } catch (error) {
+        console.error(error);
+        notifications.show({
+          title: "Error",
+          message:
+            error instanceof Error
+              ? error.message
+              : "Ocurrió un error inesperado.",
+          color: "red",
+        });
+      } finally {
+        setIsExtracting(false);
+      }
+    }
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: {
-      "image/*": IMAGE_MIME_TYPES,
-    },
+    accept: { "image/*": IMAGE_MIME_TYPES },
     maxFiles: 1,
   });
 
-  const handleResolveClick = () => {
-    if (!selectedImage) {
-      alert("Por favor, selecciona una imagen");
+  const handleResolveClick = async () => {
+    if (!extractedLatex) {
+      notifications.show({
+        title: "Error",
+        message: "No hay LaTeX para buscar.",
+        color: "red",
+      });
       return;
     }
 
-    // Placeholder for sending the image to the backend
-    console.log("Sending image to backend:", selectedImage);
-    alert("funcionalidad pendiente");
-    return;
-    // Simulate backend response
-    setTimeout(() => {
-      setSearchResults({
-        resolution: "La resolución es...",
-        similarResolutions: ["Resolución 1", "Resolución 2"],
+    setIsLoading(true);
+    setSearchResults(null);
+
+    try {
+      const token = useAuthStore.getState().token;
+      if (!token) throw new Error("No se encontró el token de autenticación.");
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/exercises/find-similar`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ latex: extractedLatex }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Error en la búsqueda");
+      }
+
+      const results = await response.json();
+      setSearchResults(results);
+    } catch (error) {
+      console.error(error);
+      notifications.show({
+        title: "Error",
+        message:
+          error instanceof Error
+            ? error.message
+            : "Ocurrió un error inesperado.",
+        color: "red",
       });
-    }, 1000);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
+  const handleViewResolution = async (exercise: any) => {
+    try {
+      const token = useAuthStore.getState().token;
+      if (!token) throw new Error("No se encontró el token de autenticación.");
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/orders/create-from-exercise`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ exerciseId: exercise.id }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Error al crear la orden");
+      }
+
+      const { creditsConsumed } = await response.json();
+      const newCreditBalance = user!.credits - (creditsConsumed || 1);
+      useAuthStore.getState().setUser(
+        {
+          ...user!,
+          credits: newCreditBalance,
+        },
+        token
+      );
+      setSelectedExercise(exercise);
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error(error);
+      notifications.show({
+        title: "Error",
+        message:
+          error instanceof Error
+            ? error.message
+            : "Ocurrió un error inesperado.",
+        color: "red",
+      });
+    }
+  };
+
+  const handleClearSearch = () => {
+    setSelectedImage(null);
+    setExtractedLatex("");
+    setSearchResults(null);
+  };
   return (
     <Container>
-      <Title order={2} style={{ textAlign: "center" }} my="xl">
-        Nuevo Pedido
+      <Title order={3} style={{ textAlign: "center" }} my="lg">
+        Resolución de Ejercicios Matemáticos
       </Title>
-      <Card shadow="sm" radius="md" withBorder>
-        <Card.Section>
-          <Text size="sm" color="dimmed">
-            Sube una imagen del ejercicio:
-          </Text>
-          <Box
-            style={{
-              border: `2px dashed #ccc`,
-              borderRadius: 5,
-              backgroundColor: "#f5f5f5",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: 200,
-              cursor: "pointer",
-              ...(isDragActive && {
-                border: `2px dashed #4CAF50`,
-                backgroundColor: "#E8F5E9",
-              }),
-            }}
-            {...getRootProps()}
-          >
-            <input {...getInputProps()} />
-            {selectedImage ? (
-              <Image
-                src={URL.createObjectURL(selectedImage)}
-                alt="Uploaded Exercise"
-                width="100%"
-                height="100%"
-                style={{ objectFit: "contain" }}
-              />
-            ) : (
-              <Text size="sm" style={{ textAlign: "center" }}>
-                Arrastra y suelta una imagen aquí, o haz click para seleccionar
-                un archivo
-              </Text>
-            )}
+      {!searchResults && (
+        <Card shadow="sm" radius="md" withBorder>
+          <Box style={{ position: "relative" }}>
+            <LoadingOverlay visible={isExtracting} />
+            <Box
+              style={{
+                border: `2px dashed #ccc`,
+                borderRadius: 5,
+                backgroundColor: isDragActive ? "#E8F5E9" : "#f5f5f5",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: 150,
+                cursor: "pointer",
+              }}
+              {...getRootProps()}
+            >
+              <input {...getInputProps()} />
+              {selectedImage ? (
+                <Image
+                  src={URL.createObjectURL(selectedImage)}
+                  alt="Uploaded Exercise"
+                  style={{ objectFit: "contain", maxHeight: "100%" }}
+                />
+              ) : (
+                <Text size="sm" style={{ textAlign: "center" }}>
+                  Arrastra y suelta la imagen del ejercicio aquí o haz clic para
+                  subir la imagen
+                </Text>
+              )}
+            </Box>
           </Box>
-        </Card.Section>
-        <Button color="blue" fullWidth mt="md" onClick={handleResolveClick}>
-          RESOLVER
-        </Button>
-      </Card>
+          {user && <Text mt="md">Créditos disponibles: {user.credits}</Text>}
+          {extractedLatex && !isExtracting && (
+            <Card withBorder mt="md">
+              <Text>Vista Previa:</Text>
+              <Text size="lg" style={{ textAlign: "center" }}>
+                <Latex>{`$$${extractedLatex}$$`}</Latex>
+              </Text>
+            </Card>
+          )}
+          <Button
+            color="green"
+            fullWidth
+            mt="md"
+            onClick={handleResolveClick}
+            disabled={!extractedLatex || isLoading || isExtracting}
+          >
+            {isLoading ? <Loader size="sm" /> : "RESOLVER"}
+          </Button>
+        </Card>
+      )}
 
-      {searchResults && (
-        <Box mt="xl">
-          <Title order={3} mb="md" style={{ textAlign: "center" }}>
-            Resultados:
-          </Title>
-          <Grid gutter="md">
-            <Grid.Col span={6}>
-              <Card shadow="sm" radius="md" withBorder>
-                <Card.Section>
-                  <Title order={4}>Resolución del Ejercicio</Title>
-                  <Text size="sm">
-                    {searchResults.resolution ||
-                      "No se encontró una resolución para este ejercicio."}
-                  </Text>
-                </Card.Section>
-                <Button color="blue" fullWidth mt="md">
-                  VER RESOLUCIÓN
+      {isLoading ? (
+        <Grid mt="xl">
+          <Grid.Col span={{ base: 12, md: 6 }}>
+            <Skeleton height={50} circle mb="xl" />
+            <Skeleton height={8} radius="xl" />
+            <Skeleton height={8} mt={6} radius="xl" />
+            <Skeleton height={8} mt={6} width="70%" radius="xl" />
+          </Grid.Col>
+          <Grid.Col span={{ base: 12, md: 6 }}>
+            <Skeleton height={50} circle mb="xl" />
+            <Skeleton height={8} radius="xl" />
+            <Skeleton height={8} mt={6} radius="xl" />
+            <Skeleton height={8} mt={6} width="70%" radius="xl" />
+          </Grid.Col>
+        </Grid>
+      ) : (
+        searchResults && (
+          <Grid mt="xl">
+            <Grid.Col span={12}>
+              <Group justify="space-between">
+                <Title order={4}>Resultados de la Búsqueda</Title>
+                <Button
+                  onClick={handleClearSearch}
+                  variant="subtle"
+                  leftSection={<IconX size={14} />}
+                >
+                  Limpiar Búsqueda
                 </Button>
+              </Group>
+            </Grid.Col>
+            <Grid.Col span={12}>
+              <Title order={4}>Ejercicio Original</Title>
+              <Card shadow="sm" radius="md" withBorder>
+                <Text size="lg" style={{ textAlign: "center" }}>
+                  <Latex>{`$$${extractedLatex}$$`}</Latex>
+                </Text>
               </Card>
             </Grid.Col>
-            <Grid.Col span={6}>
-              <Card shadow="sm" radius="md" withBorder>
-                <Card.Section>
-                  <Title order={4}>Resoluciones Similares</Title>
-                  <Text size="sm">
-                    {searchResults.similarResolutions
-                      ? searchResults.similarResolutions.join(", ")
-                      : "No hay resoluciones similares disponibles."}
-                  </Text>
-                </Card.Section>
-                <Button color="blue" fullWidth mt="md">
-                  VER RESOLUCIONES
-                </Button>
+            <Grid.Col span={{ base: 12, md: 6 }}>
+              <Group>
+                <IconTarget />
+                <Title order={3}>RESOLUCIÓN DEL EJERCICIO</Title>
+              </Group>
+              <Card shadow="sm" radius="md" withBorder bg="blue.0">
+                {searchResults.exactMatch ? (
+                  <>
+                    <Title order={5}>{searchResults.exactMatch.title}</Title>
+                    <Text>
+                      <Latex>{`$$${searchResults.exactMatch.enunciadoLatexOriginal}$$`}</Latex>
+                    </Text>
+                    <Button
+                      mt="md"
+                      onClick={() =>
+                        handleViewResolution(searchResults.exactMatch)
+                      }
+                      variant="filled"
+                    >
+                      VER RESOLUCIÓN
+                    </Button>
+                  </>
+                ) : (
+                  <Text>No se encontró una resolución exacta.</Text>
+                )}
               </Card>
+            </Grid.Col>
+            <Grid.Col span={{ base: 12, md: 6 }}>
+              <Group>
+                <IconList />
+                <Title order={3}>RESOLUCIONES SIMILARES</Title>
+              </Group>
+              <Stack>
+                {searchResults.similarMatches &&
+                searchResults.similarMatches.length > 0 ? (
+                  searchResults.similarMatches.map((match: any) => (
+                    <Card
+                      shadow="sm"
+                      radius="md"
+                      withBorder
+                      key={match.exercise.id}
+                      style={{
+                        borderTop: `3px solid ${
+                          match.score > 0.7
+                            ? "green"
+                            : match.score > 0.4
+                            ? "yellow"
+                            : "red"
+                        }`,
+                      }}
+                    >
+                      <Text>
+                        <Latex>{`$$${match.exercise.enunciadoLatexOriginal}$$`}</Latex>
+                      </Text>
+                      <Progress.Root size="lg" mt="md">
+                        <Progress.Section
+                          value={match.score * 100}
+                          color={
+                            match.score > 0.7
+                              ? "green"
+                              : match.score > 0.4
+                              ? "yellow"
+                              : "red"
+                          }
+                        >
+                          <Progress.Label>
+                            {`${(match.score * 100).toFixed(0)}%`}
+                          </Progress.Label>
+                        </Progress.Section>
+                      </Progress.Root>
+                      <Button
+                        mt="md"
+                        size="xs"
+                        onClick={() => handleViewResolution(match.exercise)}
+                        variant="outline"
+                      >
+                        VER RESOLUCIÓN
+                      </Button>
+                    </Card>
+                  ))
+                ) : (
+                  <Text>No se encontraron resoluciones similares.</Text>
+                )}
+              </Stack>
             </Grid.Col>
           </Grid>
-        </Box>
+        )
       )}
+
+      <Modal
+        opened={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={selectedExercise?.title}
+        size="lg"
+      >
+        {selectedExercise && (
+          <Card>
+            <Title order={4}>Planteamiento del Ejercicio</Title>
+            <Text>
+              <Latex>{`$$${selectedExercise.enunciadoLatexOriginal}$$`}</Latex>
+            </Text>
+            <Title order={4} mt="md">
+              Imagen de Resolución
+            </Title>
+            <Image
+              src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads${selectedExercise.imageUrl2}`}
+              alt="Resolución"
+            />
+            {selectedExercise.videoUrl && (
+              <Button
+                component="a"
+                href={`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads${selectedExercise.videoUrl}`}
+                target="_blank"
+                fullWidth
+                mt="md"
+              >
+                VER VIDEO DE RESOLUCIÓN
+              </Button>
+            )}
+          </Card>
+        )}
+      </Modal>
     </Container>
   );
 }

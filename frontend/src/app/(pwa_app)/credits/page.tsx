@@ -13,12 +13,20 @@ import {
   Center,
   Alert,
   Badge,
+  Table,
+  TextInput,
+  Avatar,
+  Card,
+  Accordion,
+  Progress,
 } from "@mantine/core";
 import {
   IconShoppingCart,
   IconCreditCard,
   IconAlertCircle,
   IconPremiumRights,
+  IconAward,
+  IconGift,
 } from "@tabler/icons-react";
 import {
   useQuery,
@@ -52,6 +60,12 @@ export default function CreditPackagesPage() {
   });
 
   const packages = packagesData || [];
+
+  const mostPopularPackage = packages.reduce(
+    (max, pkg) =>
+      (pkg.creditAmount || 0) > (max.creditAmount || 0) ? pkg : max,
+    packages[0]
+  );
 
   const {
     mutateAsync: createCheckoutSessionMutation,
@@ -140,7 +154,11 @@ export default function CreditPackagesPage() {
       <Title order={2} className={classes.pageTitle} mb="xl">
         <IconPremiumRights
           size={32}
-          style={{ marginRight: "12px", verticalAlign: "bottom" }}
+          style={{
+            marginRight: "12px",
+            verticalAlign: "bottom",
+            color: "var(--mantine-color-yellow-5)",
+          }}
         />
         Adquirir Créditos
       </Title>
@@ -180,9 +198,31 @@ export default function CreditPackagesPage() {
               p="lg"
               radius="md"
               className={classes.packageCard}
+              style={
+                pkg.id === mostPopularPackage?.id
+                  ? { border: "2px solid var(--mantine-color-yellow-5)" }
+                  : {}
+              }
             >
+              {pkg.id === mostPopularPackage?.id && (
+                <Badge
+                  color="yellow"
+                  variant="filled"
+                  style={{ position: "absolute", top: -10, right: 10 }}
+                >
+                  Más Popular
+                </Badge>
+              )}
               <Group justify="space-between" align="flex-start">
                 <Title order={3} className={classes.packageName}>
+                  <IconAward
+                    size={24}
+                    style={{
+                      marginRight: 8,
+                      verticalAlign: "middle",
+                      color: "var(--mantine-color-blue-5)",
+                    }}
+                  />
                   {pkg.name}
                 </Title>
                 <Badge color="teal" variant="filled" size="lg">
@@ -211,9 +251,7 @@ export default function CreditPackagesPage() {
                 size="lg"
                 variant="gradient"
                 gradient={{ from: "blue", to: "green", deg: 90 }}
-                onClick={() => {
-                  // handlePurchasePackage(pkg)
-                }}
+                onClick={() => handlePurchasePackage(pkg)}
                 loading={
                   isCreatingSession && isRedirectingToStripeId === pkg.id
                 }
@@ -227,6 +265,124 @@ export default function CreditPackagesPage() {
           ))}
         </SimpleGrid>
       )}
+
+      {/* <Box mt="xl">
+        <Title order={4}>¿Tienes un código promocional?</Title>
+        <Group mt="sm">
+          <TextInput
+            placeholder="Introduce tu código"
+            style={{ flex: 1 }}
+          />
+          <Button>Aplicar</Button>
+        </Group>
+      </Box> */}
+
+      <Box mt="xl">
+        <Title order={3} ta="center" mb="xl">
+          Lo que dicen nuestros usuarios
+        </Title>
+        <SimpleGrid cols={{ base: 1, sm: 2, lg: 3 }} spacing="lg">
+          <Card shadow="sm" p="lg" radius="md" withBorder>
+            <Group>
+              <Avatar
+                src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+                alt="Juan Pérez"
+              />
+              <div>
+                <Text fw={500}>Juan Pérez</Text>
+                <Text size="xs" c="dimmed">
+                  Estudiante
+                </Text>
+              </div>
+            </Group>
+            <Text size="sm" mt="sm">
+              "¡Los créditos me han ayudado a mejorar mis notas en matemáticas!
+              La plataforma es increíble."
+            </Text>
+          </Card>
+          <Card shadow="sm" p="lg" radius="md" withBorder>
+            <Group>
+              <Avatar
+                src="https://i.pravatar.cc/150?u=a042581f4e29026704e"
+                alt="Maria García"
+              />
+              <div>
+                <Text fw={500}>Maria García</Text>
+                <Text size="xs" c="dimmed">
+                  Madre de Familia
+                </Text>
+              </div>
+            </Group>
+            <Text size="sm" mt="sm">
+              "Mi hijo ahora entiende mucho mejor las matemáticas gracias a esta
+              plataforma. ¡Totalmente recomendada!"
+            </Text>
+          </Card>
+          <Card shadow="sm" p="lg" radius="md" withBorder>
+            <Group>
+              <Avatar
+                src="https://i.pravatar.cc/150?u=a042581f4e29026704f"
+                alt="Carlos Rodriguez"
+              />
+              <div>
+                <Text fw={500}>Carlos Rodriguez</Text>
+                <Text size="xs" c="dimmed">
+                  Profesor
+                </Text>
+              </div>
+            </Group>
+            <Text size="sm" mt="sm">
+              "Una herramienta excelente para que los estudiantes practiquen y
+              aprendan a su propio ritmo."
+            </Text>
+          </Card>
+        </SimpleGrid>
+      </Box>
+
+      <Box mt="xl">
+        <Title order={3} ta="center" mb="xl">
+          Preguntas Frecuentes
+        </Title>
+        <Accordion>
+          <Accordion.Item value="1">
+            <Accordion.Control>¿Cómo funcionan los créditos?</Accordion.Control>
+            <Accordion.Panel>
+              Los créditos te permiten obtener resoluciones a tus problemas de
+              matemáticas. Cada resolución consume una cierta cantidad de
+              créditos, dependiendo de la complejidad del problema.
+            </Accordion.Panel>
+          </Accordion.Item>
+
+          <Accordion.Item value="2">
+            <Accordion.Control>¿Los créditos expiran?</Accordion.Control>
+            <Accordion.Panel>
+              No, tus créditos no tienen fecha de vencimiento. Puedes usarlos
+              cuando los necesites.
+            </Accordion.Panel>
+          </Accordion.Item>
+
+          <Accordion.Item value="3">
+            <Accordion.Control>¿Qué métodos de pago aceptan?</Accordion.Control>
+            <Accordion.Panel>
+              Aceptamos las principales tarjetas de crédito y débito a través de
+              nuestra pasarela de pago segura de Stripe.
+            </Accordion.Panel>
+          </Accordion.Item>
+        </Accordion>
+      </Box>
+
+      {/* <Box mt="xl">
+        <Title order={3} ta="center" mb="xl">
+          ¡Sigue así!
+        </Title>
+        <Text ta="center" mb="sm">
+          Acumula <strong>100</strong> créditos para alcanzar el nivel <strong>Maestro Matemático</strong>
+        </Text>
+        <Progress value={50} size="xl" striped animated />
+        <Text ta="center" mt="sm">
+          <strong>50 / 100</strong> créditos
+        </Text>
+      </Box> */}
     </Box>
   );
 }

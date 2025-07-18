@@ -38,6 +38,7 @@ import { AudioService } from 'src/math-processing/services/audio.service';
 import { ManimService } from 'src/math-processing/manim/manim.service';
 import { FFmpegService } from 'src/math-processing/services/ffmpeg.service';
 import { PaginatedResponse, PaginationDto } from './dto/pagination.dto';
+import { Exercise } from '../exercises/entities/exercise.entity';
 
 @Injectable()
 export class OrdersService {
@@ -46,6 +47,7 @@ export class OrdersService {
     private readonly orderRepository: Repository<OrderEntity>,
     private readonly usersService: UsersService,
     private readonly fileStorageService: FileStorageService,
+    private readonly creditService: CreditService,
     // private readonly audioService: AudioService,
     // private readonly ffmpegService: FFmpegService,
     private readonly manimService: ManimService,
@@ -169,7 +171,8 @@ export class OrdersService {
       // --- 1. OCR con Mathpix ---
       console.log('--- 1. OCR con Mathpix ---');
       console.log(
-        `Pipeline: Iniciando OCR para orden ${order.id} (Estado actual: ${order.status})`,
+        `Pipeline: Iniciando OCR para orden ${order.id}
+         (Estado actual: ${order.status})`,
         'OrdersService_Pipeline',
       );
       if (
@@ -328,235 +331,14 @@ export class OrdersService {
         }
       }
 
-      // --- 3. Generación de Solución con OpenAI ---
-      console.log('--- 3. Generación de Solución con OpenAI ---');
-      if (order.status === OrderPipelineStatus.AI_SOLUTION_PENDING) {
-        console.log(
-          `Pipeline: Iniciando generación de solución IA para ${order.id}`,
-          'OrdersService_Pipeline',
-        );
-        const config = await this.systemConfigurationService.getConfiguration();
-        // console.log(
-        //   'config, config.openAiPromptBase',
-        //   config,
-        //   config.openAiPromptBase,
-        // );
-        // if (!config || !config.openAiPromptBase) {
-        //   throw new Error(
-        //     'Configuración de prompt base de OpenAI no encontrada.',
-        //   );
-        // }
-        const solutionJson =
-          await this.openaiService.generateStepByStepSolution(
-            order.mathpixExtraction!,
-            config.openAiPromptBase,
-            order.countrySelected,
-            order.educationalStageSelected,
-            order.subdivisionGradeSelected,
-          );
-        await this.entityManager.update(OrderEntity, order.id, {
-          openAiSolution: solutionJson,
-          status: OrderPipelineStatus.GENERATING_VIDEO_PENDING,
-        });
-        order.openAiSolution = solutionJson;
-        order.status = OrderPipelineStatus.GENERATING_VIDEO_PENDING;
-        console.log(`Pipeline: Solución IA generada para ${order.id}`);
-        // console.log('solutionJson', solutionJson);
-      }
-
-      // --- 4. Generación del Video Final Sincronizado ---
-      if (order.status === OrderPipelineStatus.GENERATING_VIDEO_PENDING) {
-        console.log(
-          `Solicitando video final al microservicio Manim para orden ${order.id}`,
-          'OrdersService_Pipeline',
-        );
-        const solution = order.openAiSolution as any;
-
-        if (!solution || !solution.steps || solution.steps.length === 0) {
-          throw new Error(
-            'La solución de IA no es válida para generar el video.',
-          );
-        }
-
-        // LLAMAR AL MICROSERVICIO MANIM UNA SOLA VEZ
-        const manimResult = await this.manimService.renderFullVoiceoverVideo({
-          orderId: order.id.toString(),
-          solutionJson: solution,
-        });
-        console.log('manimResult', manimResult);
-        if (manimResult.error || !manimResult.localPath) {
-          throw new Error(
-            `Fallo en el microservicio Manim: ${manimResult.error}`,
-          );
-        }
-
-        // El microservicio ya nos dio el video final.
-        const finalVideoPath = manimResult.localPath;
-        console.log(
-          `Video final completo recibido en: ${finalVideoPath}`,
-          'OrdersService_Pipeline',
-        );
-
-        // Construir la URL pública
-        const finalVideoPublicUrl = `/final_videos/${basename(finalVideoPath)}`;
-
-        // --- 5. Completado Final ---
-        await this.entityManager.update(OrderEntity, order.id, {
-          finalVideoUrl: finalVideoPublicUrl,
-          status: OrderPipelineStatus.COMPLETED,
-          completedAt: new Date(),
-        });
-        console.log(
-          `¡COMPLETADO! Video final para orden ${order.id} en ${finalVideoPublicUrl}`,
-          'OrdersService_Pipeline',
-        );
-
-        // --- 6. Limpieza ---
-        // Limpiar el video final del directorio temporal de NestJS después de un tiempo,
-        // o moverlo a un almacenamiento permanente. Por ahora, lo dejamos.
-      }
-
-      // const all_audio_paths: string[] = [];
-      // const all_video_paths: string[] = [];
-
-      // // --- 4. Generación y Renderizado por Segmentos ---
-      // console.log('--- 4. Generación y Renderizado por Segmentos ---');
-      // if (order.status === OrderPipelineStatus.GENERATING_AUDIO_PENDING) {
-      //   const solution = order.openAiSolution as any;
-      //   const steps = solution.steps || [];
-
-      //   if (steps.length === 0) {
-      //     throw new Error('La solución de IA no contiene pasos.');
-      //   }
-
-      //   const audioPaths: string[] = [];
-      //   const videoPaths: string[] = [];
-
-      //   // Bucle para procesar cada paso individualmente
-      //   for (const step of steps) {
-      //     const stepDescription =
-      //       step.stepNumber === 'Final'
-      //         ? `${step.description}`
-      //         : `Paso ${step.stepNumber}: ${step.description}`;
-      //     const stepFormula = step.formula || '';
-
-      //     // A. Generar Audio para el segmento
-      //     const { audioBuffer, fileExtension } =
-      //       await this.openaiService.generateAudioNarrationBuffer(
-      //         stepDescription,
-      //       );
-      //     const audioSaveResult = await this.fileStorageService.uploadBuffer(
-      //       audioBuffer,
-      //       `temp/${order.id}`,
-      //       `audio_step_${step.stepNumber}.${fileExtension}`,
-      //     );
-      //     audioPaths.push(audioSaveResult.filePath);
-      //     console.log(
-      //       `Audio para paso ${step.stepNumber} generado en: ${audioSaveResult.filePath}`,
-      //       'OrdersService_Pipeline',
-      //     );
-
-      //     // B. Medir la Duración del Audio (CRÍTICO PARA LA SINCRONIZACIÓN)
-      //     const audioDuration =
-      //       await this.audioService.getAudioDuration(audioBuffer);
-      //     if (audioDuration === 0) {
-      //       console.warn(
-      //         `No se pudo determinar la duración del audio para el paso ${step.stepNumber}. Usando fallback.`,
-      //         'OrdersService_Pipeline',
-      //       );
-      //     }
-
-      //     // C. Generar el Video para el segmento con la duración del audio
-      //     const manimResult = await this.manimService.renderSegment({
-      //       // Este es el método que llama a /render-segment en el microservicio
-      //       segmentId: `order_${order.id}_step_${step.stepNumber}`,
-      //       description: stepDescription,
-      //       formula: stepFormula,
-      //       duration: audioDuration > 0 ? audioDuration : 3.0, // Usar duración medida o un fallback de 3s
-      //     });
-
-      //     if (manimResult.error || !manimResult.localPath) {
-      //       throw new Error(
-      //         `Fallo en el microservicio Manim para el paso ${step.stepNumber}: ${manimResult.error}`,
-      //       );
-      //     }
-      //     videoPaths.push(manimResult.localPath);
-      //     console.log(
-      //       `Video para paso ${step.stepNumber} generado en: ${manimResult.localPath}`,
-      //       'OrdersService_Pipeline',
-      //     );
-      //   }
-
-      //   // D. Actualizar estado en la orden
-      //   await this.entityManager.update(OrderEntity, order.id, {
-      //     status: OrderPipelineStatus.ASSEMBLING_FINAL_PENDING,
-      //   });
-      //   order.status = OrderPipelineStatus.ASSEMBLING_FINAL_PENDING;
-      //   console.log(
-      //     `Pipeline: Todos los segmentos generados para orden ${order.id}. Siguiente estado: ${order.status}`,
-      //     'OrdersService_Pipeline',
-      //   );
-      // }
-
-      // // --- 5. Ensamblaje Final con FFmpeg ---
-      // console.log('--- 5. Ensamblaje Final con FFmpeg ---');
-      // if (order.status === OrderPipelineStatus.ASSEMBLING_FINAL_PENDING) {
-      //   if (all_audio_paths.length === 0 || all_video_paths.length === 0) {
-      //     throw new Error(
-      //       'No se generaron segmentos de audio/video para ensamblar.',
-      //     );
-      //   }
-
-      //   // Llamar a FFmpegService con las listas de archivos
-      //   console.log(
-      //     `Pipeline: Iniciando ensamblaje final para orden ${order.id}`,
-      //     'OrdersService_Pipeline',
-      //   );
-      //   const ffmpegResult = await this.ffmpegService.concatenateAndCombine(
-      //     all_video_paths,
-      //     all_audio_paths,
-      //     order.id.toString(),
-      //   );
-
-      //   // --- 6. Completado Final ---
-      //   await this.entityManager.update(OrderEntity, order.id, {
-      //     finalVideoUrl: ffmpegResult.finalVideoPublicUrl, // La URL relativa/pública
-      //     status: OrderPipelineStatus.COMPLETED,
-      //     completedAt: new Date(),
-      //   });
-      //   order.status = OrderPipelineStatus.COMPLETED;
-      //   console.log(
-      //     `Pipeline: ¡COMPLETADO! Video final para orden ${order.id} en ${ffmpegResult.finalVideoPublicUrl}`,
-      //     'OrdersService_Pipeline',
-      //   );
-
-      //   // --- 7. Limpieza de Archivos Temporales ---
-      //   console.log(
-      //     `
-      //     --- 7. Limpieza de Archivos Temporales ---
-      //     Iniciando limpieza de archivos temporales para orden ${order.id}`,
-      //     'OrdersService_Pipeline',
-      //   );
-      //   for (const path of [...all_audio_paths, ...all_video_paths]) {
-      //     try {
-      //       // await fs.promises.unlink(path);
-      //     } catch (e) {
-      //       console.warn(
-      //         `No se pudo eliminar el archivo temporal: ${path}`,
-      //         e.stack,
-      //         'OrdersService_Pipeline',
-      //       );
-      //     }
-      //   }
-
-      //   // También limpiar el directorio temporal de Manim si es posible
-      //   const manimTempDir = join(
-      //     process.cwd(),
-      //     'temp_manim_processing',
-      //     `order_${order.id}_*`,
-      //   ); // Esto necesita una lógica más robusta
-      //   //  fs.remove(manimTempDir)
-      // }
+      await this.entityManager.update(OrderEntity, order.id, {
+        status: OrderPipelineStatus.COMPLETED,
+        completedAt: new Date(),
+      });
+      console.log(
+        `¡COMPLETADO! Video final para orden ${order.id} `,
+        'OrdersService_Pipeline',
+      );
     } catch (pipelineError: any) {
       // Catch general para errores inesperados en el flujo de pipeline
       console.error(
@@ -564,126 +346,8 @@ export class OrdersService {
         pipelineError.stack,
         'OrdersService_Pipeline',
       );
-      let finalErrorStatus = OrderPipelineStatus.FAILED_GENERAL;
-      // Determinar un estado de error más específico si es posible basado en el error
-      if (order && order.id) {
-        // Podrías querer obtener el estado actual de la orden de la BD antes de actualizar
-        const currentOrderInDb = await this.entityManager.findOne(OrderEntity, {
-          where: { id: order.id },
-        });
-        if (
-          currentOrderInDb &&
-          !currentOrderInDb.status.endsWith('FAILED') &&
-          currentOrderInDb.status !== OrderPipelineStatus.COMPLETED
-        ) {
-          if (pipelineError.message?.includes('OpenAI TTS'))
-            finalErrorStatus = OrderPipelineStatus.AUDIO_FAILED;
-          // Añade más lógica para otros estados de error
-          await this.entityManager.update(OrderEntity, order.id, {
-            status: finalErrorStatus,
-            errorMessage: `Error en pipeline (estado anterior: ${order.status}): ${pipelineError.message}`,
-          });
-        }
-      }
     }
   }
-
-  // async findUserOrders(
-  //   userId: number,
-  //   page: number = 1,
-  //   limit: number = 10,
-  // ): Promise<{ data: OrderEntity[]; total: number }> {
-  //   const [data, total] = await this.orderRepository.findAndCount({
-  //     where: { userId },
-  //     order: { createdAt: 'DESC' },
-  //     skip: (page - 1) * limit,
-  //     take: limit,
-  //   });
-
-  //   return { data, total };
-  // }
-
-  // async updateOcrResult(
-  //   orderId: number,
-  //   extractionData: any,
-  //   status: OrderPipelineStatus,
-  //   error?: string | null,
-  // ): Promise<void> {
-  //   const order = await this.orderRepository.findOne({
-  //     where: { id: orderId },
-  //   });
-  //   if (!order) {
-  //     console.error(`Order with ID "${orderId}" not found`);
-  //     return;
-  //   }
-
-  //   order.mathpixExtraction = extractionData;
-  //   order.status = status;
-  //   // order.errorMessage = error || null;
-
-  //   await this.orderRepository.save(order);
-  // }
-
-  // private async processOcr(
-  //   orderId: number,
-  //   imageUrl: string,
-  //   country?: string,
-  //   stage?: string,
-  //   subdivision?: string,
-  // ): Promise<void> {
-  //   try {
-  //     const mathpixExtraction =
-  //       await this.mathpixService.extractTextFromImageUrl(imageUrl);
-
-  //     if (!mathpixExtraction) {
-  //       console.error(
-  //         `Mathpix failed for order ${orderId}:`,
-  //         'mathpixExtraction.error',
-  //       );
-  //       await this.updateOcrResult(
-  //         orderId,
-  //         null,
-  //         OrderPipelineStatus.OCR_FAILED,
-  //         'mathpixExtraction.error',
-  //       );
-  //     } else {
-  //       try {
-  //         const systemConfiguration =
-  //           await this.systemConfigurationService.getConfiguration();
-  //         const promptBase = systemConfiguration.openAiPromptBase;
-
-  //         // mathpixExtraction.text
-  //         const openAiSolution =
-  //           await this.openaiService.generateStepByStepSolution(
-  //             'mathpixExtraction.text',
-  //             promptBase,
-  //             country,
-  //             stage,
-  //             subdivision,
-  //           );
-
-  //         await this.updateOrderDetails(orderId, {
-  //           openAiSolution: openAiSolution,
-  //           status: OrderPipelineStatus.AI_SOLUTION_PENDING,
-  //         });
-  //       } catch (openaiError) {
-  //         console.error(`OpenAI failed for order ${orderId}:`, openaiError);
-  //         await this.updateOrderDetails(orderId, {
-  //           status: OrderPipelineStatus.AI_SOLUTION_FAILED,
-  //           errorMessage: openaiError.message,
-  //         });
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.error(`Error processing OCR for order ${orderId}:`, error);
-  //     await this.updateOcrResult(
-  //       orderId,
-  //       null,
-  //       OrderPipelineStatus.OCR_FAILED,
-  //       error.message,
-  //     );
-  //   }
-  // }
 
   async findAllOrders(
     page: number = 1,
@@ -758,35 +422,45 @@ export class OrdersService {
    */
   async findUserOrdersPaginated(
     userId: number,
-    paginationDto: PaginationDto,
+    paginationDto: PaginationDto & {
+      filters?: FilterOrderDto;
+      sort?: SortOrderDto;
+    },
   ): Promise<PaginatedResponse<any>> {
-    const { page = 1, limit = 10 } = paginationDto;
+    const { page = 1, limit = 10, filters, sort } = paginationDto;
     const skip = (page - 1) * limit;
 
+    const where: FindOptionsWhere<OrderEntity> = { userId };
+    if (filters?.status) {
+      where.status = filters.status;
+    }
+
+    const order: { [key: string]: 'ASC' | 'DESC' } = {};
+    if (sort?.field && sort?.direction) {
+      order[sort.field] = sort.direction;
+    } else {
+      order.createdAt = 'DESC';
+    }
     const [orders, total] = await this.orderRepository.findAndCount({
-      where: { userId: userId },
-      order: { createdAt: 'DESC' },
+      where,
+      order,
       take: limit,
       skip: skip,
       select: [
-        // Seleccionar solo los campos necesarios para la lista
         'id',
         'topic',
-        'educationalStageSelected',
-        'subdivisionGradeSelected',
         'status',
+        'originalImageUrl',
         'finalVideoUrl',
         'createdAt',
       ],
     });
-
+    console.log('total', total);
     const data: any[] = orders.map((order) => ({
+      ...order,
       id: order.id,
       topic: order.topic,
-      educationalStageSelected: order.educationalStageSelected,
-      subdivisionGradeSelected: order.subdivisionGradeSelected,
       status: order.status,
-      finalVideoUrl: order.finalVideoUrl,
       createdAt: order.createdAt.toISOString(),
     }));
 
@@ -802,17 +476,76 @@ export class OrdersService {
     };
   }
 
-  // async updateOrderDetails(
-  //   orderId: number,
-  //   updates: Partial<OrderEntity>,
-  // ): Promise<void> {
-  //   try {
-  //     await this.orderRepository.update(orderId, updates);
-  //   } catch (error) {
-  //     console.error(`Error updating order ${orderId}:`, error);
-  //     throw new BadRequestException(`Failed to update order ${orderId}`);
-  //   }
-  // }
+  async findOrderByIdForUser(
+    orderId: string,
+    userId: number,
+  ): Promise<OrderEntity | null> {
+    const order = await this.orderRepository.findOne({
+      where: { id: parseInt(orderId), userId },
+    });
+    if (!order) {
+      throw new NotFoundException('Orden no encontrada.');
+    }
+    return order;
+  }
+
+  async createOrderFromExercise(
+    userId: number,
+    exerciseId: number,
+  ): Promise<OrderEntity> {
+    return this.entityManager.transaction(async (tem) => {
+      const exercise = await tem.findOne(Exercise, {
+        where: { id: exerciseId },
+      });
+      if (!exercise) {
+        throw new NotFoundException(
+          `Ejercicio con ID "${exerciseId}" no encontrado.`,
+        );
+      }
+
+      const user = await tem.findOneOrFail(UserEntity, {
+        where: { id: userId },
+      });
+
+      const creditsToConsume = 1; // O cualquier otra lógica que determine el costo
+
+      if (user.creditBalance < creditsToConsume) {
+        throw new BadRequestException('Créditos insuficientes.');
+      }
+
+      const balanceBefore = user.creditBalance;
+      user.creditBalance -= creditsToConsume;
+      const balanceAfter = user.creditBalance;
+
+      await tem.save(UserEntity, user);
+
+      await this.creditService.internalRecordTransaction(
+        {
+          targetUserId: user.id,
+          action: CreditTransactionAction.USAGE_RESOLUTION,
+          amount: -Math.abs(creditsToConsume),
+          balanceBefore,
+          balanceAfter,
+          reason: `Resolución de ejercicio existente ${exercise.id}`,
+        },
+        tem,
+      );
+
+      const newOrder = tem.create(OrderEntity, {
+        userId,
+        exerciseId,
+        topic: exercise.title,
+        status: OrderPipelineStatus.COMPLETED,
+        creditsConsumed: creditsToConsume,
+        originalImageUrl: exercise.imageUrl1,
+        finalVideoUrl: exercise.videoUrl,
+        completedAt: new Date(),
+      });
+
+      const savedOrder = await tem.save(OrderEntity, newOrder);
+      return { ...savedOrder, creditsConsumed: creditsToConsume };
+    });
+  }
 
   async getFinalVideoPath(userId: number, orderId: number): Promise<string> {
     const order = await this.orderRepository.findOne({
@@ -840,18 +573,5 @@ export class OrdersService {
     // Construir la ruta absoluta en el sistema de archivos
     const filePath = join(process.cwd(), 'uploads', order.finalVideoUrl);
     return filePath;
-  }
-
-  async findOrderByIdForUser(
-    orderId: string,
-    userId: number,
-  ): Promise<OrderEntity | null> {
-    const order = await this.orderRepository.findOne({
-      where: { id: parseInt(orderId), userId },
-    });
-    if (!order) {
-      throw new NotFoundException('Orden no encontrada.');
-    }
-    return order;
   }
 }

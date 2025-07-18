@@ -1,5 +1,14 @@
 import { Type } from 'class-transformer';
-import { IsInt, IsOptional, Max, Min } from 'class-validator';
+import {
+  IsInt,
+  IsOptional,
+  Max,
+  Min,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+import { FilterOrderDto } from './filter-order.dto';
+import { SortOrderDto } from './sort-order.dto';
 
 export class PaginationDto {
   @IsOptional()
@@ -14,6 +23,16 @@ export class PaginationDto {
   @Min(1, { message: 'El límite debe ser al menos 1.' })
   @Max(50, { message: 'El límite no puede ser mayor a 50.' })
   limit?: number = 10;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => FilterOrderDto)
+  filters?: FilterOrderDto;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => SortOrderDto)
+  sort?: SortOrderDto;
 }
 
 /**

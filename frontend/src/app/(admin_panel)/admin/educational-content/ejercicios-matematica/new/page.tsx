@@ -91,13 +91,22 @@ export default function UploadExercisePage() {
       return;
     }
 
-    setIsLoading(true);
-
     const formData = new FormData();
     formData.append("title", title);
-    formData.append("image1", imageFile1);
-    formData.append("image2", imageFile2);
+    if (imageFile1) {
+      formData.append("image1", imageFile1);
+    } else {
+      alert("Debe subir la imagen para la búsqueda");
+      return;
+    }
+    if (imageFile2) {
+      formData.append("image2", imageFile2);
+    } else {
+      alert("Debe subir la imagen de la resolución");
+      return;
+    }
     formData.append("video", videoFile);
+    setIsLoading(true);
 
     try {
       const token = useAuthStore.getState().token;

@@ -11,8 +11,12 @@ import {
   UseInterceptors,
   UseGuards,
   Delete,
+  UploadedFile,
 } from '@nestjs/common';
-import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import {
+  FileFieldsInterceptor,
+  FileInterceptor,
+} from '@nestjs/platform-express';
 import { ExercisesService } from './exercises.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
@@ -103,5 +107,29 @@ export class ExercisesController {
   @Delete(':id')
   async delete(@Param('id') id: number) {
     return this.exercisesService.delete(id);
+  }
+
+  @Post('find-similar')
+  async findSimilar(@Body('latex') latex: string) {
+    if (!latex) {
+      throw new BadRequestException('El campo "latex" es requerido.');
+    }
+    return this.exercisesService.findSimilar(latex);
+  }
+  @Post('find-similar-by-image')
+  @UseInterceptors(FileInterceptor('image'))
+  async findSimilarByImage(@UploadedFile() image: Express.Multer.File) {
+    if (!image) {
+      throw new BadRequestException('Se requiere una imagen.');
+    }
+    return this.exercisesService.findSimilarByImage(image);
+  }
+  @Post('extract-latex')
+  @UseInterceptors(FileInterceptor('image'))
+  async extractLatex(@UploadedFile() image: Express.Multer.File) {
+    if (!image) {
+      throw new BadRequestException('Se requiere una imagen.');
+    }
+    return this.exercisesService.extractLatexFromImage(image);
   }
 }
