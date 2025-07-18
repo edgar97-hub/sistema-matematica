@@ -1997,3 +1997,8 @@
 {"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-18T00:46:20.472Z"}
 {"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-18T01:06:09.806Z"}
 {"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-18T01:06:09.813Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-18T01:24:01.421Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-18T01:24:01.423Z"}
+{"context":"CreditPackageService","level":"info","message":"Updated credit package with id 5","timestamp":"2025-07-18T01:25:53.780Z"}
+{"context":"CreditPackageService","level":"info","message":"Updated credit package with id 5","timestamp":"2025-07-18T01:26:04.112Z"}
+{"context":"CreditPackageService","level":"info","message":"Updated credit package with id 5","timestamp":"2025-07-18T01:26:04.245Z"}
