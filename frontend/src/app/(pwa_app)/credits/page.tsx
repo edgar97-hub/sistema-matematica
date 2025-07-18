@@ -364,8 +364,9 @@ export default function CreditPackagesPage() {
           <Accordion.Item value="3">
             <Accordion.Control>¿Qué métodos de pago aceptan?</Accordion.Control>
             <Accordion.Panel>
-              Aceptamos las principales tarjetas de crédito y débito a través de
-              nuestra pasarela de pago segura de Stripe.
+              Aceptamos pagos a través de nuestra pasarela Culqi. Puedes
+              utilizar Yape y Plin para realizar tus pagos de forma rápida y
+              segura.
             </Accordion.Panel>
           </Accordion.Item>
         </Accordion>
