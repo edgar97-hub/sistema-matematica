@@ -88,9 +88,10 @@ export default function EditCreditPackagePage() {
       name: formData.name,
       description: formData.description,
       creditAmount: formData.creditAmount,
-      price: formData.price,
+      price: parseFloat(formData?.price?.toString() || "0"),
       isActive: formData.isActive,
     };
+    console.log("dataToUpdate", dataToUpdate);
     await updatePackageMutation(dataToUpdate);
   };
 
