@@ -2002,3 +2002,5 @@
 {"context":"CreditPackageService","level":"info","message":"Updated credit package with id 5","timestamp":"2025-07-18T01:25:53.780Z"}
 {"context":"CreditPackageService","level":"info","message":"Updated credit package with id 5","timestamp":"2025-07-18T01:26:04.112Z"}
 {"context":"CreditPackageService","level":"info","message":"Updated credit package with id 5","timestamp":"2025-07-18T01:26:04.245Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-18T02:26:58.709Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-18T02:26:58.711Z"}
