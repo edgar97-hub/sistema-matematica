@@ -44,3 +44,24 @@ export interface SortUserFE {
   sort?: string; // Ej: "name" o "createdAt"
   order?: "asc" | "desc";
 }
+
+export enum AdminRole {
+  ADMINISTRATOR = "ADMINISTRATOR",
+  EDITOR = "EDITOR",
+}
+
+export interface UserAdminFE {
+  id: string;
+  name: string;
+  username: string;
+  email: string;
+  role: AdminRole;
+  password?: string;
+}
+
+export interface PaginatedUsersAdminResponse {
+  data: UserAdminFE[];
+  total: number;
+  page: number;
+  limit: number;
+}

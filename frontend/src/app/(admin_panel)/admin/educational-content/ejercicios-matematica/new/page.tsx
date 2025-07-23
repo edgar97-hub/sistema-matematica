@@ -32,6 +32,7 @@ import { useAuthStore } from "project/store/auth.store";
 
 export default function UploadExercisePage() {
   const [title, setTitle] = useState("");
+  const [titleError, setTitleError] = useState(false);
   const [imageFile1, setImageFile1] = useState<File | null>(null);
   const [imageFile2, setImageFile2] = useState<File | null>(null);
   const [videoFile, setVideoFile] = useState<File | null>(null);
@@ -82,6 +83,12 @@ export default function UploadExercisePage() {
   }, [imagePreview1, imagePreview2, videoPreview]);
 
   const handleUpload = async () => {
+    if (!title) {
+      setTitleError(true);
+    } else {
+      setTitleError(false);
+    }
+
     if (!title || !imageFile1 || !imageFile2 || !videoFile) {
       notifications.show({
         title: "Campos incompletos",
@@ -96,13 +103,21 @@ export default function UploadExercisePage() {
     if (imageFile1) {
       formData.append("image1", imageFile1);
     } else {
-      alert("Debe subir la imagen para la búsqueda");
+      notifications.show({
+        title: "Error de Subida",
+        message: "Debe subir la imagen para la búsqueda",
+        color: "red",
+      });
       return;
     }
     if (imageFile2) {
       formData.append("image2", imageFile2);
     } else {
-      alert("Debe subir la imagen de la resolución");
+      notifications.show({
+        title: "Error de Subida",
+        message: "Debe subir la imagen de la resolución",
+        color: "red",
+      });
       return;
     }
     formData.append("video", videoFile);
@@ -111,7 +126,6 @@ export default function UploadExercisePage() {
     try {
       const token = useAuthStore.getState().token;
 
-      // const token = localStorage.getItem("admin_token");
       if (!token) throw new Error("No se encontró el token de autenticación.");
 
       const response = await fetch(
@@ -136,7 +150,7 @@ export default function UploadExercisePage() {
 
       router.push("/admin/educational-content/ejercicios-matematica");
     } catch (error) {
-      console.error(error);
+      console.log(error);
       notifications.show({
         title: "Error en la subida",
         message:
@@ -173,13 +187,17 @@ export default function UploadExercisePage() {
             placeholder="Ej: Ecuación de segundo grado"
             required
             value={title}
-            onChange={(event) => setTitle(event.currentTarget.value)}
+            onChange={(event) => {
+              setTitle(event.currentTarget.value);
+              setTitleError(false);
+            }}
+            error={titleError && "El título es requerido"}
           />
 
           <Grid>
             <Grid.Col span={{ base: 12, md: 6 }}>
               <Text fw={500} size="sm" mb={4}>
-                Imagen para búsqueda
+                Imagen del Problema (para búsqueda)
               </Text>
               {imagePreview1 ? (
                 <Box pos="relative">
@@ -194,7 +212,6 @@ export default function UploadExercisePage() {
                       setImageFile1(null);
                       setImagePreview1(null);
                     }}
-                    // zIndex={10}
                   >
                     <IconX size={16} />
                   </ActionIcon>
@@ -223,10 +240,10 @@ export default function UploadExercisePage() {
                     </Dropzone.Idle>
                     <div>
                       <Text size="lg" inline>
-                        Arrastra la imagen
+                        Arrastra la imagen aquí
                       </Text>
                       <Text size="sm" c="dimmed" inline mt={7}>
-                        Máximo 5MB
+                        Archivos de imagen (JPG, PNG, GIF) - Máximo 5MB
                       </Text>
                     </div>
                   </Group>
@@ -236,7 +253,7 @@ export default function UploadExercisePage() {
 
             <Grid.Col span={{ base: 12, md: 6 }}>
               <Text fw={500} size="sm" mb={4}>
-                Imágen de la resolución
+                Imagen de la Solución
               </Text>
               {imagePreview2 ? (
                 <Box pos="relative">
@@ -251,7 +268,6 @@ export default function UploadExercisePage() {
                       setImageFile2(null);
                       setImagePreview2(null);
                     }}
-                    // zIndex={10}
                   >
                     <IconX size={16} />
                   </ActionIcon>
@@ -280,10 +296,10 @@ export default function UploadExercisePage() {
                     </Dropzone.Idle>
                     <div>
                       <Text size="lg" inline>
-                        Arrastra la imagen
+                        Arrastra la imagen aquí
                       </Text>
                       <Text size="sm" c="dimmed" inline mt={7}>
-                        Máximo 5MB
+                        Archivos de imagen (JPG, PNG, GIF) - Máximo 5MB
                       </Text>
                     </div>
                   </Group>
@@ -293,7 +309,7 @@ export default function UploadExercisePage() {
 
             <Grid.Col span={{ base: 12, md: 6 }}>
               <Text fw={500} size="sm" mb={4}>
-                Video de la resolución
+                Video de la Solución
               </Text>
               {videoPreview ? (
                 <Box pos="relative">
@@ -308,7 +324,6 @@ export default function UploadExercisePage() {
                       setVideoFile(null);
                       setVideoPreview(null);
                     }}
-                    // zIndex={10}
                   >
                     <IconX size={16} />
                   </ActionIcon>
@@ -345,7 +360,7 @@ export default function UploadExercisePage() {
                         Arrastra el video aquí
                       </Text>
                       <Text size="sm" c="dimmed" inline mt={7}>
-                        Máximo 50MB (MP4)
+                        Solo archivos MP4 - Máximo 50MB
                       </Text>
                     </div>
                   </Group>

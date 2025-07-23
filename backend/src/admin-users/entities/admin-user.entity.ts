@@ -1,16 +1,11 @@
-import {
-  Entity,
-  Column,
-  BeforeInsert,
-  BeforeUpdate,
-} from 'typeorm';
+import { Entity, Column, BeforeInsert, BeforeUpdate } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { BaseEntity } from '../../common/entities/base.entity';
 import { AdminRole } from '../enums/admin-role.enum';
 
 @Entity('admin_users')
 export class AdminUserEntity extends BaseEntity {
-  @Column({ unique: true })
+  @Column({ unique: true, nullable: true })
   username: string;
 
   @Column()

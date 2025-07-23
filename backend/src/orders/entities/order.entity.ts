@@ -31,10 +31,10 @@ export class OrderEntity extends BaseEntity {
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 
-  @Column({ type: 'int', nullable: true })
-  exerciseId: number;
+  // @Column({ type: 'int', nullable: true })
+  // exerciseId: number;
 
-  @ManyToOne(() => Exercise, (row) => row.exercises, {
+  @ManyToOne(() => Exercise, (row) => row.orders, {
     onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'exercise_id' })

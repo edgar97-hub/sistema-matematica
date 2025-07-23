@@ -36,34 +36,35 @@ export default function PwaAppLayout({ children }: { children: ReactNode }) {
       return;
     }
 
-    if (!user.countryOfOrigin && pathname !== "/set-country") {
-      console.log(
-        "PwaAppLayout: No country. Saving intended URL (if any) and redirecting to /set-country"
-      );
-      const intendedUrl = pathname + search;
-      if (pathname !== "/set-country") {
-        sessionStorage.setItem(INTENDED_URL_KEY, intendedUrl);
-      }
-      router.replace("/set-country");
-      return;
-    }
+    // if (!user.countryOfOrigin && pathname !== "/set-country") {
+    //   console.log(
+    //     "PwaAppLayout: No country. Saving intended URL (if any) and redirecting to /set-country"
+    //   );
+    //   const intendedUrl = pathname + search;
+    //   if (pathname !== "/set-country") {
+    //     sessionStorage.setItem(INTENDED_URL_KEY, intendedUrl);
+    //   }
+    //   router.replace("/set-country");
+    //   return;
+    // }
 
-    if (user.countryOfOrigin && pathname === "/set-country") {
-      const intendedUrl = sessionStorage.getItem(INTENDED_URL_KEY);
-      sessionStorage.removeItem(INTENDED_URL_KEY);
-      console.log(
-        "PwaAppLayout: Has country, on set-country page. Redirecting to:",
-        intendedUrl || "/orders"
-      );
-      router.replace(intendedUrl || "/orders");
-    }
+    // if (user.countryOfOrigin && pathname === "/set-country") {
+    //   const intendedUrl = sessionStorage.getItem(INTENDED_URL_KEY);
+    //   sessionStorage.removeItem(INTENDED_URL_KEY);
+    //   console.log(
+    //     "PwaAppLayout: Has country, on set-country page. Redirecting to:",
+    //     intendedUrl || "/orders"
+    //   );
+    //   router.replace(intendedUrl || "/orders");
+    // }
   }, [isAuthenticated, user, isLoadingAuth, router, pathname]);
 
   if (
     isLoadingAuth ||
     !isAuthenticated ||
-    user?.role !== "CLIENT" ||
-    !user?.countryOfOrigin
+    user?.role !== "CLIENT"
+    // ||
+    // !user?.countryOfOrigin
   ) {
     return (
       <Center style={{ height: "100vh" }}>
@@ -81,8 +82,10 @@ export default function PwaAppLayout({ children }: { children: ReactNode }) {
   }
 
   if (
-    !isAuthenticated ||
-    (user && !user.countryOfOrigin && pathname !== "/set-country")
+    !isAuthenticated
+    // ||
+    // (user && !user.countryOfOrigin)
+    // && pathname !== "/set-country"
   ) {
     return (
       <Center style={{ height: "100vh" }}>
@@ -94,7 +97,7 @@ export default function PwaAppLayout({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={pwaAppQueryClient}>
       <MainLayout navItems={pwaAppMenuItems}>
-        <AuthHydrator /> {/* <-- Añadir el componente aquí */}
+        <AuthHydrator />
         {children}
       </MainLayout>
     </QueryClientProvider>

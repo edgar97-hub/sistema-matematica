@@ -30,6 +30,11 @@ export const adminMenuItems: NavLinkItem[] = [
     icon: IconUsers,
   },
   {
+    href: "/admin/admin-users",
+    label: "Usuarios (Admin)",
+    icon: IconUsers,
+  },
+  {
     href: "/admin/settings",
     label: "Configuración",
     icon: IconSettings,
@@ -43,11 +48,11 @@ export const adminMenuItems: NavLinkItem[] = [
     label: "Gestion Contenido", // Ítem padre, sin href directo si solo agrupa
     icon: IconSettings,
     subItems: [
-      {
-        href: "/admin/educational-content/countries",
-        label: "Nivel Educativo",
-        icon: IconUsers,
-      },
+      // {
+      //   href: "/admin/educational-content/countries",
+      //   label: "Nivel Educativo",
+      //   icon: IconUsers,
+      // },
       {
         href: "/admin/educational-content/ejercicios-matematica",
         label: "Ejercicios de matemáticas",

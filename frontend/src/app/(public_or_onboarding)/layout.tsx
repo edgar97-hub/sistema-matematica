@@ -51,8 +51,10 @@ export default function OnboardingLayout({
     // Si no está autenticado, se le permite estar en estas páginas, así que no se necesita acción.
   }, [isAuthenticated, user, isLoadingAuth, router, pathname]);
 
-  const showLoader =
-    isLoadingAuth && (AUTH_PAGES.includes(pathname) || pathname === SET_COUNTRY_PATH);
+  // const showLoader =
+  //   isLoadingAuth && (AUTH_PAGES.includes(pathname) || pathname === SET_COUNTRY_PATH);
+
+  const showLoader = isLoadingAuth && AUTH_PAGES.includes(pathname);
 
   if (showLoader) {
     return (

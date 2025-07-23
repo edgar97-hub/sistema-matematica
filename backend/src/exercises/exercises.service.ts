@@ -72,9 +72,10 @@ export class ExercisesService {
   }
 
   async findAll(findAllDto: FindAllExercisesDto) {
-    const { page = 1, limit = 10, title } = findAllDto;
-    const queryBuilder = this.exerciseRepository.createQueryBuilder('exercise');
-
+    const { page = 1, limit = 10, title, sortKey = 'createdAt', sortOrder = 'DESC' } = findAllDto;
+    const queryBuilder = this.exerciseRepository
+      .createQueryBuilder('exercise')
+      .leftJoinAndSelect('exercise.orders', 'orders');
     if (title) {
       queryBuilder.where('exercise.title LIKE :title', {
         title: `%${title}%`,
@@ -82,26 +83,57 @@ export class ExercisesService {
     }
 
     queryBuilder
-      .orderBy('exercise.createdAt', 'DESC')
+      .orderBy(`exercise.${sortKey}`, sortOrder.toUpperCase() as 'ASC' | 'DESC')
       .skip((page - 1) * limit)
       .take(limit);
 
     const [data, total] = await queryBuilder.getManyAndCount();
+    // console.log('data', data);
+    // const exercisesWithViewCount = await Promise.all(
+    //   data.map(async (exercise) => {
+    //     const viewCount = await this.exerciseRepository
+    //       .createQueryBuilder('exercise')
+    //       .leftJoin('exercise.orders', 'orders')
+    //       // .where('exercise.id = :exerciseId', { exerciseId: exercise.id })
+    //       // .andWhere(
+    //       //   'orders.enunciadoLatexOriginal = exercise.enunciadoLatexOriginal',
+    //       // )
+    //       .getCount();
+    //     return { ...exercise, views: viewCount };
+    //   }),
+    // );
 
+    const exercisesWithViewCount = data.map((exercise) => ({
+      ...exercise,
+      views: exercise.orders.length,
+    }));
+
+    // console.log('exercisesWithViewCount', exercisesWithViewCount);
     return {
-      data,
+      data: exercisesWithViewCount,
       total,
       page,
       lastPage: Math.ceil(total / limit),
     };
   }
 
-  async findOne(id: number): Promise<Exercise> {
+  async findOne(id: number): Promise<Exercise & { views: number }> {
     const exercise = await this.exerciseRepository.findOneBy({ id });
     if (!exercise) {
       throw new NotFoundException(`Ejercicio con ID "${id}" no encontrado.`);
     }
-    return exercise;
+
+    const viewCount = await this.exerciseRepository
+      .createQueryBuilder('exercise')
+      .innerJoin('exercise.orders', 'orders')
+      .where('exercise.id = :exerciseId', { exerciseId: exercise.id })
+      // .andWhere(
+      //   'order.enunciadoLatexOriginal = exercise.enunciadoLatexOriginal',
+      // )
+      .getCount();
+    // console.log('viewCount', exercise);
+    // console.log('exercise', viewCount);
+    return { ...exercise, views: viewCount };
   }
 
   async update(

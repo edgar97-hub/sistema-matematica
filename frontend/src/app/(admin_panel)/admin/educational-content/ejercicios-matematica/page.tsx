@@ -18,7 +18,9 @@ import {
   Tooltip,
   Center,
   Stack,
+  Modal,
 } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import {
   IconPlus,
   IconSearch,
@@ -42,6 +44,7 @@ interface Exercise {
   id: string;
   title: string;
   createdAt: string;
+  views: number;
 }
 
 interface PaginatedExercisesResponse {
@@ -51,9 +54,14 @@ interface PaginatedExercisesResponse {
   lastPage: number;
 }
 
+type SortKey = "title" | "views" | "createdAt";
+type SortOrder = "ASC" | "DESC";
+
 const fetchExercises = async (
   page: number,
-  title: string
+  searchTerm: string,
+  sortKey: SortKey,
+  sortOrder: SortOrder
 ): Promise<PaginatedExercisesResponse> => {
   const token = useAuthStore.getState().token;
 
@@ -63,9 +71,17 @@ const fetchExercises = async (
   const params = new URLSearchParams({
     page: String(page),
     limit: "10",
+    sortKey: sortKey,
+    sortOrder: sortOrder.toUpperCase(),
   });
-  if (title) {
-    params.append("title", title);
+  if (searchTerm) {
+    // Check if the search term looks like an ID (e.g., a UUID)
+    const isUuid = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(searchTerm);
+    if (isUuid) {
+      params.append("id", searchTerm);
+    } else {
+      params.append("title", searchTerm);
+    }
   }
 
   const response = await fetch(
@@ -89,11 +105,21 @@ function ExercisesListPage() {
   const [activePage, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm] = useDebouncedValue(searchTerm, 300);
+  const [sortKey, setSortKey] = useState<SortKey>("createdAt");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("DESC");
+
+  const [opened, { open, close }] = useDisclosure(false);
+  const [exerciseToDelete, setExerciseToDelete] = useState<Exercise | null>(
+    null
+  );
 
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["exercises", activePage, debouncedSearchTerm],
-    queryFn: () => fetchExercises(activePage, debouncedSearchTerm),
+    queryKey: ["exercises", activePage, debouncedSearchTerm, sortKey, sortOrder],
+    queryFn: () =>
+      fetchExercises(activePage, debouncedSearchTerm, sortKey, sortOrder),
     placeholderData: (previousData) => previousData,
+    // @ts-ignore
+    keepPreviousData: true, // Keep previous data while fetching new data
   });
 
   const { mutate: deleteExercise, isPending: isDeleting } = useMutation({
@@ -139,12 +165,14 @@ function ExercisesListPage() {
   };
 
   const handleDelete = (exercise: Exercise) => {
-    if (
-      window.confirm(
-        `¿Está seguro de que desea eliminar el ejercicio "${exercise.title}"?`
-      )
-    ) {
-      deleteExercise(exercise.id);
+    setExerciseToDelete(exercise);
+    open();
+  };
+
+  const confirmDelete = () => {
+    if (exerciseToDelete) {
+      deleteExercise(exerciseToDelete.id);
+      close();
     }
   };
 
@@ -158,12 +186,13 @@ function ExercisesListPage() {
     }
   }, [isError, error]);
 
-  const rows = data?.data.map((exercise) => (
+  const rows = (data as PaginatedExercisesResponse)?.data?.map((exercise: Exercise) => (
     <Table.Tr key={exercise.id}>
       <Table.Td>
         <Code>{exercise.id}</Code>
       </Table.Td>
       <Table.Td>{exercise.title}</Table.Td>
+      <Table.Td>{exercise.views}</Table.Td>
       <Table.Td>
         {new Date(exercise.createdAt).toLocaleDateString("es-ES", {
           year: "numeric",
@@ -231,7 +260,7 @@ function ExercisesListPage() {
 
       <Paper withBorder shadow="sm" p="xl" radius="md">
         <TextInput
-          placeholder="Buscar por título..."
+          placeholder="Buscar por título o ID..."
           leftSection={<IconSearch size={16} />}
           value={searchTerm}
           onChange={(event) => setSearchTerm(event.currentTarget.value)}
@@ -244,8 +273,37 @@ function ExercisesListPage() {
               <Table.Thead>
                 <Table.Tr>
                   <Table.Th>ID</Table.Th>
-                  <Table.Th>Título</Table.Th>
-                  <Table.Th>Fecha Creación</Table.Th>
+                  <Table.Th
+                    onClick={() => {
+                      setSortKey("title");
+                      setSortOrder(sortOrder === "ASC" ? "DESC" : "ASC");
+                    }}
+                    style={{ cursor: "pointer" }}
+                  >
+                    Título{" "}
+                    {sortKey === "title" && (sortOrder === "ASC" ? "▲" : "▼")}
+                  </Table.Th>
+                  <Table.Th
+                    onClick={() => {
+                      setSortKey("views");
+                      setSortOrder(sortOrder === "ASC" ? "DESC" : "ASC");
+                    }}
+                    style={{ cursor: "pointer" }}
+                  >
+                    Vistas{" "}
+                    {sortKey === "views" && (sortOrder === "ASC" ? "▲" : "▼")}
+                  </Table.Th>
+                  <Table.Th
+                    onClick={() => {
+                      setSortKey("createdAt");
+                      setSortOrder(sortOrder === "ASC" ? "DESC" : "ASC");
+                    }}
+                    style={{ cursor: "pointer" }}
+                  >
+                    Fecha Creación{" "}
+                    {sortKey === "createdAt" &&
+                      (sortOrder === "ASC" ? "▲" : "▼")}
+                  </Table.Th>
                   <Table.Th ta="right">Acciones</Table.Th>
                 </Table.Tr>
               </Table.Thead>
@@ -254,18 +312,38 @@ function ExercisesListPage() {
               </Table.Tbody>
             </Table>
           </Table.ScrollContainer>
-          {data?.data.length === 0 && !isLoading && emptyState}
+          {(data as PaginatedExercisesResponse)?.data?.length === 0 && !isLoading && emptyState}
         </Box>
-        {data && data.lastPage > 1 && (
+        {(data as PaginatedExercisesResponse) && (data as PaginatedExercisesResponse).lastPage > 1 && (
           <Group justify="center" mt="xl">
             <Pagination
-              total={data.lastPage}
+              total={(data as PaginatedExercisesResponse).lastPage}
               value={activePage}
               onChange={setPage}
             />
           </Group>
         )}
       </Paper>
+
+      <Modal
+        opened={opened}
+        onClose={close}
+        title="Confirmar Eliminación"
+        centered
+      >
+        <Text>
+          ¿Está seguro de que desea eliminar el ejercicio "
+          {exerciseToDelete?.title}"? Esta acción no se puede deshacer.
+        </Text>
+        <Group justify="flex-end" mt="md">
+          <Button variant="default" onClick={close}>
+            Cancelar
+          </Button>
+          <Button color="red" onClick={confirmDelete} loading={isDeleting}>
+            Eliminar
+          </Button>
+        </Group>
+      </Modal>
     </Container>
   );
 }

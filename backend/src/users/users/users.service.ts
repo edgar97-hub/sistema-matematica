@@ -214,53 +214,6 @@ export class UsersService {
     return this.create(profile);
   }
 
-  // async deductCredits(
-  //   userId: number,
-  //   amountToDeduct: number,
-  //   reason: string,
-  //   transactionalEntityManager: EntityManager,
-  // ): Promise<UserEntity> {
-  //   const user = await transactionalEntityManager.findOne(UserEntity, {
-  //     where: { id: userId },
-  //   });
-  //   if (!user) {
-  //     throw new NotFoundException(
-  //       `Usuario con ID "${userId}" no encontrado para deducir créditos.`,
-  //     );
-  //   }
-
-  //   if (user.creditBalance < amountToDeduct) {
-  //     throw new BadRequestException(
-  //       'Créditos insuficientes para realizar esta operación.',
-  //     );
-  //   }
-
-  //   const balanceBefore = user.creditBalance;
-  //   user.creditBalance -= amountToDeduct;
-  //   const balanceAfter = user.creditBalance;
-
-  //   await transactionalEntityManager.save(UserEntity, user);
-
-  //   // Registrar la transacción de uso de crédito usando el CreditsService
-  //   // Asumimos que recordTransaction en CreditService ahora espera el EntityManager
-  //   await this.internalRecordTransaction(
-  //     {
-  //       targetUserId: userId,
-  //       action: CreditTransactionAction.USAGE_RESOLUTION,
-  //       amount: -Math.abs(amountToDeduct), // Asegurar que sea negativo
-  //       balanceBefore,
-  //       balanceAfter,
-  //       reason,
-  //       // orderId: orderId, // Si CreditTransactionEntity tiene un campo orderId
-  //     },
-  //     transactionalEntityManager, // Pasar el EntityManager
-  //   );
-  //   console.log(
-  //     `Credits deducted: ${amountToDeduct} from user ${userId}. Reason: ${reason}`,
-  //   );
-  //   return user;
-  // }
-
   async internalRecordTransaction(
     data: Partial<CreditTransactionEntity>,
     manager: EntityManager,

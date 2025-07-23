@@ -236,8 +236,13 @@ export default function CreditPackagesPage() {
                 mb="md"
                 className={classes.packageDescription}
               >
-                {pkg.description ||
-                  "Adquiere este paquete para continuar resolviendo problemas."}
+                <span
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      pkg.description?.replace(/ -/g, "<br/>-") ||
+                      "Adquiere este paquete para continuar resolviendo problemas.",
+                  }}
+                />
               </Text>
               <Text size="xl" fw={700} className={classes.packagePrice} mb="lg">
                 {"S/ "}{" "}

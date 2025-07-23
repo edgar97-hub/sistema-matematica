@@ -20,13 +20,10 @@ async function bootstrap() {
   });
 
   // const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.use(
-    '/api/credit-transactions/stripe-webhook',
-    bodyParser.raw({ type: 'application/json' }),
-  );
-  // Se usa process.cwd() para asegurar que la ruta a 'uploads' sea siempre
-  // desde la raíz del proyecto, lo que es más robusto y consistente.
-  // Se quita el slash final del prefijo para evitar URLs como /uploads//file.png
+  // app.use(
+  //   '/api/credit-transactions/stripe-webhook',
+  //   bodyParser.raw({ type: 'application/json' }),
+  // );
   app.enableCors(CORS);
   app.useStaticAssets(join(process.cwd(), 'uploads'), {
     prefix: '/uploads',

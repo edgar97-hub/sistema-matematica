@@ -39,6 +39,7 @@ interface ExerciseData {
   imageUrl1: string;
   imageUrl2: string;
   videoUrl: string;
+  views: number;
 }
 
 export default function EditExercisePage({
@@ -50,6 +51,7 @@ export default function EditExercisePage({
   const exerciseId = id;
 
   const [title, setTitle] = useState("");
+  const [titleError, setTitleError] = useState(false);
   const [imageFile1, setImageFile1] = useState<File | null>(null);
   const [imageFile2, setImageFile2] = useState<File | null>(null);
   const [videoFile, setVideoFile] = useState<File | null>(null);
@@ -58,6 +60,7 @@ export default function EditExercisePage({
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true); // Start loading true to fetch data
   const [error, setError] = useState<string | null>(null);
+  const [exerciseData, setExerciseData] = useState<ExerciseData | null>(null);
   const router = useRouter();
   const token = useAuthStore.getState().token;
 
@@ -77,6 +80,7 @@ export default function EditExercisePage({
           throw new Error("No se pudo cargar la información del ejercicio.");
         }
         const data: ExerciseData = await response.json();
+        setExerciseData(data); // Set the fetched data
         setTitle(data.title);
         // Construct full URLs for existing media
         if (data.imageUrl1) {
@@ -151,12 +155,15 @@ export default function EditExercisePage({
 
   const handleUpdate = async () => {
     if (!title) {
+      setTitleError(true);
       notifications.show({
         title: "Campo requerido",
         message: "El título no puede estar vacío.",
         color: "red",
       });
       return;
+    } else {
+      setTitleError(false);
     }
 
     const formData = new FormData();
@@ -164,13 +171,21 @@ export default function EditExercisePage({
     if (imageFile1) {
       formData.append("image1", imageFile1);
     } else {
-      alert("Debe subir la imagen para la búsqueda");
+      notifications.show({
+        title: "Error de Actualización",
+        message: "Debe subir la imagen para la búsqueda",
+        color: "red",
+      });
       return;
     }
     if (imageFile2) {
       formData.append("image2", imageFile2);
     } else {
-      alert("Debe subir la imagen de la resolución");
+      notifications.show({
+        title: "Error de Actualización",
+        message: "Debe subir la imagen de la resolución",
+        color: "red",
+      });
       return;
     }
     setIsLoading(true);
@@ -245,13 +260,22 @@ export default function EditExercisePage({
             placeholder="Ej: Ecuación de segundo grado"
             required
             value={title}
-            onChange={(event) => setTitle(event.currentTarget.value)}
+            onChange={(event) => {
+              setTitle(event.currentTarget.value);
+              setTitleError(false);
+            }}
+            error={titleError && "El título es requerido"}
           />
+          {exerciseData && (
+            <Text size="sm" c="dimmed">
+              Vistas: {exerciseData.views}
+            </Text>
+          )}
 
           <Grid>
             <Grid.Col span={{ base: 12, md: 6 }}>
               <Text fw={500} size="sm" mb={4}>
-                Imagen para búsqueda
+                Imagen del Problema (para búsqueda)
               </Text>
               {imagePreview1 ? (
                 <Box pos="relative">
@@ -266,7 +290,6 @@ export default function EditExercisePage({
                       setImageFile1(null);
                       setImagePreview1(null);
                     }}
-                    // zIndex={10}
                   >
                     <IconX size={16} />
                   </ActionIcon>
@@ -295,10 +318,10 @@ export default function EditExercisePage({
                     </Dropzone.Idle>
                     <div>
                       <Text size="lg" inline>
-                        Reemplazar imagen
+                        Arrastra la imagen aquí
                       </Text>
                       <Text size="sm" c="dimmed" inline mt={7}>
-                        Máximo 5MB
+                        Archivos de imagen (JPG, PNG, GIF) - Máximo 5MB
                       </Text>
                     </div>
                   </Group>
@@ -307,7 +330,7 @@ export default function EditExercisePage({
             </Grid.Col>
             <Grid.Col span={{ base: 12, md: 6 }}>
               <Text fw={500} size="sm" mb={4}>
-                Imágen de la resolución
+                Imagen de la Solución
               </Text>
               {imagePreview2 ? (
                 <Box pos="relative">
@@ -322,7 +345,6 @@ export default function EditExercisePage({
                       setImageFile2(null);
                       setImagePreview2(null);
                     }}
-                    // zIndex={10}
                   >
                     <IconX size={16} />
                   </ActionIcon>
@@ -351,10 +373,10 @@ export default function EditExercisePage({
                     </Dropzone.Idle>
                     <div>
                       <Text size="lg" inline>
-                        Reemplazar imagen
+                        Arrastra la imagen aquí
                       </Text>
                       <Text size="sm" c="dimmed" inline mt={7}>
-                        Máximo 5MB
+                        Archivos de imagen (JPG, PNG, GIF) - Máximo 5MB
                       </Text>
                     </div>
                   </Group>
@@ -364,7 +386,7 @@ export default function EditExercisePage({
 
             <Grid.Col span={{ base: 12, md: 6 }}>
               <Text fw={500} size="sm" mb={4}>
-                Video de la resolución
+                Video de la Solución
               </Text>
               {videoPreview ? (
                 <Box pos="relative">
@@ -379,7 +401,6 @@ export default function EditExercisePage({
                       setVideoFile(null);
                       setVideoPreview(null);
                     }}
-                    // zIndex={10}
                   >
                     <IconX size={16} />
                   </ActionIcon>
@@ -413,10 +434,10 @@ export default function EditExercisePage({
                     </Dropzone.Idle>
                     <div>
                       <Text size="lg" inline>
-                        Reemplazar video
+                        Arrastra el video aquí
                       </Text>
                       <Text size="sm" c="dimmed" inline mt={7}>
-                        Máximo 50MB (MP4)
+                        Solo archivos MP4 - Máximo 50MB
                       </Text>
                     </div>
                   </Group>

@@ -22,6 +22,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { FindAllExercisesDto } from './dto/find-all-exercises.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
+import { Exercise } from './entities/exercise.entity';
 
 @Controller('exercises')
 @UseGuards(JwtAuthGuard) // Protegemos toda la ruta de ejercicios
@@ -34,7 +35,7 @@ export class ExercisesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
+  findOne(@Param('id') id: number): Promise<Exercise & { views: number }> {
     return this.exercisesService.findOne(id);
   }
 

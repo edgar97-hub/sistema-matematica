@@ -47,6 +47,6 @@ export class Exercise extends BaseEntity {
   })
   ngrams: string;
 
-  @OneToMany(() => OrderEntity, (row) => row.exerciseId)
-  exercises: OrderEntity[];
+  @OneToMany(() => OrderEntity, (row) => row.exercise)
+  orders: OrderEntity[];
 }

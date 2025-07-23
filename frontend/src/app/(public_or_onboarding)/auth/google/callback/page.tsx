@@ -22,16 +22,19 @@ function GoogleCallbackContent() {
     if (currentTokenInStore) {
       const user = useAuthStore.getState().user;
       const intendedUrl = sessionStorage.getItem(INTENDED_URL_KEY);
+      console.log("intendedUrl", intendedUrl);
       sessionStorage.removeItem(INTENDED_URL_KEY);
-      if (!user?.countryOfOrigin) {
-        router.replace(
-          intendedUrl && intendedUrl !== "/set-country"
-            ? `/set-country?redirect=${encodeURIComponent(intendedUrl)}`
-            : "/set-country"
-        );
-      } else {
-        router.replace(intendedUrl || "/orders");
-      }
+      // if (!user?.countryOfOrigin) {
+      //   router.replace(
+      //     intendedUrl && intendedUrl !== "/set-country"
+      //       ? `/set-country?redirect=${encodeURIComponent(intendedUrl)}`
+      //       : "/set-country"
+      //   );
+      // } else {
+      //   router.replace(intendedUrl || "/orders");
+      // }
+      // router.replace(intendedUrl || "/orders");
+
       return;
     }
 
@@ -41,7 +44,7 @@ function GoogleCallbackContent() {
     if (errorParam) {
       const decodedError = decodeURIComponent(errorParam);
       setError(decodedError);
-      router.replace(`/login?error=${encodeURIComponent(decodedError)}`);
+      // router.replace(`/login?error=${encodeURIComponent(decodedError)}`);
       return;
     }
 
@@ -55,14 +58,17 @@ function GoogleCallbackContent() {
             const intendedUrl = sessionStorage.getItem(INTENDED_URL_KEY);
             sessionStorage.removeItem(INTENDED_URL_KEY);
 
-            if (!userData.countryOfOrigin) {
-              const redirectQuery = intendedUrl
-                ? `?redirect=${encodeURIComponent(intendedUrl)}`
-                : "";
-              router.replace(`/set-country${redirectQuery}`);
-            } else {
-              router.replace(intendedUrl || "/orders");
-            }
+            // if (!userData.countryOfOrigin) {
+            //   const redirectQuery = intendedUrl
+            //     ? `?redirect=${encodeURIComponent(intendedUrl)}`
+            //     : "";
+            //   router.replace(`/set-country${redirectQuery}`);
+            // } else {
+            //   router.replace(intendedUrl || "/orders");
+            // }
+            console.log("intendedUrl", intendedUrl);
+            router.replace(intendedUrl || "/orders");
+            // router.replace("/orders");
           } else {
             throw new Error("User data not found after login.");
           }
