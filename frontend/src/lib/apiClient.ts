@@ -35,10 +35,12 @@ apiClient.interceptors.response.use(
         typeof window !== "undefined" &&
         !window.location.pathname.endsWith("/login")
       ) {
-        console.warn("API client: 401 Unauthorized, logging out.");
+        console.warn(
+          "API client: 401 Unauthorized, logging out and redirecting to admin login."
+        );
         useAuthStore.getState().logout();
-        // La redirección a /login debería ocurrir por el guard del layout o el propio logout
-        // o una lógica de redirección en el RootLayout al cambiar isAuthenticated.
+        // Explicitly redirect to the admin login page
+        window.location.href = "/login";
       }
     }
     return Promise.reject(error);
