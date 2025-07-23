@@ -35,7 +35,6 @@ import {
 import { join, parse, basename } from 'path';
 import * as fs from 'fs';
 import { AudioService } from 'src/math-processing/services/audio.service';
-import { ManimService } from 'src/math-processing/manim/manim.service';
 import { FFmpegService } from 'src/math-processing/services/ffmpeg.service';
 import { PaginatedResponse, PaginationDto } from './dto/pagination.dto';
 import { Exercise } from '../exercises/entities/exercise.entity';
@@ -50,7 +49,6 @@ export class OrdersService {
     private readonly creditService: CreditService,
     // private readonly audioService: AudioService,
     // private readonly ffmpegService: FFmpegService,
-    private readonly manimService: ManimService,
 
     private readonly simpleTexService: SimpleTexService,
     private readonly openaiService: OpenaiService,
