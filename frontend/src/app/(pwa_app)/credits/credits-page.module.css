@@ -73,7 +73,7 @@
   flex-grow: 1; /* Permite que la descripción ocupe espacio y empuje precio/botón */
   min-height: 40px; /* Para asegurar algo de espacio incluso si no hay descripción */
   line-height: 1.6;
-  font-size: 1.2rem;
+  font-size: 0.9rem; /* Reduced font size */
   transition: all 0.3s ease;
 }
 

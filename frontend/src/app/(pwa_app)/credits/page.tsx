@@ -27,6 +27,7 @@ import {
   IconPremiumRights,
   IconAward,
   IconGift,
+  IconBrandWhatsapp,
 } from "@tabler/icons-react";
 import {
   useQuery,
@@ -149,6 +150,7 @@ export default function CreditPackagesPage() {
     );
   }
 
+  let numeroWhatsapp = "51926568152"
   return (
     <Box p="lg" className={classes.creditsPageContainer}>
       <Title order={2} className={classes.pageTitle} mb="xl">
@@ -239,7 +241,7 @@ export default function CreditPackagesPage() {
                 <span
                   dangerouslySetInnerHTML={{
                     __html:
-                      pkg.description?.replace(/ -/g, "<br/>-") ||
+                      pkg.description?.replace(/(^|\s)-/g, "$1<br/>-") ||
                       "Adquiere este paquete para continuar resolviendo problemas.",
                   }}
                 />
@@ -251,7 +253,7 @@ export default function CreditPackagesPage() {
                   currency: "PEN",
                 })}
               </Text>
-              <Button
+              {/* <Button
                 fullWidth
                 size="lg"
                 variant="gradient"
@@ -265,22 +267,69 @@ export default function CreditPackagesPage() {
                 style={{ fontWeight: 500 }}
               >
                 Comprar Paquete
+              </Button> */}
+              <Button
+                fullWidth
+                size="lg"
+                variant="outline"
+                color="green"
+                mt="md"
+                leftSection={<IconBrandWhatsapp size={18} />}
+                // style={{ whiteSpace: "pre-line" }}
+                onClick={() => {
+                  const whatsappNumber =
+                    process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || numeroWhatsapp; // Placeholder
+                  const message = encodeURIComponent(
+                    `¡Hola! Me interesa el paquete de ${
+                      pkg.name
+                    } por S/ ${pkg.price?.toLocaleString("es-PE", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}.`
+                  );
+                  window.open(
+                    `https://wa.me/${whatsappNumber}?text=${message}`,
+                    "_blank"
+                  );
+                }}
+              >
+                Recargar
               </Button>
             </Paper>
           ))}
         </SimpleGrid>
       )}
 
-      {/* <Box mt="xl">
-        <Title order={4}>¿Tienes un código promocional?</Title>
-        <Group mt="sm">
-          <TextInput
-            placeholder="Introduce tu código"
-            style={{ flex: 1 }}
-          />
-          <Button>Aplicar</Button>
-        </Group>
-      </Box> */}
+      <Box
+        mt="xl"
+        p="md"
+        style={{
+          border: "1px solid var(--mantine-color-gray-3)",
+          borderRadius: "var(--mantine-radius-md)",
+        }}
+      >
+        <Title order={4} ta="center" mb="sm">
+          ¿Necesitas ayuda o prefieres recargar por WhatsApp?
+        </Title>
+        <Text ta="center" size="sm" c="dimmed">
+          Contáctanos directamente para asistencia o para recargar tus créditos.
+        </Text>
+        <Center mt="md">
+          <Button
+            component="a"
+            href={`https://wa.me/${
+              process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "51999999999"
+            }`} // Placeholder
+            target="_blank"
+            variant="filled"
+            color="green"
+            leftSection={<IconShoppingCart size={18} />}
+          >
+            WhatsApp:{" "}
+            {process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "51 999 999 999"}
+          </Button>
+        </Center>
+      </Box>
 
       <Box mt="xl">
         <Title order={3} ta="center" mb="xl">
@@ -376,19 +425,6 @@ export default function CreditPackagesPage() {
           </Accordion.Item>
         </Accordion>
       </Box>
-
-      {/* <Box mt="xl">
-        <Title order={3} ta="center" mb="xl">
-          ¡Sigue así!
-        </Title>
-        <Text ta="center" mb="sm">
-          Acumula <strong>100</strong> créditos para alcanzar el nivel <strong>Maestro Matemático</strong>
-        </Text>
-        <Progress value={50} size="xl" striped animated />
-        <Text ta="center" mt="sm">
-          <strong>50 / 100</strong> créditos
-        </Text>
-      </Box> */}
     </Box>
   );
 }

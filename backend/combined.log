@@ -2199,3 +2199,19 @@
 {"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-23T02:24:20.711Z"}
 {"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-23T02:25:01.740Z"}
 {"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-23T02:25:01.742Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-23T02:26:27.801Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-23T02:26:27.804Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-23T20:20:58.019Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-23T20:20:58.022Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-23T20:21:20.432Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-23T20:21:20.436Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-23T23:38:23.337Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-23T23:38:23.342Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-07-23T23:39:29.397Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-07-23T23:39:29.398Z"}
+{"context":"CreditPackageService","level":"info","message":"Updated credit package with id 5","timestamp":"2025-07-23T23:39:43.415Z"}
+{"context":"CreditPackageService","level":"info","message":"Updated credit package with id 13","timestamp":"2025-07-23T23:39:47.873Z"}
+{"context":"CreditPackageService","level":"info","message":"Updated credit package with id 14","timestamp":"2025-07-23T23:39:52.064Z"}
+{"context":"StripeService","level":"error","message":"Error creating checkout session: The Checkout Session's total amount must convert to at least 50 cents. S/.1.00 converts to approximately $0.28.","timestamp":"2025-07-23T23:53:00.228Z","trace":"Error: The Checkout Session's total amount must convert to at least 50 cents. S/.1.00 converts to approximately $0.28.\n    at generateV1Error (/home/edgar/Documents/projects/projects/nodejs/sistema-matematica/backend/node_modules/stripe/cjs/Error.js:11:20)\n    at res.toJSON.then.Error_js_1.StripeAPIError.message (/home/edgar/Documents/projects/projects/nodejs/sistema-matematica/backend/node_modules/stripe/cjs/RequestSender.js:108:62)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-24T00:09:20.166Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-24T00:09:20.168Z"}
