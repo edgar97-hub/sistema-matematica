@@ -281,8 +281,8 @@ export default function CreditPackagesPage() {
                     process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || numeroWhatsapp; // Placeholder
                   const message = encodeURIComponent(
                     `¡Hola! Me interesa el paquete de ${
-                      pkg.name
-                    } por S/ ${pkg.price?.toLocaleString("es-PE", {
+                      pkg.creditAmount
+                    } creditos por S/ ${pkg.price?.toLocaleString("es-PE", {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
                     })}.`
