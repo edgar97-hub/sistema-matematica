@@ -150,7 +150,7 @@ export default function CreditPackagesPage() {
     );
   }
 
-  let numeroWhatsapp = "51926568152"
+  let numeroWhatsapp = "51926568152";
   return (
     <Box p="lg" className={classes.creditsPageContainer}>
       <Title order={2} className={classes.pageTitle} mb="xl">
@@ -318,7 +318,7 @@ export default function CreditPackagesPage() {
           <Button
             component="a"
             href={`https://wa.me/${
-              process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "51999999999"
+              process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || numeroWhatsapp
             }`} // Placeholder
             target="_blank"
             variant="filled"
@@ -326,7 +326,7 @@ export default function CreditPackagesPage() {
             leftSection={<IconShoppingCart size={18} />}
           >
             WhatsApp:{" "}
-            {process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "51 999 999 999"}
+            {process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || numeroWhatsapp}
           </Button>
         </Center>
       </Box>
