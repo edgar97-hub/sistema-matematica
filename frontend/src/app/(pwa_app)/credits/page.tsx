@@ -41,6 +41,23 @@ import { creditPackageService } from "../../../lib/services/credit-package.servi
 import { creditTransactionService } from "../../../lib/services/credit-transaction.service";
 import { CreditPackageFE } from "../../../types/credit-package.types";
 import classes from "./credits-page.module.css";
+import {
+  settingsService,
+  SystemSettingsResponse,
+} from "project/lib/services/settings.service";
+
+const formatWhatsappNumber = (number: string | undefined | null) => {
+  if (!number) return "";
+  // Assuming the number is always 9 digits for Peru (+51)
+  const cleaned = number.replace(/\D/g, ""); // Remove non-digits
+  if (cleaned.length === 9) {
+    return `+51 ${cleaned.substring(0, 3)} ${cleaned.substring(
+      3,
+      6
+    )} ${cleaned.substring(6, 9)}`;
+  }
+  return number; // Return as is if not a 9-digit number
+};
 
 export default function CreditPackagesPage() {
   const { user, token } = useAuthStore();
@@ -48,6 +65,20 @@ export default function CreditPackagesPage() {
   const [isRedirectingToStripeId, setIsRedirectingToStripeId] = useState<
     string | number | null
   >(null);
+
+  const {
+    data: currentSettings,
+    isLoading: isLoadingSettings,
+    isError,
+    error,
+    refetch,
+  } = useQuery<SystemSettingsResponse, Error>({
+    queryKey: ["system-settings"],
+    queryFn: settingsService.getSettings,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const whatsappNumber = currentSettings?.whatsappNumber || "51926568152"; // Fallback to hardcoded number
 
   const {
     data: packagesData,
@@ -150,7 +181,6 @@ export default function CreditPackagesPage() {
     );
   }
 
-  let numeroWhatsapp = "51926568152";
   return (
     <Box p="lg" className={classes.creditsPageContainer}>
       <Title order={2} className={classes.pageTitle} mb="xl">
@@ -277,8 +307,6 @@ export default function CreditPackagesPage() {
                 leftSection={<IconBrandWhatsapp size={18} />}
                 // style={{ whiteSpace: "pre-line" }}
                 onClick={() => {
-                  const whatsappNumber =
-                    process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || numeroWhatsapp; // Placeholder
                   const message = encodeURIComponent(
                     `¡Hola! Me interesa el paquete de ${
                       pkg.creditAmount
@@ -317,16 +345,13 @@ export default function CreditPackagesPage() {
         <Center mt="md">
           <Button
             component="a"
-            href={`https://wa.me/${
-              process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || numeroWhatsapp
-            }`} // Placeholder
+            href={`https://wa.me/${formatWhatsappNumber(whatsappNumber)}`}
             target="_blank"
             variant="filled"
             color="green"
             leftSection={<IconShoppingCart size={18} />}
           >
-            WhatsApp:{" "}
-            {process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || numeroWhatsapp}
+            WhatsApp: {formatWhatsappNumber(whatsappNumber)}
           </Button>
         </Center>
       </Box>

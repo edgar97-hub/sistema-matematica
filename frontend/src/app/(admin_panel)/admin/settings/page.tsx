@@ -41,6 +41,7 @@ const settingsSchema = z.object({
     .number()
     .min(0, "Debe ser 0 o más")
     .int("Debe ser un número entero"),
+  whatsappNumber: z.string().nullable().optional(),
 });
 
 export default function SystemSettingsPage() {
@@ -62,6 +63,7 @@ export default function SystemSettingsPage() {
     initialValues: {
       welcomeCreditEnabled: true,
       welcomeCreditAmount: 1,
+      whatsappNumber: "",
     },
     validate: zodResolver(settingsSchema),
   });
@@ -71,6 +73,7 @@ export default function SystemSettingsPage() {
       form.setValues({
         welcomeCreditEnabled: currentSettings.welcomeCreditEnabled,
         welcomeCreditAmount: currentSettings.welcomeCreditAmount,
+        whatsappNumber: currentSettings.whatsappNumber || "",
       });
       console.log("form.resetDirty");
       // form.resetDirty(currentSettings);
@@ -110,6 +113,7 @@ export default function SystemSettingsPage() {
       form.setValues({
         welcomeCreditEnabled: currentSettings.welcomeCreditEnabled,
         welcomeCreditAmount: currentSettings.welcomeCreditAmount,
+        whatsappNumber: currentSettings.whatsappNumber || "",
       });
       form.resetDirty(currentSettings);
     }
@@ -197,6 +201,13 @@ export default function SystemSettingsPage() {
             step={1}
             {...form.getInputProps("welcomeCreditAmount")}
             disabled={!form.values.welcomeCreditEnabled}
+            mb="xl"
+          />
+
+          <TextInput
+            label="Número de WhatsApp"
+            placeholder="Ej: 987654321"
+            {...form.getInputProps("whatsappNumber")}
             mb="xl"
           />
 

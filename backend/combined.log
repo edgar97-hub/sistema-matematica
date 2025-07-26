@@ -2215,3 +2215,13 @@
 {"context":"StripeService","level":"error","message":"Error creating checkout session: The Checkout Session's total amount must convert to at least 50 cents. S/.1.00 converts to approximately $0.28.","timestamp":"2025-07-23T23:53:00.228Z","trace":"Error: The Checkout Session's total amount must convert to at least 50 cents. S/.1.00 converts to approximately $0.28.\n    at generateV1Error (/home/edgar/Documents/projects/projects/nodejs/sistema-matematica/backend/node_modules/stripe/cjs/Error.js:11:20)\n    at res.toJSON.then.Error_js_1.StripeAPIError.message (/home/edgar/Documents/projects/projects/nodejs/sistema-matematica/backend/node_modules/stripe/cjs/RequestSender.js:108:62)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)"}
 {"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-24T00:09:20.166Z"}
 {"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-24T00:09:20.168Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-26T02:26:05.010Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-26T02:26:05.013Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-26T02:27:55.063Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-26T02:27:55.066Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-07-26T02:27:59.137Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-07-26T02:27:59.138Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-26T02:32:18.109Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-26T02:32:18.112Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-26T02:38:06.778Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-07-26T02:38:06.780Z"}

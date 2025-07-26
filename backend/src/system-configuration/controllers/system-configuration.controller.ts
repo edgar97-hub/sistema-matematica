@@ -5,9 +5,11 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { AdminGuard } from '../../auth/guards/admin.guard';
 
 @Controller('configuration')
-@UseGuards(JwtAuthGuard, AdminGuard)
+@UseGuards(JwtAuthGuard)
 export class SystemConfigurationController {
-  constructor(private readonly systemConfigurationService: SystemConfigurationService) {}
+  constructor(
+    private readonly systemConfigurationService: SystemConfigurationService,
+  ) {}
 
   @Get()
   getConfiguration() {
@@ -16,6 +18,8 @@ export class SystemConfigurationController {
 
   @Patch()
   updateConfiguration(@Body() updateConfigurationDto: UpdateConfigurationDto) {
-    return this.systemConfigurationService.updateConfiguration(updateConfigurationDto);
+    return this.systemConfigurationService.updateConfiguration(
+      updateConfigurationDto,
+    );
   }
 }

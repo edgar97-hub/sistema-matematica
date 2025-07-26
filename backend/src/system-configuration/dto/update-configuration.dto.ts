@@ -13,4 +13,7 @@ export class UpdateConfigurationDto {
   @IsInt()
   @Min(0)
   welcomeCreditAmount?: number;
+  @IsOptional()
+  @IsString()
+  whatsappNumber?: string;
 }

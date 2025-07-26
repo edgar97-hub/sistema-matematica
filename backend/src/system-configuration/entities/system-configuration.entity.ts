@@ -13,4 +13,7 @@ export class SystemConfigurationEntity {
 
   @Column({ name: 'welcome_credit_amount', type: 'int', default: 1 })
   welcomeCreditAmount: number;
+
+  @Column({ name: 'whatsapp_number', type: 'varchar', nullable: true })
+  whatsappNumber: string;
 }

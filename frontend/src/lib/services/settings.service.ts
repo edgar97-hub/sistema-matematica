@@ -4,6 +4,7 @@ export interface SystemSettingsData {
   openAiPromptBase?: string | null;
   welcomeCreditEnabled: boolean;
   welcomeCreditAmount: number;
+  whatsappNumber?: string | null;
 }
 
 export interface SystemSettingsResponse extends SystemSettingsData {
