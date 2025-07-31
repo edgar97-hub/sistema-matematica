@@ -282,12 +282,13 @@ export class ExercisesService {
           dbNgrams,
         );
 
-        const userTags = new Set(tags);
-        const exerciseTags = new Set(exercise.tags);
+        const userTags = new Set(tags?.map((tag) => tag.toLowerCase()));
+        const exerciseTags = new Set(exercise.tags?.map((tag) => tag.toLowerCase()));
         const matchingTags = [...userTags].filter((tag) =>
           exerciseTags.has(tag),
         );
-
+        console.log('userTags', userTags);
+        console.log('exerciseTags',exerciseTags);
         const tagScore = this.similarityService.jaccardSimilarity(
           userTags,
           exerciseTags,
