@@ -4,6 +4,7 @@ import {
   MaxLength,
   IsOptional,
   IsObject,
+  IsArray,
 } from 'class-validator';
 
 export class CreateExerciseDto {
@@ -25,4 +26,9 @@ export class CreateExerciseDto {
   @IsString()
   @IsOptional()
   ngrams?: string;
+
+  // @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  tags?: string[];
 }

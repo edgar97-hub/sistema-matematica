@@ -204,6 +204,70 @@ Genera SOLO UN objeto JSON completo y válido, y detén la generación inmediata
     }
   }
 
+  async suggestTagsFromImage(imageBuffer: Buffer): Promise<string[]> {
+    try {
+      const base64Image = imageBuffer.toString('base64');
+      const dataUrl = `data:image/jpeg;base64,${base64Image}`;
+
+      const completion = await this.openai.chat.completions.create({
+        model: 'gpt-4o',
+        messages: [
+          {
+            role: 'user',
+            content: [
+              {
+                type: 'text',
+                text: `
+                  Analiza la siguiente imagen de un problema matemático.
+                  Sugiere de 3 a 5 etiquetas relevantes y concisas (palabras clave o frases cortas) que clasifiquen este problema.
+                  Considera los conceptos matemáticos, los temas y los tipos de problemas, incluyendo cualquier figura geométrica.
+                  Ejemplos de etiquetas: "Álgebra", "Geometría", "Cálculo", "Ecuaciones", "Trigonometría", "Fracciones", "Derivadas", "Integrales", "Ecuaciones lineales", "Ecuaciones cuadráticas", "Problemas de enunciado", "Triángulos", "Círculos".
+
+                  Tu respuesta DEBE ser un objeto JSON con una clave "tags" que contenga un array de cadenas, como este:
+                  { "tags": ["Tag1", "Tag2", "Tag3"] }
+                  NO incluyas ningún otro texto ni explicación, solo el objeto JSON.
+                `,
+              },
+              {
+                type: 'image_url',
+                image_url: {
+                  url: dataUrl,
+                },
+              },
+            ],
+          },
+        ],
+        response_format: { type: 'json_object' },
+        temperature: 0.5,
+      });
+
+      const jsonResponseString = completion.choices[0].message.content;
+
+      if (!jsonResponseString) {
+        throw new Error(
+          'OpenAI returned an empty response for tag suggestion.',
+        );
+      }
+
+      const result = JSON.parse(jsonResponseString);
+      const tags = result.tags;
+
+      if (
+        !Array.isArray(tags) ||
+        !tags.every((tag) => typeof tag === 'string')
+      ) {
+        throw new Error(
+          'Invalid JSON format for tags. Expected an array of strings.',
+        );
+      }
+
+      return tags;
+    } catch (error) {
+      console.error('Error suggesting tags with OpenAI:', error);
+      throw new Error('Failed to suggest tags with OpenAI');
+    }
+  }
+
   /**
    * Genera la narración de audio para un texto dado usando la API TTS de OpenAI.
    * @param textToNarrate El texto completo que se convertirá a voz.

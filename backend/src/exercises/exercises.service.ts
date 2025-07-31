@@ -9,6 +9,7 @@ import { SimpleTexService } from '../math-processing/services/simpletex.service'
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
 import { ParserService } from 'src/parser/parser.service';
 import { SimilarityService } from 'src/similarity/similarity.service';
+import { OpenaiService } from 'src/math-processing/openai/openai.service';
 // import { fileType } from 'file-type';
 import { fileTypeFromStream, fileTypeFromBuffer } from 'file-type';
 
@@ -20,6 +21,7 @@ export class ExercisesService {
     private readonly fileStorageService: FileStorageService,
     private readonly simpleTexService: SimpleTexService,
     private readonly similarityService: SimilarityService,
+    private readonly openaiService: OpenaiService,
   ) {}
 
   async createExercise(
@@ -65,6 +67,7 @@ export class ExercisesService {
       enunciadoLatexOriginal: latex,
       enunciadoLatexNormalizado,
       ngrams: JSON.stringify(Array.from(ngrams)),
+      tags: createExerciseDto.tags,
     });
 
     // 5. Guardar en la base de datos y devolver
@@ -72,7 +75,13 @@ export class ExercisesService {
   }
 
   async findAll(findAllDto: FindAllExercisesDto) {
-    const { page = 1, limit = 10, title, sortKey = 'createdAt', sortOrder = 'DESC' } = findAllDto;
+    const {
+      page = 1,
+      limit = 10,
+      title,
+      sortKey = 'createdAt',
+      sortOrder = 'DESC',
+    } = findAllDto;
     const queryBuilder = this.exerciseRepository
       .createQueryBuilder('exercise')
       .leftJoinAndSelect('exercise.orders', 'orders');
@@ -215,6 +224,10 @@ export class ExercisesService {
       exercise.ngrams = ngramsJson;
     }
 
+    // if (updateExerciseDto.tags) {
+    //   // exercise.tags = updateExerciseDto.tags;
+    // }
+
     return this.exerciseRepository.save(exercise);
   }
 
@@ -236,18 +249,11 @@ export class ExercisesService {
     return null;
   }
 
-  async findSimilar(latex: string, threshold = 0.4) {
+  async findSimilar(latex: string, tags: string[] = [], threshold = 0.4) {
     // Búsqueda Exacta
     const exactMatch = await this.exerciseRepository.findOne({
       where: { enunciadoLatexOriginal: latex },
     });
-
-    // if (exactMatch) {
-    //   return {
-    //     exactMatch,
-    //     similarMatches: [],
-    //   };
-    // }
 
     // Búsqueda por Similitud
     const normalizedInput = this.similarityService.normalizeLatex(latex);
@@ -262,18 +268,36 @@ export class ExercisesService {
       );
     }
 
-    const similarMatches: { exercise: Exercise; score: number }[] = [];
+    const similarMatches: {
+      exercise: Exercise;
+      score: number;
+      matchingTags: string[];
+    }[] = [];
 
     for (const exercise of allExercises) {
       if (exercise.ngrams) {
         const dbNgrams = new Set(JSON.parse(exercise.ngrams) as string[]);
-        const score = this.similarityService.jaccardSimilarity(
+        const latexScore = this.similarityService.jaccardSimilarity(
           inputNgrams,
           dbNgrams,
         );
 
+        const userTags = new Set(tags);
+        const exerciseTags = new Set(exercise.tags);
+        const matchingTags = [...userTags].filter((tag) =>
+          exerciseTags.has(tag),
+        );
+
+        const tagScore = this.similarityService.jaccardSimilarity(
+          userTags,
+          exerciseTags,
+        );
+
+        // Combine scores (e.g., weighted average)
+        const score = 0.7 * latexScore + 0.3 * tagScore;
+
         if (score >= threshold) {
-          similarMatches.push({ exercise, score });
+          similarMatches.push({ exercise, score, matchingTags });
         }
       }
     }
@@ -285,6 +309,7 @@ export class ExercisesService {
       similarMatches,
     };
   }
+
   async findSimilarByImage(imageFile: Express.Multer.File) {
     const simpleTexResponse =
       await this.simpleTexService.extractMathFromImageBuffer(imageFile.buffer);
@@ -303,5 +328,16 @@ export class ExercisesService {
     const simpleTexResponse =
       await this.simpleTexService.extractMathFromImageBuffer(imageFile.buffer);
     return { latex: simpleTexResponse.res?.latex || '' };
+  }
+
+  async suggestTags(imageBuffer: Buffer): Promise<string[]> {
+    return this.openaiService.suggestTagsFromImage(imageBuffer);
+  }
+
+  async findAllTags(): Promise<string[]> {
+    const exercises = await this.exerciseRepository.find();
+    const allTags = exercises.flatMap((exercise) => exercise.tags || []);
+    const uniqueTags = [...new Set(allTags)];
+    return uniqueTags;
   }
 }

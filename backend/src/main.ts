@@ -20,10 +20,10 @@ async function bootstrap() {
   });
 
   // const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  // app.use(
-  //   '/api/credit-transactions/stripe-webhook',
-  //   bodyParser.raw({ type: 'application/json' }),
-  // );
+  app.use(
+    '/api/credit-transactions/stripe-webhook',
+    bodyParser.raw({ type: 'application/json' }),
+  );
   app.enableCors(CORS);
   app.useStaticAssets(join(process.cwd(), 'uploads'), {
     prefix: '/uploads',

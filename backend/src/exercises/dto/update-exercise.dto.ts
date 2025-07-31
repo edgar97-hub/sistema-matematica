@@ -1,4 +1,4 @@
-import { IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsOptional, IsString, MaxLength, IsArray } from 'class-validator';
 
 export class UpdateExerciseDto {
   @IsOptional()
@@ -19,4 +19,9 @@ export class UpdateExerciseDto {
   @IsString()
   @IsOptional()
   ngrams?: string;
+
+  // @IsArray({ message: 'Tags must be an array test' })
+  @IsString({ each: true })
+  @IsOptional()
+  tags?: string[];
 }

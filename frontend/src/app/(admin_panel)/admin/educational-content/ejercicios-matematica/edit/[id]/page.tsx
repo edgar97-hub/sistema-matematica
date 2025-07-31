@@ -7,7 +7,6 @@ import {
   Paper,
   Button,
   Group,
-  TextInput,
   Text,
   ActionIcon,
   Box,
@@ -17,6 +16,8 @@ import {
   Image,
   Center,
   Alert,
+  TagsInput,
+  TextInput,
 } from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE, MIME_TYPES } from "@mantine/dropzone";
 import {
@@ -40,6 +41,7 @@ interface ExerciseData {
   imageUrl2: string;
   videoUrl: string;
   views: number;
+  tags: string[];
 }
 
 export default function EditExercisePage({
@@ -55,6 +57,8 @@ export default function EditExercisePage({
   const [imageFile1, setImageFile1] = useState<File | null>(null);
   const [imageFile2, setImageFile2] = useState<File | null>(null);
   const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [tags, setTags] = useState<string[]>([]);
+  const [allTags, setAllTags] = useState<string[]>([]);
   const [imagePreview1, setImagePreview1] = useState<string | null>(null);
   const [imagePreview2, setImagePreview2] = useState<string | null>(null);
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
@@ -63,6 +67,28 @@ export default function EditExercisePage({
   const [exerciseData, setExerciseData] = useState<ExerciseData | null>(null);
   const router = useRouter();
   const token = useAuthStore.getState().token;
+
+
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const token = useAuthStore.getState().token;
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/exercises/tags`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setAllTags(data);
+        }
+      } catch (error) {
+        console.error("Error fetching tags:", error);
+      }
+    };
+    fetchTags();
+  }, []);
 
   useEffect(() => {
     const fetchExerciseData = async () => {
@@ -82,6 +108,7 @@ export default function EditExercisePage({
         const data: ExerciseData = await response.json();
         setExerciseData(data); // Set the fetched data
         setTitle(data.title);
+        setTags(data.tags || []); // Set existing tags
         // Construct full URLs for existing media
         if (data.imageUrl1) {
           let url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads${data.imageUrl1}`;
@@ -188,6 +215,7 @@ export default function EditExercisePage({
       });
       return;
     }
+    formData.append("tags", JSON.stringify(tags)); // Add tags to formData
     setIsLoading(true);
 
     if (videoFile) formData.append("video", videoFile);
@@ -260,7 +288,7 @@ export default function EditExercisePage({
             placeholder="Ej: Ecuación de segundo grado"
             required
             value={title}
-            onChange={(event) => {
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setTitle(event.currentTarget.value);
               setTitleError(false);
             }}
@@ -271,6 +299,15 @@ export default function EditExercisePage({
               Vistas: {exerciseData.views}
             </Text>
           )}
+
+          <TagsInput
+            label="Etiquetas"
+            placeholder="Añade o selecciona etiquetas y presiona Enter"
+            data={allTags}
+            value={tags}
+            onChange={setTags}
+            maxDropdownHeight={200}
+          />
 
           <Grid>
             <Grid.Col span={{ base: 12, md: 6 }}>

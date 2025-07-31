@@ -7,7 +7,6 @@ import {
   Paper,
   Button,
   Group,
-  TextInput,
   Text,
   ActionIcon,
   Box,
@@ -16,6 +15,8 @@ import {
   Grid,
   Image,
   Center,
+  TagsInput,
+  TextInput,
 } from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE, MIME_TYPES } from "@mantine/dropzone";
 import {
@@ -36,6 +37,8 @@ export default function UploadExercisePage() {
   const [imageFile1, setImageFile1] = useState<File | null>(null);
   const [imageFile2, setImageFile2] = useState<File | null>(null);
   const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [tags, setTags] = useState<string[]>([]);
+  const [allTags, setAllTags] = useState<string[]>([]);
 
   const [imagePreview1, setImagePreview1] = useState<string | null>(null);
   const [imagePreview2, setImagePreview2] = useState<string | null>(null);
@@ -82,6 +85,28 @@ export default function UploadExercisePage() {
     };
   }, [imagePreview1, imagePreview2, videoPreview]);
 
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const token = useAuthStore.getState().token;
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/exercises/tags`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setAllTags(data);
+        }
+      } catch (error) {
+        console.error("Error fetching tags:", error);
+      }
+    };
+    fetchTags();
+  }, []);
+
+
   const handleUpload = async () => {
     if (!title) {
       setTitleError(true);
@@ -121,6 +146,7 @@ export default function UploadExercisePage() {
       return;
     }
     formData.append("video", videoFile);
+    formData.append("tags", JSON.stringify(tags)); // Add tags to formData
     setIsLoading(true);
 
     try {
@@ -187,11 +213,20 @@ export default function UploadExercisePage() {
             placeholder="Ej: Ecuación de segundo grado"
             required
             value={title}
-            onChange={(event) => {
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setTitle(event.currentTarget.value);
               setTitleError(false);
             }}
             error={titleError && "El título es requerido"}
+          />
+
+          <TagsInput
+            label="Etiquetas"
+            placeholder="Añade o selecciona etiquetas y presiona Enter"
+            data={allTags}
+            value={tags}
+            onChange={setTags}
+            maxDropdownHeight={200}
           />
 
           <Grid>

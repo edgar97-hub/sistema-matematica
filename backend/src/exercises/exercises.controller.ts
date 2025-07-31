@@ -29,6 +29,11 @@ import { Exercise } from './entities/exercise.entity';
 export class ExercisesController {
   constructor(private readonly exercisesService: ExercisesService) {}
 
+  @Get('tags')
+  findAllTags() {
+    return this.exercisesService.findAllTags();
+  }
+
   @Get()
   findAll(@Query() findAllExercisesDto: FindAllExercisesDto) {
     return this.exercisesService.findAll(findAllExercisesDto);
@@ -59,6 +64,15 @@ export class ExercisesController {
     const imageFile1 = files.image1?.[0];
     const imageFile2 = files.image2?.[0];
     const videoFile = files.video?.[0];
+
+    // Parse tags if they are sent as a string
+    if (typeof createExerciseDto.tags === 'string') {
+      try {
+        createExerciseDto.tags = JSON.parse(createExerciseDto.tags);
+      } catch (error) {
+        throw new BadRequestException('Invalid tags format.');
+      }
+    }
 
     // Es una mejor práctica validar la presencia de archivos en el controlador.
     if (!imageFile1 || !imageFile2 || !videoFile) {
@@ -96,6 +110,16 @@ export class ExercisesController {
     const imageFile1 = files?.image1?.[0];
     const imageFile2 = files?.image2?.[0];
     const videoFile = files?.video?.[0];
+
+    // Parse tags if they are sent as a string
+    console.log('updateExerciseDto.', updateExerciseDto);
+    if (typeof updateExerciseDto.tags === 'string') {
+      try {
+        updateExerciseDto.tags = JSON.parse(updateExerciseDto.tags);
+      } catch (error) {
+        throw new BadRequestException('Invalid tags format.');
+      }
+    }
     return this.exercisesService.update(
       id,
       updateExerciseDto,
@@ -111,11 +135,11 @@ export class ExercisesController {
   }
 
   @Post('find-similar')
-  async findSimilar(@Body('latex') latex: string) {
-    if (!latex) {
+  async findSimilar(@Body() body: { latex: string; tags?: string[] }) {
+    if (!body.latex) {
       throw new BadRequestException('El campo "latex" es requerido.');
     }
-    return this.exercisesService.findSimilar(latex);
+    return this.exercisesService.findSimilar(body.latex, body.tags);
   }
   @Post('find-similar-by-image')
   @UseInterceptors(FileInterceptor('image'))
@@ -132,5 +156,14 @@ export class ExercisesController {
       throw new BadRequestException('Se requiere una imagen.');
     }
     return this.exercisesService.extractLatexFromImage(image);
+  }
+
+  @Post('suggest-tags')
+  @UseInterceptors(FileInterceptor('image'))
+  async suggestTags(@UploadedFile() image: Express.Multer.File) {
+    if (!image) {
+      throw new BadRequestException('Se requiere una imagen.');
+    }
+    return this.exercisesService.suggestTags(image.buffer);
   }
 }

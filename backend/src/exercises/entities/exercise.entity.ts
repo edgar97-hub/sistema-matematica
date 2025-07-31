@@ -47,6 +47,9 @@ export class Exercise extends BaseEntity {
   })
   ngrams: string;
 
+  @Column('simple-array', { nullable: true })
+  tags: string[];
+
   @OneToMany(() => OrderEntity, (row) => row.exercise)
   orders: OrderEntity[];
 }

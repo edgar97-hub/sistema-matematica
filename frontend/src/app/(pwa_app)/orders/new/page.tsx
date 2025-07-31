@@ -18,8 +18,10 @@ import {
   LoadingOverlay,
   Skeleton,
   Loader,
+  TagsInput,
+  Chip,
 } from "@mantine/core";
-import { IconTarget, IconList, IconX } from "@tabler/icons-react";
+import { IconTarget, IconList, IconX, IconTag } from "@tabler/icons-react";
 import { useDropzone } from "react-dropzone";
 import { useAuthStore } from "project/store/auth.store";
 import { notifications } from "@mantine/notifications";
@@ -39,6 +41,8 @@ export default function NewOrderPage() {
   const [extractedLatex, setExtractedLatex] = useState("");
   const [isExtracting, setIsExtracting] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [suggestedTags, setSuggestedTags] = useState<string[]>([]);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
@@ -72,6 +76,26 @@ export default function NewOrderPage() {
 
         const result = await response.json();
         setExtractedLatex(result.latex);
+
+        // After extracting LaTeX, suggest tags
+        const tagsFormData = new FormData();
+        tagsFormData.append("image", file);
+
+        const tagsResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/exercises/suggest-tags`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: tagsFormData,
+          }
+        );
+        if (tagsResponse.ok) {
+          const tagsResult = await tagsResponse.json();
+          setSuggestedTags(tagsResult);
+          setSelectedTags(tagsResult); // Pre-select suggested tags
+        }
       } catch (error) {
         console.error(error);
         notifications.show({
@@ -119,7 +143,7 @@ export default function NewOrderPage() {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ latex: extractedLatex }),
+          body: JSON.stringify({ latex: extractedLatex, tags: selectedTags }),
         }
       );
 
@@ -242,6 +266,18 @@ export default function NewOrderPage() {
               </Text>
             </Card>
           )}
+          {suggestedTags.length > 0 && (
+            <Card withBorder mt="md">
+              <Text>Etiquetas Sugeridas (puedes modificarlas):</Text>
+              <TagsInput
+                data={suggestedTags}
+                value={selectedTags}
+                onChange={setSelectedTags}
+                placeholder="Selecciona o añade etiquetas y presiona Enter"
+                maxDropdownHeight={200}
+              />
+            </Card>
+          )}
           <Button
             color="green"
             fullWidth
@@ -346,6 +382,15 @@ export default function NewOrderPage() {
                       <Text>
                         <Latex>{`$$${match.exercise.enunciadoLatexOriginal}$$`}</Latex>
                       </Text>
+                      {match.matchingTags && match.matchingTags.length > 0 && (
+                        <Group mt="xs">
+                          {match.matchingTags.map((tag: string) => (
+                            <Chip key={tag} size="xs" checked>
+                              {tag}
+                            </Chip>
+                          ))}
+                        </Group>
+                      )}
                       <Progress.Root size="lg" mt="md">
                         <Progress.Section
                           value={match.score * 100}
