@@ -341,20 +341,33 @@ export default function NewOrderPage() {
                     <Image
                       src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads${searchResults.exactMatch.imageUrl1}`}
                       alt="Imagen del problema"
-                      style={{ maxWidth: "100%", height: "auto", marginBottom: "10px" }}
+                      style={{
+                        maxWidth: "100%",
+                        height: "auto",
+                        marginBottom: "10px",
+                      }}
                     />
                     {/* <Text>
                       <Latex>{`$$${searchResults.exactMatch.enunciadoLatexOriginal}$$`}</Latex>
                     </Text> */}
-                    {searchResults.exactMatch.matchingTags && searchResults.exactMatch.matchingTags.length > 0 && (
-                      <Group mt="xs">
-                        {searchResults.exactMatch.matchingTags.map((tag: string) => (
-                          <Chip key={tag} size="sm" color="blue" variant="filled">
-                            <IconTag size={14} style={{ marginRight: 4 }} /> {tag}
-                          </Chip>
-                        ))}
-                      </Group>
-                    )}
+                    {searchResults.exactMatch.matchingTags &&
+                      searchResults.exactMatch.matchingTags.length > 0 && (
+                        <Group mt="xs">
+                          {searchResults.exactMatch.matchingTags.map(
+                            (tag: string) => (
+                              <Chip
+                                key={tag}
+                                size="sm"
+                                color="blue"
+                                variant="filled"
+                              >
+                                <IconTag size={14} style={{ marginRight: 4 }} />{" "}
+                                {tag}
+                              </Chip>
+                            )
+                          )}
+                        </Group>
+                      )}
                     <Button
                       mt="md"
                       onClick={() =>
@@ -400,7 +413,11 @@ export default function NewOrderPage() {
                       <Image
                         src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads${match.exercise.imageUrl1}`}
                         alt="Imagen del problema"
-                        style={{ maxWidth: "100%", height: "auto", marginBottom: "10px" }}
+                        style={{
+                          maxWidth: "100%",
+                          height: "auto",
+                          marginBottom: "10px",
+                        }}
                       />
                       {/* <Text>
                         <Latex>{`$$${match.exercise.enunciadoLatexOriginal}$$`}</Latex>
@@ -408,8 +425,14 @@ export default function NewOrderPage() {
                       {match.matchingTags && match.matchingTags.length > 0 && (
                         <Group mt="xs">
                           {match.matchingTags.map((tag: string) => (
-                            <Chip key={tag} size="sm" color="blue" variant="filled">
-                              <IconTag size={14} style={{ marginRight: 4 }} /> {tag}
+                            <Chip
+                              key={tag}
+                              size="sm"
+                              color="blue"
+                              variant="filled"
+                            >
+                              <IconTag size={14} style={{ marginRight: 4 }} />{" "}
+                              {tag}
                             </Chip>
                           ))}
                         </Group>
@@ -458,9 +481,13 @@ export default function NewOrderPage() {
         {selectedExercise && (
           <Card>
             <Title order={4}>Planteamiento del Ejercicio</Title>
-            <Text>
+            {/* <Text>
               <Latex>{`$$${selectedExercise.enunciadoLatexOriginal}$$`}</Latex>
-            </Text>
+            </Text> */}
+            <Image
+              src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads${selectedExercise.imageUrl1}`}
+              alt="Resolución"
+            />
             <Title order={4} mt="md">
               Imagen de Resolución
             </Title>
