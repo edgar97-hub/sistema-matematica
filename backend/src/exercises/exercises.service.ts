@@ -13,6 +13,10 @@ import { OpenaiService } from 'src/math-processing/openai/openai.service';
 // import { fileType } from 'file-type';
 import { fileTypeFromStream, fileTypeFromBuffer } from 'file-type';
 
+export interface ExerciseWithMatchingTags extends Exercise {
+  matchingTags?: string[];
+}
+
 @Injectable()
 export class ExercisesService {
   constructor(
@@ -249,11 +253,30 @@ export class ExercisesService {
     return null;
   }
 
-  async findSimilar(latex: string, tags: string[] = [], threshold = 0.4) {
+  async findSimilar(
+    latex: string,
+    tags: string[] = [],
+    threshold = 0.4,
+  ): Promise<{
+    exactMatch: (ExerciseWithMatchingTags) | null;
+    similarMatches: (ExerciseWithMatchingTags & { score: number; })[];
+  }> {
     // Búsqueda Exacta
-    const exactMatch = await this.exerciseRepository.findOne({
+    let exactMatch = await this.exerciseRepository.findOne({
       where: { enunciadoLatexOriginal: latex },
     });
+
+    // Calculate matchingTags for exactMatch if it exists
+    if (exactMatch) {
+      const userTagsSet = new Set(tags?.map((tag) => tag.toLowerCase()));
+      const exactMatchTagsSet = new Set(
+        exactMatch.tags?.map((tag) => tag.toLowerCase()),
+      );
+      const exactMatchingTags = [...userTagsSet].filter((tag) =>
+        exactMatchTagsSet.has(tag),
+      );
+      exactMatch = { ...exactMatch, matchingTags: exactMatchingTags } as ExerciseWithMatchingTags;
+    }
 
     // Búsqueda por Similitud
     const normalizedInput = this.similarityService.normalizeLatex(latex);
@@ -268,11 +291,9 @@ export class ExercisesService {
       );
     }
 
-    const similarMatches: {
-      exercise: Exercise;
+    const similarMatches: (ExerciseWithMatchingTags & {
       score: number;
-      matchingTags: string[];
-    }[] = [];
+    })[] = [];
 
     for (const exercise of allExercises) {
       if (exercise.ngrams) {
@@ -283,12 +304,13 @@ export class ExercisesService {
         );
 
         const userTags = new Set(tags?.map((tag) => tag.toLowerCase()));
-        const exerciseTags = new Set(exercise.tags?.map((tag) => tag.toLowerCase()));
+        const exerciseTags = new Set(
+          exercise.tags?.map((tag) => tag.toLowerCase()),
+        );
         const matchingTags = [...userTags].filter((tag) =>
           exerciseTags.has(tag),
         );
-        console.log('userTags', userTags);
-        console.log('exerciseTags',exerciseTags);
+
         const tagScore = this.similarityService.jaccardSimilarity(
           userTags,
           exerciseTags,
@@ -298,7 +320,11 @@ export class ExercisesService {
         const score = 0.7 * latexScore + 0.3 * tagScore;
 
         if (score >= threshold) {
-          similarMatches.push({ exercise, score, matchingTags });
+          similarMatches.push({
+            ...exercise, // Spread the exercise properties
+            score,
+            matchingTags,
+          });
         }
       }
     }

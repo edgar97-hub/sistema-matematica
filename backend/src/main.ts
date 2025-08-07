@@ -15,11 +15,11 @@ async function bootstrap() {
     key: fs.readFileSync(path.resolve(certPath, 'private.key')),
     cert: fs.readFileSync(path.resolve(certPath, 'certificate.crt')),
   };
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    httpsOptions,
-  });
+  // const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+  //   httpsOptions,
+  // });
 
-  // const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.use(
     '/api/credit-transactions/stripe-webhook',
     bodyParser.raw({ type: 'application/json' }),
@@ -31,8 +31,8 @@ async function bootstrap() {
   app.use(morgan('dev'));
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true, // Elimina propiedades que no están en el DTO
-      transform: true, // Transforma el payload a una instancia del DTO
+      whitelist: true,
+      transform: true,
     }),
   );
   app.setGlobalPrefix('api');

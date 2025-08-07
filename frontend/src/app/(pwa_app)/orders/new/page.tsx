@@ -243,27 +243,21 @@ export default function NewOrderPage() {
               {...getRootProps()}
             >
               <input {...getInputProps()} />
-              {selectedImage ? (
-                <Image
-                  src={URL.createObjectURL(selectedImage)}
-                  alt="Uploaded Exercise"
-                  style={{ objectFit: "contain", maxHeight: "100%" }}
-                />
-              ) : (
-                <Text size="sm" style={{ textAlign: "center" }}>
-                  Arrastra y suelta la imagen del ejercicio aquí o haz clic para
-                  subir la imagen
-                </Text>
-              )}
+              <Text size="sm" style={{ textAlign: "center" }}>
+                Arrastra y suelta la imagen del ejercicio aquí o haz clic para
+                subir la imagen
+              </Text>
             </Box>
           </Box>
           {user && <Text mt="md">Créditos disponibles: {user.credits}</Text>}
-          {extractedLatex && !isExtracting && (
+          {selectedImage && (
             <Card withBorder mt="md">
-              <Text>Vista Previa:</Text>
-              <Text size="lg" style={{ textAlign: "center" }}>
-                <Latex>{`$$${extractedLatex}$$`}</Latex>
-              </Text>
+              <Text>Vista Previa de la Imagen:</Text>
+              <Image
+                src={URL.createObjectURL(selectedImage)}
+                alt="Vista previa del ejercicio"
+                style={{ maxWidth: "100%", height: "auto" }}
+              />
             </Card>
           )}
           {suggestedTags.length > 0 && (
@@ -323,9 +317,13 @@ export default function NewOrderPage() {
             <Grid.Col span={12}>
               <Title order={4}>Ejercicio Original</Title>
               <Card shadow="sm" radius="md" withBorder>
-                <Text size="lg" style={{ textAlign: "center" }}>
-                  <Latex>{`$$${extractedLatex}$$`}</Latex>
-                </Text>
+                {selectedImage && (
+                  <Image
+                    src={URL.createObjectURL(selectedImage)}
+                    alt="Ejercicio Original"
+                    style={{ maxWidth: "100%", height: "auto" }}
+                  />
+                )}
               </Card>
             </Grid.Col>
             <Grid.Col span={{ base: 12, md: 6 }}>
@@ -337,9 +335,26 @@ export default function NewOrderPage() {
                 {searchResults.exactMatch ? (
                   <>
                     <Title order={5}>{searchResults.exactMatch.title}</Title>
-                    <Text>
+                    {/* <Text fw={500} mt="xs">
+                      Imagen del problema (para búsqueda):
+                    </Text> */}
+                    <Image
+                      src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads${searchResults.exactMatch.imageUrl1}`}
+                      alt="Imagen del problema"
+                      style={{ maxWidth: "100%", height: "auto", marginBottom: "10px" }}
+                    />
+                    {/* <Text>
                       <Latex>{`$$${searchResults.exactMatch.enunciadoLatexOriginal}$$`}</Latex>
-                    </Text>
+                    </Text> */}
+                    {searchResults.exactMatch.matchingTags && searchResults.exactMatch.matchingTags.length > 0 && (
+                      <Group mt="xs">
+                        {searchResults.exactMatch.matchingTags.map((tag: string) => (
+                          <Chip key={tag} size="sm" color="blue" variant="filled">
+                            <IconTag size={14} style={{ marginRight: 4 }} /> {tag}
+                          </Chip>
+                        ))}
+                      </Group>
+                    )}
                     <Button
                       mt="md"
                       onClick={() =>
@@ -379,14 +394,22 @@ export default function NewOrderPage() {
                         }`,
                       }}
                     >
-                      <Text>
+                      {/* <Text fw={500} mt="xs">
+                        Imagen del problema (para búsqueda):
+                      </Text> */}
+                      <Image
+                        src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads${match.exercise.imageUrl1}`}
+                        alt="Imagen del problema"
+                        style={{ maxWidth: "100%", height: "auto", marginBottom: "10px" }}
+                      />
+                      {/* <Text>
                         <Latex>{`$$${match.exercise.enunciadoLatexOriginal}$$`}</Latex>
-                      </Text>
+                      </Text> */}
                       {match.matchingTags && match.matchingTags.length > 0 && (
                         <Group mt="xs">
                           {match.matchingTags.map((tag: string) => (
-                            <Chip key={tag} size="xs" checked>
-                              {tag}
+                            <Chip key={tag} size="sm" color="blue" variant="filled">
+                              <IconTag size={14} style={{ marginRight: 4 }} /> {tag}
                             </Chip>
                           ))}
                         </Group>
