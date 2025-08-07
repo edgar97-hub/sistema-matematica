@@ -33,6 +33,7 @@ export const orderService = {
         params,
       }
     );
+    console.log(response.data);
     return response.data;
   },
   async getOrderByIdPwa(orderId: string, token: string): Promise<OrderFE> {

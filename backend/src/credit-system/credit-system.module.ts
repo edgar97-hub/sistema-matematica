@@ -11,7 +11,7 @@ import { UsersModule } from '../users/users.module';
 import { UserEntity } from 'src/users/entities/user.entity';
 import { CustomLoggerService } from 'src/common/services/logger.service';
 import { CreditTransactionController } from './controllers/credit-transaction.controller';
-import { ConfigModule } from '@nestjs/config'; // <--- AÑADIR SI NO ESTÁ
+import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
     ConfigModule,

@@ -69,7 +69,7 @@ export class AuthController {
     }
 
     // req.user aquí es UserEntity (o el objeto que devuelve tu GoogleStrategy.validate -> authService.findOrCreatePwaUser)
-    const pwaUser = req.user as UserEntity; // Asegúrate del tipo
+    const pwaUser = req.user as UserEntity;
     const loginResult = await this.authService.loginPwaUser(pwaUser); // Genera el JWT
 
     const frontendCallbackUrl = `${this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3001'}/auth/google/callback`;

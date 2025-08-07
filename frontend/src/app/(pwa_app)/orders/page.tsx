@@ -75,7 +75,12 @@ export default function OrdersHistoryPage() {
           {dayjs(order.createdAt).format("DD/MM/YYYY HH:mm")}
         </Text>
         <Card withBorder mt="sm" style={{ flexGrow: 1 }}>
-          <Latex>{`$$${order.topic}$$`}</Latex>
+          {/* <Latex>{`$$${order.topic}$$`}</Latex> */}
+          <Title order={4}>{order.ejerciseTitle}</Title>
+          <Image
+            src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads${order.ejerciseImageUrl1}`}
+            alt="Resolución"
+          />
         </Card>
         <Button
           variant="gradient"

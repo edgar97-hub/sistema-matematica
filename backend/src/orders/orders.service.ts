@@ -444,6 +444,7 @@ export class OrdersService {
       order,
       take: limit,
       skip: skip,
+      relations: ['exercise'],
       select: [
         'id',
         'topic',
@@ -453,13 +454,15 @@ export class OrdersService {
         'createdAt',
       ],
     });
-    console.log('total', total);
+
     const data: any[] = orders.map((order) => ({
       ...order,
       id: order.id,
       topic: order.topic,
       status: order.status,
       createdAt: order.createdAt.toISOString(),
+      ejerciseImageUrl1: order.exercise?.imageUrl1 ?? '',
+      ejerciseTitle: order.exercise?.title ?? '',
     }));
 
     const lastPage = Math.ceil(total / limit);

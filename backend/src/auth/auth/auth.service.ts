@@ -71,7 +71,6 @@ export class AuthService {
 
   async findOrCreatePwaUser(profile: any): Promise<UserEntity> {
     const user = await this.usersService.findOrCreateFromGoogle(profile);
-    // console.log('findOrCreatePwaUser', user);
     let creditIsAssigned = user.creditTransactions?.some(
       (item) => item.action === CreditTransactionAction.WELCOME_BONUS,
     );
