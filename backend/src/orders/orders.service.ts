@@ -444,6 +444,7 @@ export class OrdersService {
       order,
       take: limit,
       skip: skip,
+      relations: ['exercise'],
       select: [
         'id',
         'topic',
@@ -453,13 +454,15 @@ export class OrdersService {
         'createdAt',
       ],
     });
-    console.log('total', total);
+
     const data: any[] = orders.map((order) => ({
       ...order,
       id: order.id,
       topic: order.topic,
       status: order.status,
       createdAt: order.createdAt.toISOString(),
+      ejerciseImageUrl1: order.exercise?.imageUrl1 ?? '',
+      ejerciseTitle: order.exercise?.title ?? '',
     }));
 
     const lastPage = Math.ceil(total / limit);
@@ -492,6 +495,21 @@ export class OrdersService {
     exerciseId: number,
   ): Promise<OrderEntity> {
     return this.entityManager.transaction(async (tem) => {
+      // 1. Check if the user has already acquired this exercise
+      const existingOrder = await tem.findOne(OrderEntity, {
+        where: {
+          userId: userId,
+          exercise: { id: exerciseId }, // Corrected: Query through the relation
+          status: OrderPipelineStatus.COMPLETED, // Assuming COMPLETED means acquired
+        },
+      });
+
+      if (existingOrder) {
+        // If an existing order is found, return it without deducting credits
+        // and indicate 0 credits consumed for this "re-acquisition"
+        return { ...existingOrder, creditsConsumed: 0 };
+      }
+
       const exercise = await tem.findOne(Exercise, {
         where: { id: exerciseId },
       });
@@ -500,50 +518,50 @@ export class OrdersService {
           `Ejercicio con ID "${exerciseId}" no encontrado.`,
         );
       }
-
-      const user = await tem.findOneOrFail(UserEntity, {
-        where: { id: userId },
-      });
-
-      const creditsToConsume = 1; // O cualquier otra lógica que determine el costo
-
-      if (user.creditBalance < creditsToConsume) {
-        throw new BadRequestException('Créditos insuficientes.');
-      }
-
-      const balanceBefore = user.creditBalance;
-      user.creditBalance -= creditsToConsume;
-      const balanceAfter = user.creditBalance;
-
-      await tem.save(UserEntity, user);
-
-      await this.creditService.internalRecordTransaction(
-        {
-          targetUserId: user.id,
-          action: CreditTransactionAction.USAGE_RESOLUTION,
-          amount: -Math.abs(creditsToConsume),
-          balanceBefore,
-          balanceAfter,
-          reason: `Resolución de ejercicio existente ${exercise.id}`,
-        },
-        tem,
-      );
-
-      const newOrder = tem.create(OrderEntity, {
-        userId,
-        exerciseId,
-        topic: exercise.title,
-        status: OrderPipelineStatus.COMPLETED,
-        creditsConsumed: creditsToConsume,
-        originalImageUrl: exercise.imageUrl1,
-        finalVideoUrl: exercise.videoUrl,
-        completedAt: new Date(),
-      });
-
-      const savedOrder = await tem.save(OrderEntity, newOrder);
-      return { ...savedOrder, creditsConsumed: creditsToConsume };
-    });
-  }
+ 
+       const user = await tem.findOneOrFail(UserEntity, {
+         where: { id: userId },
+       });
+ 
+       const creditsToConsume = 1; // O cualquier otra lógica que determine el costo
+ 
+       if (user.creditBalance < creditsToConsume) {
+         throw new BadRequestException('Créditos insuficientes.');
+       }
+ 
+       const balanceBefore = user.creditBalance;
+       user.creditBalance -= creditsToConsume;
+       const balanceAfter = user.creditBalance;
+ 
+       await tem.save(UserEntity, user);
+ 
+       await this.creditService.internalRecordTransaction(
+         {
+           targetUserId: user.id,
+           action: CreditTransactionAction.USAGE_RESOLUTION,
+           amount: -Math.abs(creditsToConsume),
+           balanceBefore,
+           balanceAfter,
+           reason: `Resolución de ejercicio existente ${exercise.id}`,
+         },
+         tem,
+       );
+ 
+       const newOrder = tem.create(OrderEntity, {
+         userId,
+         exerciseId,
+         topic: exercise.title,
+         status: OrderPipelineStatus.COMPLETED,
+         creditsConsumed: creditsToConsume,
+         originalImageUrl: exercise.imageUrl1,
+         finalVideoUrl: exercise.videoUrl,
+         completedAt: new Date(),
+       });
+ 
+       const savedOrder = await tem.save(OrderEntity, newOrder);
+       return { ...savedOrder, creditsConsumed: creditsToConsume };
+     });
+   }
 
   async getFinalVideoPath(userId: number, orderId: number): Promise<string> {
     const order = await this.orderRepository.findOne({

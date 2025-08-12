@@ -31,8 +31,8 @@ async function bootstrap() {
   app.use(morgan('dev'));
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true, // Elimina propiedades que no están en el DTO
-      transform: true, // Transforma el payload a una instancia del DTO
+      whitelist: true,
+      transform: true,
     }),
   );
   app.setGlobalPrefix('api');

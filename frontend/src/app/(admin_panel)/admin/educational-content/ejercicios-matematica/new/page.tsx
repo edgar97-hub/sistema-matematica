@@ -38,22 +38,57 @@ export default function UploadExercisePage() {
   const [imageFile2, setImageFile2] = useState<File | null>(null);
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [tags, setTags] = useState<string[]>([]);
-  const [allTags, setAllTags] = useState<string[]>([]);
-
+  const [isSuggestingTags, setIsSuggestingTags] = useState(false);
+ 
   const [imagePreview1, setImagePreview1] = useState<string | null>(null);
   const [imagePreview2, setImagePreview2] = useState<string | null>(null);
-  const [videoPreview, setVideoPreview] = useState<string | null>(null);
+  const [videoPreview, setVideoPreview] = useState<string | null>(null); // Corrected: videoPreview is string | null
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-
-  const handleImageDrop1 = (files: File[]) => {
+ 
+  const handleImageDrop1 = async (files: File[]) => {
     if (files[0]) {
       setImageFile1(files[0]);
       const previewUrl = URL.createObjectURL(files[0]);
       setImagePreview1(previewUrl);
+ 
+      setIsSuggestingTags(true);
+      const formData = new FormData();
+      formData.append("image", files[0]);
+ 
+      try {
+        const token = useAuthStore.getState().token;
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/exercises/suggest-tags`,
+          {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}` },
+            body: formData,
+          }
+        );
+        if (response.ok) {
+          const suggested = await response.json();
+          setTags(suggested); // Set suggested tags
+        } else {
+          notifications.show({
+            title: "Error al sugerir etiquetas",
+            message: "No se pudieron obtener sugerencias de etiquetas.",
+            color: "red",
+          });
+        }
+      } catch (error) {
+        console.error("Error suggesting tags:", error);
+        notifications.show({
+          title: "Error al sugerir etiquetas",
+          message: "Ocurrió un error al intentar sugerir etiquetas.",
+          color: "red",
+        });
+      } finally {
+        setIsSuggestingTags(false);
+      }
     }
   };
-
+ 
   const handleImageDrop2 = (files: File[]) => {
     if (files[0]) {
       setImageFile2(files[0]);
@@ -61,7 +96,7 @@ export default function UploadExercisePage() {
       setImagePreview2(previewUrl);
     }
   };
-
+ 
   const handleVideoDrop = (files: File[]) => {
     if (files[0]) {
       setVideoFile(files[0]);
@@ -69,7 +104,7 @@ export default function UploadExercisePage() {
       setVideoPreview(previewUrl);
     }
   };
-
+ 
   // Limpiar el object URL para evitar memory leaks
   useEffect(() => {
     return () => {
@@ -79,40 +114,19 @@ export default function UploadExercisePage() {
       if (imagePreview2) {
         URL.revokeObjectURL(imagePreview2);
       }
-      if (videoPreview) {
+      if (videoPreview) { // videoPreview is string | null, so this is correct
         URL.revokeObjectURL(videoPreview);
       }
     };
   }, [imagePreview1, imagePreview2, videoPreview]);
-
-  useEffect(() => {
-    const fetchTags = async () => {
-      try {
-        const token = useAuthStore.getState().token;
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/exercises/tags`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        if (response.ok) {
-          const data = await response.json();
-          setAllTags(data);
-        }
-      } catch (error) {
-        console.error("Error fetching tags:", error);
-      }
-    };
-    fetchTags();
-  }, []);
-
-
-  const handleUpload = async () => {
-    if (!title) {
-      setTitleError(true);
-    } else {
-      setTitleError(false);
-    }
+ 
+ 
+   const handleUpload = async () => {
+     if (!title) {
+       setTitleError(true);
+     } else {
+       setTitleError(false);
+     }
 
     if (!title || !imageFile1 || !imageFile2 || !videoFile) {
       notifications.show({
@@ -222,11 +236,12 @@ export default function UploadExercisePage() {
 
           <TagsInput
             label="Etiquetas"
-            placeholder="Añade o selecciona etiquetas y presiona Enter"
-            data={allTags}
+            data={tags} // Use 'tags' directly as the source of truth
             value={tags}
             onChange={setTags}
+            placeholder={isSuggestingTags ? "Sugiriendo etiquetas..." : "Añade o selecciona etiquetas y presiona Enter"}
             maxDropdownHeight={200}
+            disabled={isSuggestingTags} // Disable input while suggesting
           />
 
           <Grid>

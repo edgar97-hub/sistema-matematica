@@ -1,13 +1,11 @@
-// Se han realizado varias correcciones y mejoras en este archivo.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
-import { AdminUsersModule } from './admin-users/admin-users.module'; // Asumo que este módulo existe
-import { EducationalContentModule } from './educational-content/educational-content.module'; // Asumo que este módulo existe
+import { AdminUsersModule } from './admin-users/admin-users.module';
+import { EducationalContentModule } from './educational-content/educational-content.module';
 
 // --- INICIO: Lógica del sistema de créditos (Candidato para un módulo propio) ---
 import { CreditPackageEntity } from './credit-system/entities/credit-package.entity';
@@ -49,12 +47,7 @@ import { ExercisesModule } from './exercises/exercises.module';
       }),
       inject: [ConfigService],
     }),
-    // NOTA: Es una mejor práctica que cada módulo (como CreditSystemModule y OrdersModule)
-    // importe sus propias entidades con TypeOrmModule.forFeature.
-    TypeOrmModule.forFeature([
-      CreditPackageEntity,
-      CreditTransactionEntity,
-    ]),
+    TypeOrmModule.forFeature([CreditPackageEntity, CreditTransactionEntity]),
     OrdersModule,
     UsersModule,
     AuthModule,
@@ -63,17 +56,11 @@ import { ExercisesModule } from './exercises/exercises.module';
     SystemConfigurationModule,
     FileStorageModule,
     MathProcessingModule,
-    ExercisesModule, // Asegúrate de que esta línea esté presente
+    ExercisesModule,
   ],
-  controllers: [
-    AppController,
-    CreditController,
-    CreditPackageController,
-  ],
+  controllers: [CreditController, CreditPackageController],
   providers: [
     AppService,
-    // Los siguientes servicios deberían agruparse en un CreditSystemModule
-    // para una mejor organización y encapsulamiento.
     CreditService,
     CreditPackageService,
     StripeService,

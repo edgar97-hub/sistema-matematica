@@ -17,7 +17,10 @@ import {
   FileFieldsInterceptor,
   FileInterceptor,
 } from '@nestjs/platform-express';
-import { ExercisesService } from './exercises.service';
+import {
+  ExercisesService,
+  ExerciseWithMatchingTags,
+} from './exercises.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { FindAllExercisesDto } from './dto/find-all-exercises.dto';
@@ -25,7 +28,7 @@ import { UpdateExerciseDto } from './dto/update-exercise.dto';
 import { Exercise } from './entities/exercise.entity';
 
 @Controller('exercises')
-@UseGuards(JwtAuthGuard) // Protegemos toda la ruta de ejercicios
+@UseGuards(JwtAuthGuard)
 export class ExercisesController {
   constructor(private readonly exercisesService: ExercisesService) {}
 
@@ -65,7 +68,6 @@ export class ExercisesController {
     const imageFile2 = files.image2?.[0];
     const videoFile = files.video?.[0];
 
-    // Parse tags if they are sent as a string
     if (typeof createExerciseDto.tags === 'string') {
       try {
         createExerciseDto.tags = JSON.parse(createExerciseDto.tags);
@@ -74,7 +76,6 @@ export class ExercisesController {
       }
     }
 
-    // Es una mejor práctica validar la presencia de archivos en el controlador.
     if (!imageFile1 || !imageFile2 || !videoFile) {
       throw new BadRequestException(
         'Se requieren tanto una imagen como un video.',
@@ -111,8 +112,6 @@ export class ExercisesController {
     const imageFile2 = files?.image2?.[0];
     const videoFile = files?.video?.[0];
 
-    // Parse tags if they are sent as a string
-    console.log('updateExerciseDto.', updateExerciseDto);
     if (typeof updateExerciseDto.tags === 'string') {
       try {
         updateExerciseDto.tags = JSON.parse(updateExerciseDto.tags);
@@ -135,15 +134,24 @@ export class ExercisesController {
   }
 
   @Post('find-similar')
-  async findSimilar(@Body() body: { latex: string; tags?: string[] }) {
-    if (!body.latex) {
-      throw new BadRequestException('El campo "latex" es requerido.');
-    }
+  async findSimilar(@Body() body: { latex: string; tags?: string[] }): Promise<{
+    exactMatch: ExerciseWithMatchingTags | null;
+    similarMatches: (ExerciseWithMatchingTags & { score: number })[];
+  }> {
+    // if (!body.latex) {
+    //   throw new BadRequestException('El campo "latex" es requerido.');
+    // }
     return this.exercisesService.findSimilar(body.latex, body.tags);
   }
+
   @Post('find-similar-by-image')
   @UseInterceptors(FileInterceptor('image'))
-  async findSimilarByImage(@UploadedFile() image: Express.Multer.File) {
+  async findSimilarByImage(
+    @UploadedFile() image: Express.Multer.File,
+  ): Promise<{
+    exactMatch: ExerciseWithMatchingTags | null;
+    similarMatches: (ExerciseWithMatchingTags & { score: number })[];
+  }> {
     if (!image) {
       throw new BadRequestException('Se requiere una imagen.');
     }
