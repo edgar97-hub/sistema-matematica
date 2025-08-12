@@ -5,7 +5,14 @@ import { useAuthStore, UserPwa } from "../../store/auth.store"; // Ajusta la rut
 import { authService } from "../../lib/services/auth.service"; // Necesitas un servicio de autenticación
 
 function AuthHydrator() {
-  const { token, setUser, logout, isLoading } = useAuthStore();
+  const {
+    token,
+    setUser,
+    logout,
+    isLoading,
+    startCreditPolling,
+    stopCreditPolling,
+  } = useAuthStore();
   console.log("isLoading", isLoading, token);
   useEffect(() => {
     // Esta función se ejecuta solo una vez al montar el componente
@@ -18,6 +25,7 @@ function AuthHydrator() {
           console.log("freshUser", freshUser);
           // Actualizamos el store con los datos del backend.
           setUser(freshUser, token);
+          startCreditPolling(); // Start polling after successful authentication
         } catch (error) {
           // Si el token es inválido o ha expirado, el backend devolverá un error 401.
           // En ese caso, limpiamos el estado de autenticación.
@@ -37,7 +45,19 @@ function AuthHydrator() {
     if (token) {
       syncUser();
     }
-  }, [token, setUser, logout, isLoading]); // El efecto depende de estas funciones y estado
+
+    // Cleanup: Stop polling when component unmounts
+    return () => {
+      stopCreditPolling();
+    };
+  }, [
+    token,
+    setUser,
+    logout,
+    isLoading,
+    startCreditPolling,
+    stopCreditPolling,
+  ]); // El efecto depende de estas funciones y estado
 
   // Este componente no renderiza nada, solo ejecuta la lógica de sincronización.
   return null;

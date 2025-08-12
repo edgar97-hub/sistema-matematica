@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
+import { notifications } from "@mantine/notifications";
 
 export type ThemeMode = "light" | "dark" | "auto"; // 'auto' para seguir el sistema
 
@@ -31,7 +32,11 @@ interface AuthState {
   ) => void;
   setTheme: (theme: ThemeMode) => void;
   toggleTheme: () => void;
+  startCreditPolling: () => void;
+  stopCreditPolling: () => void;
 }
+
+let creditPollingInterval: NodeJS.Timeout | null = null;
 
 export const useAuthStore = create<AuthState>()(
   persist(
@@ -56,8 +61,8 @@ export const useAuthStore = create<AuthState>()(
       },
       logout: () => {
         console.log("AuthStore: Logging out");
-        // Aquí también se podría llamar a un endpoint de logout del backend si es necesario
-        // authService.logoutBackend(); // Ejemplo
+        // Stop polling on logout
+        get().stopCreditPolling();
         set({
           user: null,
           token: null,
@@ -96,7 +101,6 @@ export const useAuthStore = create<AuthState>()(
           });
         }
       },
-      // Nuevas acciones para el tema
       setTheme: (theme: ThemeMode) => {
         console.log("AuthStore: Setting theme to", theme);
         set({ theme });
@@ -109,27 +113,84 @@ export const useAuthStore = create<AuthState>()(
         } else if (currentTheme === "dark") {
           newTheme = "light";
         } else {
-          // Si es 'auto', y queremos cambiar, podemos ir a 'light' o 'dark'
-          // o podrías tener una lógica más compleja para alternar 'auto' -> 'light' -> 'dark' -> 'auto'
           const prefersDark =
             typeof window !== "undefined" &&
             window.matchMedia &&
             window.matchMedia("(prefers-color-scheme: dark)").matches;
-          newTheme = prefersDark ? "light" : "dark"; // Si es auto y oscuro, pasa a claro, y viceversa
+          newTheme = prefersDark ? "light" : "dark";
         }
         console.log("AuthStore: Toggling theme to", newTheme);
         set({ theme: newTheme });
       },
+      startCreditPolling: () => {
+        if (creditPollingInterval) return; // Already polling
+
+        const poll = async () => {
+          const token = get().token;
+          const currentUser = get().user;
+
+          if (!token || !currentUser) {
+            get().stopCreditPolling(); // Stop if no user or token
+            return;
+          }
+
+          try {
+            const response = await fetch(
+              `${process.env.NEXT_PUBLIC_API_URL}/auth/me`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+            if (response.ok) {
+              const updatedUser = await response.json();
+              console.log("updatedUser", updatedUser.credits);
+              console.log("currentUser", currentUser.credits);
+              if (updatedUser.credits !== currentUser.credits) {
+                set({
+                  user: updatedUser,
+                  token,
+                  isAuthenticated: !!updatedUser && !!token, // Será true si user y token tienen valor
+                  isLoading: false, // Asumimos que el login terminó
+                  error: null, // Limpiar errores previos
+                });
+                notifications.show({
+                  title: "Créditos Actualizados",
+                  message: `Tu saldo de créditos ha sido actualizado a ${updatedUser.credits}.`,
+                  color: "green",
+                });
+              }
+            } else {
+              console.error(
+                "Failed to fetch updated user data:",
+                response.statusText
+              );
+            }
+          } catch (error) {
+            console.error("Error polling for credits:", error);
+          }
+        };
+
+        creditPollingInterval = setInterval(poll, 3000); // Poll every 3 seconds
+        console.log("AuthStore: Started credit polling.");
+      },
+      stopCreditPolling: () => {
+        if (creditPollingInterval) {
+          clearInterval(creditPollingInterval);
+          creditPollingInterval = null;
+          console.log("AuthStore: Stopped credit polling.");
+        }
+      },
     }),
     {
-      name: "pwa-auth-storage", // El tema también se persistirá aquí
+      name: "pwa-auth-storage",
       storage: createJSONStorage(() => localStorage),
-      // Opcional: si solo quieres persistir ciertas partes del estado
       partialize: (state) => ({
         user: state.user,
         token: state.token,
         isAuthenticated: state.isAuthenticated,
-        theme: state.theme, // <--- Asegúrate de persistir el tema
+        theme: state.theme,
       }),
       onRehydrateStorage: () => (state) => {
         console.log(

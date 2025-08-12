@@ -1,10 +1,7 @@
-// ...
 import { UserPwa } from "../../store/auth.store";
-import { apiClient } from "../apiClient"; // Asume tu apiClient configurado
+import { apiClient } from "../apiClient";
 
 export const authService = {
-  // ... (tus otros métodos de login)
-
   async getMe(token: string): Promise<UserPwa> {
     const response = await apiClient.get("/auth/me", {
       headers: {

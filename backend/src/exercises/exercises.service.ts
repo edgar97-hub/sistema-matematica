@@ -258,8 +258,8 @@ export class ExercisesService {
     tags: string[] = [],
     threshold = 0.4,
   ): Promise<{
-    exactMatch: (ExerciseWithMatchingTags) | null;
-    similarMatches: (ExerciseWithMatchingTags & { score: number; })[];
+    exactMatch: ExerciseWithMatchingTags | null;
+    similarMatches: (ExerciseWithMatchingTags & { score: number })[];
   }> {
     // Búsqueda Exacta
     let exactMatch = await this.exerciseRepository.findOne({
@@ -275,7 +275,10 @@ export class ExercisesService {
       const exactMatchingTags = [...userTagsSet].filter((tag) =>
         exactMatchTagsSet.has(tag),
       );
-      exactMatch = { ...exactMatch, matchingTags: exactMatchingTags } as ExerciseWithMatchingTags;
+      exactMatch = {
+        ...exactMatch,
+        matchingTags: exactMatchingTags,
+      } as ExerciseWithMatchingTags;
     }
 
     // Búsqueda por Similitud
@@ -321,7 +324,7 @@ export class ExercisesService {
 
         if (score >= threshold) {
           similarMatches.push({
-            ...exercise, // Spread the exercise properties
+            ...exercise,
             score,
             matchingTags,
           });

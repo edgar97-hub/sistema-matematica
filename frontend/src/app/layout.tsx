@@ -25,52 +25,56 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const currentThemePreference = useAuthStore((state) => state.theme);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const startCreditPolling = useAuthStore((state) => state.startCreditPolling);
+  const stopCreditPolling = useAuthStore((state) => state.stopCreditPolling);
   const [effectiveColorScheme, setEffectiveColorScheme] = useState<
     "light" | "dark"
   >("light");
+ 
+   useEffect(() => {
+     let themeValue: "light" | "dark";
+     if (currentThemePreference === "auto") {
+       themeValue =
+         window.matchMedia &&
+         window.matchMedia("(prefers-color-scheme: dark)").matches
+           ? "dark"
+           : "light";
+     } else {
+       themeValue = currentThemePreference;
+     }
+     setEffectiveColorScheme(themeValue);
+ 
+     // Aplicar clase al body para tus estilos CSS globales
+     document.body.classList.remove("light-theme", "dark-theme");
+     if (themeValue === "dark") {
+       document.body.classList.add("dark-theme");
+     } else {
+       document.body.classList.add("light-theme"); // Opcional, si tienes estilos específicos para .light-theme
+     }
+   }, [currentThemePreference]);
+ 
+   // Escuchar cambios de tema del sistema si la preferencia es 'auto'
+   useEffect(() => {
+     if (currentThemePreference !== "auto") return;
+ 
+     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+     const handleChange = (e: MediaQueryListEvent) => {
+       console.log(
+         "System theme changed, updating effective color scheme (if auto)"
+       );
+       const newSystemTheme = e.matches ? "dark" : "light";
+       setEffectiveColorScheme(newSystemTheme);
+       document.body.classList.remove("light-theme", "dark-theme");
+       document.body.classList.add(
+         newSystemTheme === "dark" ? "dark-theme" : "light-theme"
+       );
+     };
+ 
+     mediaQuery.addEventListener("change", handleChange);
+     return () => mediaQuery.removeEventListener("change", handleChange);
+   }, [currentThemePreference]);
 
-  useEffect(() => {
-    let themeValue: "light" | "dark";
-    if (currentThemePreference === "auto") {
-      themeValue =
-        window.matchMedia &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light";
-    } else {
-      themeValue = currentThemePreference;
-    }
-    setEffectiveColorScheme(themeValue);
-
-    // Aplicar clase al body para tus estilos CSS globales
-    document.body.classList.remove("light-theme", "dark-theme");
-    if (themeValue === "dark") {
-      document.body.classList.add("dark-theme");
-    } else {
-      document.body.classList.add("light-theme"); // Opcional, si tienes estilos específicos para .light-theme
-    }
-  }, [currentThemePreference]);
-
-  // Escuchar cambios de tema del sistema si la preferencia es 'auto'
-  useEffect(() => {
-    if (currentThemePreference !== "auto") return;
-
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const handleChange = (e: MediaQueryListEvent) => {
-      console.log(
-        "System theme changed, updating effective color scheme (if auto)"
-      );
-      const newSystemTheme = e.matches ? "dark" : "light";
-      setEffectiveColorScheme(newSystemTheme);
-      document.body.classList.remove("light-theme", "dark-theme");
-      document.body.classList.add(
-        newSystemTheme === "dark" ? "dark-theme" : "light-theme"
-      );
-    };
-
-    mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
-  }, [currentThemePreference]);
 
   return (
     <html

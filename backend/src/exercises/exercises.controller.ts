@@ -17,7 +17,10 @@ import {
   FileFieldsInterceptor,
   FileInterceptor,
 } from '@nestjs/platform-express';
-import { ExercisesService, ExerciseWithMatchingTags } from './exercises.service';
+import {
+  ExercisesService,
+  ExerciseWithMatchingTags,
+} from './exercises.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { FindAllExercisesDto } from './dto/find-all-exercises.dto';
@@ -131,15 +134,13 @@ export class ExercisesController {
   }
 
   @Post('find-similar')
-  async findSimilar(
-    @Body() body: { latex: string; tags?: string[] },
-  ): Promise<{
+  async findSimilar(@Body() body: { latex: string; tags?: string[] }): Promise<{
     exactMatch: ExerciseWithMatchingTags | null;
     similarMatches: (ExerciseWithMatchingTags & { score: number })[];
   }> {
-    if (!body.latex) {
-      throw new BadRequestException('El campo "latex" es requerido.');
-    }
+    // if (!body.latex) {
+    //   throw new BadRequestException('El campo "latex" es requerido.');
+    // }
     return this.exercisesService.findSimilar(body.latex, body.tags);
   }
 
