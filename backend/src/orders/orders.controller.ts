@@ -173,6 +173,7 @@ export class OrdersController {
       }
     });
   }
+
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   async getOrderById(@Param('id') id: string, @User() user: any) {

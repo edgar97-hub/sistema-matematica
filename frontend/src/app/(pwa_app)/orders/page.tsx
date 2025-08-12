@@ -16,7 +16,9 @@ import {
   Grid,
   Select,
   Group,
+  ActionIcon,
 } from "@mantine/core";
+import { IconDownload, IconShare } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "../../../store/auth.store";
 import { orderService } from "../../../lib/services/order.service";
@@ -30,6 +32,8 @@ export default function OrdersHistoryPage() {
   const { user, token } = useAuthStore();
   const [selectedOrder, setSelectedOrder] = useState<OrderFE | null>(null);
   const [sortOrder, setSortOrder] = useState<string>("createdAt,DESC");
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const { data, isLoading } = useQuery<PaginatedResponse<OrderFE>, Error>({
     queryKey: ["pwa-user-orders", user?.id, activePage, sortOrder],
@@ -94,85 +98,198 @@ export default function OrdersHistoryPage() {
       </Card>
     </Grid.Col>
   ));
+  const handleDownload = async () => {
+    if (!selectedOrder) return;
+    setIsDownloading(true);
+    const backendBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
+    const downloadUrl = `${backendBaseUrl}/api/orders/download/${selectedOrder.id}`;
+
+    try {
+      // Realizar la petición con la cabecera de autenticación
+      const response = await fetch(downloadUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          "No se pudo descargar el video. Verifique sus permisos."
+        );
+      }
+
+      // Convertir la respuesta a un Blob (Binary Large Object)
+      const blob = await response.blob();
+
+      // Crear una URL temporal para el objeto Blob
+      const url = window.URL.createObjectURL(blob);
+
+      // Crear un enlace <a> invisible en el DOM
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `resolucion_${selectedOrder.id}.mp4`); // Nombre del archivo a descargar
+
+      // Añadirlo al DOM, hacer clic y removerlo
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Liberar la URL del objeto Blob
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error en la descarga:", error);
+      // Aquí podrías mostrar una notificación de error al usuario
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   return (
-    <Box p="lg">
-      <Title order={2} mb="xl">
-        Mis Resoluciones
-      </Title>
+    <>
+      <Box p="lg">
+        <Title order={2} mb="xl">
+          Mis Resoluciones
+        </Title>
 
-      <Group mb="md">
-        <Select
-          label="Ordenar por"
-          value={sortOrder}
-          onChange={(value) => setSortOrder(value || "createdAt,DESC")}
-          data={[
-            { value: "createdAt,DESC", label: "Más recientes" },
-            { value: "createdAt,ASC", label: "Más antiguos" },
-          ]}
-        />
-      </Group>
-
-      <LoadingOverlay
-        visible={isLoading}
-        zIndex={1000}
-        overlayProps={{ radius: "sm", blur: 2 }}
-      />
-
-      {data?.data && data.data.length > 0 ? (
-        <Grid>{orders}</Grid>
-      ) : (
-        <Center p="xl">
-          <Text>No tienes ninguna resolución todavía.</Text>
-        </Center>
-      )}
-
-      {data && data.meta.lastPage > 1 && (
-        <Center p="md">
-          <Pagination
-            total={data.meta.lastPage}
-            value={activePage}
-            onChange={setPage}
+        <Group mb="md">
+          <Select
+            label="Ordenar por"
+            value={sortOrder}
+            onChange={(value) => setSortOrder(value || "createdAt,DESC")}
+            data={[
+              { value: "createdAt,DESC", label: "Más recientes" },
+              { value: "createdAt,ASC", label: "Más antiguos" },
+            ]}
           />
-        </Center>
-      )}
+        </Group>
+
+        <LoadingOverlay
+          visible={isLoading}
+          zIndex={1000}
+          overlayProps={{ radius: "sm", blur: 2 }}
+        />
+
+        {data?.data && data.data.length > 0 ? (
+          <Grid>{orders}</Grid>
+        ) : (
+          <Center p="xl">
+            <Text>No tienes ninguna resolución todavía.</Text>
+          </Center>
+        )}
+
+        {data && data.meta.lastPage > 1 && (
+          <Center p="md">
+            <Pagination
+              total={data.meta.lastPage}
+              value={activePage}
+              onChange={setPage}
+            />
+          </Center>
+        )}
+
+        <Modal
+          opened={!!selectedOrder}
+          onClose={() => setSelectedOrder(null)}
+          title={selectedOrder?.topic}
+          size="xl"
+          centered
+        >
+          {selectedOrder && (
+            <Stack>
+              <Card withBorder>
+                <Title order={4}>Planteamiento del Ejercicio</Title>
+                <Text>
+                  <Latex>{`$$${selectedOrder.topic}$$`}</Latex>
+                </Text>
+              </Card>
+              <Card withBorder>
+                <Title order={4}>Imagen de Resolución</Title>
+                <Image
+                  src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads${selectedOrder.originalImageUrl}`}
+                  alt="Resolución"
+                />
+              </Card>
+              {selectedOrder.finalVideoUrl && (
+                <Button
+                  fullWidth
+                  mt="md"
+                  onClick={() => setIsVideoModalOpen(true)}
+                >
+                  VER VIDEO DE RESOLUCIÓN
+                </Button>
+              )}
+              {selectedOrder.finalVideoUrl && (
+                <Group grow mt="md">
+                  <Button
+                    // component="a"
+                    // href={`${process.env.NEXT_PUBLIC_API_URL}/orders/download/${selectedOrder.id}`}
+                    // target="_blank"
+                    onClick={handleDownload}
+                    leftSection={<IconDownload size={16} />}
+                  >
+                    Descargar Video
+                  </Button>
+                  <Button
+                    leftSection={<IconShare size={16} />}
+                    onClick={() => {
+                      if (navigator.share) {
+                        navigator.share({
+                          title: selectedOrder.topic,
+                          text: "Mira la resolución de este ejercicio:",
+                          url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads${selectedOrder.finalVideoUrl}`,
+                        });
+                      } else {
+                        navigator.clipboard.writeText(
+                          `${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads${selectedOrder.finalVideoUrl}`
+                        );
+                        alert("Enlace copiado al portapapeles!");
+                      }
+                    }}
+                  >
+                    Compartir
+                  </Button>
+                </Group>
+              )}
+            </Stack>
+          )}
+        </Modal>
+      </Box>
 
       <Modal
-        opened={!!selectedOrder}
-        onClose={() => setSelectedOrder(null)}
-        title={selectedOrder?.topic}
-        size="xl"
+        opened={isVideoModalOpen}
+        onClose={() => setIsVideoModalOpen(false)}
+        title="Video de Resolución"
+        size="lg"
         centered
       >
-        {selectedOrder && (
-          <Stack>
-            <Card withBorder>
-              <Title order={4}>Planteamiento del Ejercicio</Title>
-              <Text>
-                <Latex>{`$$${selectedOrder.topic}$$`}</Latex>
-              </Text>
-            </Card>
-            <Card withBorder>
-              <Title order={4}>Imagen de Resolución</Title>
-              <Image
-                src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads${selectedOrder.originalImageUrl}`}
-                alt="Resolución"
-              />
-            </Card>
-            {selectedOrder.finalVideoUrl && (
-              <Button
-                component="a"
-                href={`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads${selectedOrder.finalVideoUrl}`}
-                target="_blank"
-                fullWidth
-                mt="md"
-              >
-                VER VIDEO DE RESOLUCIÓN
-              </Button>
-            )}
-          </Stack>
+        {selectedOrder?.finalVideoUrl && (
+          <Box
+            style={{
+              position: "relative",
+              width: "100%",
+              paddingBottom: "56.25%", // 16:9 Aspect Ratio
+              height: 0,
+              overflow: "hidden",
+              borderRadius: "md", // Mantine's border-radius
+            }}
+          >
+            <video
+              src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads${selectedOrder.finalVideoUrl}`}
+              controls
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                border: "none",
+              }}
+            >
+              Tu navegador no soporta la etiqueta de video.
+            </video>
+          </Box>
         )}
       </Modal>
-    </Box>
+    </>
   );
 }

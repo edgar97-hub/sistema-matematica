@@ -320,7 +320,14 @@ export class ExercisesService {
         );
 
         // Combine scores (e.g., weighted average)
-        const score = 0.7 * latexScore + 0.3 * tagScore;
+        let score = 0;
+        if (latex) {
+          console.log("test1")
+          score = 0.9 * latexScore + 0.9 * tagScore;
+        } else {
+          console.log('test2');
+          score = 0.7 * tagScore;
+        }
 
         if (score >= threshold) {
           similarMatches.push({

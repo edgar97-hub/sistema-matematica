@@ -86,6 +86,7 @@ export default function NewOrderPage() {
   const [extractedLatex, setExtractedLatex] = useState("");
   const [isExtracting, setIsExtracting] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [suggestedTags, setSuggestedTags] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [inputMode, setInputMode] = useState<"upload" | "camera">("upload"); // New state for input mode
@@ -845,6 +846,10 @@ export default function NewOrderPage() {
     }
   };
 
+  const handleOpenVideoModal = () => {
+    setIsVideoModalOpen(true);
+  };
+
   const handleClearSearch = () => {
     setSelectedImage(null);
     setExtractedLatex("");
@@ -1316,13 +1321,7 @@ export default function NewOrderPage() {
                       alt="Resolución"
                     />
                     {selectedExercise.videoUrl && (
-                      <Button
-                        component="a"
-                        href={`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads${selectedExercise.videoUrl}`}
-                        target="_blank"
-                        fullWidth
-                        mt="md"
-                      >
+                      <Button fullWidth mt="md" onClick={handleOpenVideoModal}>
                         VER VIDEO DE RESOLUCIÓN
                       </Button>
                     )}
@@ -1333,6 +1332,42 @@ export default function NewOrderPage() {
           </Grid>
         )
       )}
+      <Modal
+        opened={isVideoModalOpen}
+        onClose={() => setIsVideoModalOpen(false)}
+        title="Video de Resolución"
+        size="lg"
+        zIndex={1000}
+        centered
+      >
+        {selectedExercise?.videoUrl && (
+          <Box
+            style={{
+              position: "relative",
+              width: "100%",
+              paddingBottom: "56.25%", // 16:9 Aspect Ratio
+              height: 0,
+              overflow: "hidden",
+              borderRadius: "md", // Mantine's border-radius
+            }}
+          >
+            <video
+              src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads${selectedExercise.videoUrl}`}
+              controls
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                border: "none",
+              }}
+            >
+              Tu navegador no soporta la etiqueta de video.
+            </video>
+          </Box>
+        )}
+      </Modal>
     </Container>
   );
 }
