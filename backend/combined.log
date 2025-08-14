@@ -2551,3 +2551,260 @@
 {"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-12T22:48:05.291Z"}
 {"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-12T23:17:09.128Z"}
 {"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-12T23:17:09.131Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T16:29:34.240Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T16:29:34.242Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T16:42:27.027Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T16:42:27.030Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T16:42:33.312Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T16:42:33.312Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T16:44:14.083Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T16:44:14.083Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T16:45:18.580Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T16:45:18.580Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T16:46:18.729Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T16:46:18.730Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T16:50:56.667Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T16:50:56.668Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"targetUserId\":\"2\"}","timestamp":"2025-08-13T16:51:19.472Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {\"targetUserId\":2}, skip: 0, take: 10","timestamp":"2025-08-13T16:51:19.473Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"targetUserId\":\"3\"}","timestamp":"2025-08-13T16:51:20.855Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {\"targetUserId\":3}, skip: 0, take: 10","timestamp":"2025-08-13T16:51:20.855Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"targetUserId\":\"4\"}","timestamp":"2025-08-13T16:51:21.688Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {\"targetUserId\":4}, skip: 0, take: 10","timestamp":"2025-08-13T16:51:21.689Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"targetUserId\":\"5\"}","timestamp":"2025-08-13T16:51:22.231Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {\"targetUserId\":5}, skip: 0, take: 10","timestamp":"2025-08-13T16:51:22.231Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"targetUserId\":\"51\"}","timestamp":"2025-08-13T16:51:22.813Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {\"targetUserId\":51}, skip: 0, take: 10","timestamp":"2025-08-13T16:51:22.813Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"targetUserId\":\"1\"}","timestamp":"2025-08-13T16:51:23.574Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {\"targetUserId\":1}, skip: 0, take: 10","timestamp":"2025-08-13T16:51:23.574Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"targetUserId\":\"11\"}","timestamp":"2025-08-13T16:51:54.462Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {\"targetUserId\":11}, skip: 0, take: 10","timestamp":"2025-08-13T16:51:54.463Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"targetUserId\":\"e\"}","timestamp":"2025-08-13T16:51:57.831Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {\"targetUserId\":null}, skip: 0, take: 10","timestamp":"2025-08-13T16:51:57.831Z"}
+{"context":"CreditService","level":"error","message":"Error fetching all credit transactions: Unknown column 'NaN' in 'where clause'","timestamp":"2025-08-13T16:51:57.844Z","trace":"QueryFailedError: Unknown column 'NaN' in 'where clause'\n    at Query.onResult (/home/edgar/Documents/projects/projects/nodejs/sistema-matematica/backend/node_modules/typeorm/driver/src/driver/mysql/MysqlQueryRunner.ts:247:33)\n    at Query.execute (/home/edgar/Documents/projects/projects/nodejs/sistema-matematica/backend/node_modules/mysql2/lib/commands/command.js:36:14)\n    at PoolConnection.handlePacket (/home/edgar/Documents/projects/projects/nodejs/sistema-matematica/backend/node_modules/mysql2/lib/base/connection.js:475:34)\n    at PacketParser.onPacket (/home/edgar/Documents/projects/projects/nodejs/sistema-matematica/backend/node_modules/mysql2/lib/base/connection.js:93:12)\n    at PacketParser.executeStart (/home/edgar/Documents/projects/projects/nodejs/sistema-matematica/backend/node_modules/mysql2/lib/packet_parser.js:75:16)\n    at Socket.<anonymous> (/home/edgar/Documents/projects/projects/nodejs/sistema-matematica/backend/node_modules/mysql2/lib/base/connection.js:100:25)\n    at Socket.emit (node:events:524:28)\n    at addChunk (node:internal/streams/readable:561:12)\n    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)\n    at Readable.push (node:internal/streams/readable:392:5)"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"targetUserId\":\"ed\"}","timestamp":"2025-08-13T16:51:57.949Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {\"targetUserId\":null}, skip: 0, take: 10","timestamp":"2025-08-13T16:51:57.949Z"}
+{"context":"CreditService","level":"error","message":"Error fetching all credit transactions: Unknown column 'NaN' in 'where clause'","timestamp":"2025-08-13T16:51:57.951Z","trace":"QueryFailedError: Unknown column 'NaN' in 'where clause'\n    at Query.onResult (/home/edgar/Documents/projects/projects/nodejs/sistema-matematica/backend/node_modules/typeorm/driver/src/driver/mysql/MysqlQueryRunner.ts:247:33)\n    at Query.execute (/home/edgar/Documents/projects/projects/nodejs/sistema-matematica/backend/node_modules/mysql2/lib/commands/command.js:36:14)\n    at PoolConnection.handlePacket (/home/edgar/Documents/projects/projects/nodejs/sistema-matematica/backend/node_modules/mysql2/lib/base/connection.js:475:34)\n    at PacketParser.onPacket (/home/edgar/Documents/projects/projects/nodejs/sistema-matematica/backend/node_modules/mysql2/lib/base/connection.js:93:12)\n    at PacketParser.executeStart (/home/edgar/Documents/projects/projects/nodejs/sistema-matematica/backend/node_modules/mysql2/lib/packet_parser.js:75:16)\n    at Socket.<anonymous> (/home/edgar/Documents/projects/projects/nodejs/sistema-matematica/backend/node_modules/mysql2/lib/base/connection.js:100:25)\n    at Socket.emit (node:events:524:28)\n    at addChunk (node:internal/streams/readable:561:12)\n    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)\n    at Readable.push (node:internal/streams/readable:392:5)"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"targetUserId\":\"edg\"}","timestamp":"2025-08-13T16:51:58.350Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {\"targetUserId\":null}, skip: 0, take: 10","timestamp":"2025-08-13T16:51:58.350Z"}
+{"context":"CreditService","level":"error","message":"Error fetching all credit transactions: Unknown column 'NaN' in 'where clause'","timestamp":"2025-08-13T16:51:58.351Z","trace":"QueryFailedError: Unknown column 'NaN' in 'where clause'\n    at Query.onResult (/home/edgar/Documents/projects/projects/nodejs/sistema-matematica/backend/node_modules/typeorm/driver/src/driver/mysql/MysqlQueryRunner.ts:247:33)\n    at Query.execute (/home/edgar/Documents/projects/projects/nodejs/sistema-matematica/backend/node_modules/mysql2/lib/commands/command.js:36:14)\n    at PoolConnection.handlePacket (/home/edgar/Documents/projects/projects/nodejs/sistema-matematica/backend/node_modules/mysql2/lib/base/connection.js:475:34)\n    at PacketParser.onPacket (/home/edgar/Documents/projects/projects/nodejs/sistema-matematica/backend/node_modules/mysql2/lib/base/connection.js:93:12)\n    at PacketParser.executeStart (/home/edgar/Documents/projects/projects/nodejs/sistema-matematica/backend/node_modules/mysql2/lib/packet_parser.js:75:16)\n    at Socket.<anonymous> (/home/edgar/Documents/projects/projects/nodejs/sistema-matematica/backend/node_modules/mysql2/lib/base/connection.js:100:25)\n    at Socket.emit (node:events:524:28)\n    at addChunk (node:internal/streams/readable:561:12)\n    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)\n    at Readable.push (node:internal/streams/readable:392:5)"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"targetUserId\":\"edg\"}","timestamp":"2025-08-13T16:51:59.356Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {\"targetUserId\":null}, skip: 0, take: 10","timestamp":"2025-08-13T16:51:59.356Z"}
+{"context":"CreditService","level":"error","message":"Error fetching all credit transactions: Unknown column 'NaN' in 'where clause'","timestamp":"2025-08-13T16:51:59.358Z","trace":"QueryFailedError: Unknown column 'NaN' in 'where clause'\n    at Query.onResult (/home/edgar/Documents/projects/projects/nodejs/sistema-matematica/backend/node_modules/typeorm/driver/src/driver/mysql/MysqlQueryRunner.ts:247:33)\n    at Query.execute (/home/edgar/Documents/projects/projects/nodejs/sistema-matematica/backend/node_modules/mysql2/lib/commands/command.js:36:14)\n    at PoolConnection.handlePacket (/home/edgar/Documents/projects/projects/nodejs/sistema-matematica/backend/node_modules/mysql2/lib/base/connection.js:475:34)\n    at PacketParser.onPacket (/home/edgar/Documents/projects/projects/nodejs/sistema-matematica/backend/node_modules/mysql2/lib/base/connection.js:93:12)\n    at PacketParser.executeStart (/home/edgar/Documents/projects/projects/nodejs/sistema-matematica/backend/node_modules/mysql2/lib/packet_parser.js:75:16)\n    at Socket.<anonymous> (/home/edgar/Documents/projects/projects/nodejs/sistema-matematica/backend/node_modules/mysql2/lib/base/connection.js:100:25)\n    at Socket.emit (node:events:524:28)\n    at addChunk (node:internal/streams/readable:561:12)\n    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)\n    at Readable.push (node:internal/streams/readable:392:5)"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T16:51:59.575Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T16:51:59.576Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T16:54:00.935Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T16:54:00.935Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T16:59:16.412Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T16:59:16.412Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T17:05:27.830Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T17:05:27.833Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T17:08:47.584Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T17:08:47.585Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T17:11:35.951Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T17:11:35.951Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T17:30:36.784Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T17:30:36.784Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"targetUserName\":\"e\"}","timestamp":"2025-08-13T17:30:38.630Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {\"targetUser\":{\"name\":{\"_type\":\"ilike\",\"_value\":\"%e%\",\"_useParameter\":true,\"_multipleParameters\":false}}}, skip: 0, take: 10","timestamp":"2025-08-13T17:30:38.630Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"targetUserName\":\"ed\"}","timestamp":"2025-08-13T17:30:38.931Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {\"targetUser\":{\"name\":{\"_type\":\"ilike\",\"_value\":\"%ed%\",\"_useParameter\":true,\"_multipleParameters\":false}}}, skip: 0, take: 10","timestamp":"2025-08-13T17:30:38.932Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"targetUserName\":\"edg\"}","timestamp":"2025-08-13T17:30:39.488Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {\"targetUser\":{\"name\":{\"_type\":\"ilike\",\"_value\":\"%edg%\",\"_useParameter\":true,\"_multipleParameters\":false}}}, skip: 0, take: 10","timestamp":"2025-08-13T17:30:39.488Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"targetUserName\":\"edga\"}","timestamp":"2025-08-13T17:30:39.598Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {\"targetUser\":{\"name\":{\"_type\":\"ilike\",\"_value\":\"%edga%\",\"_useParameter\":true,\"_multipleParameters\":false}}}, skip: 0, take: 10","timestamp":"2025-08-13T17:30:39.599Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"targetUserName\":\"edgar\"}","timestamp":"2025-08-13T17:30:39.769Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {\"targetUser\":{\"name\":{\"_type\":\"ilike\",\"_value\":\"%edgar%\",\"_useParameter\":true,\"_multipleParameters\":false}}}, skip: 0, take: 10","timestamp":"2025-08-13T17:30:39.769Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"targetUserName\":\"t\"}","timestamp":"2025-08-13T17:30:44.495Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {\"targetUser\":{\"name\":{\"_type\":\"ilike\",\"_value\":\"%t%\",\"_useParameter\":true,\"_multipleParameters\":false}}}, skip: 0, take: 10","timestamp":"2025-08-13T17:30:44.495Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"targetUserName\":\"te\"}","timestamp":"2025-08-13T17:30:44.577Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {\"targetUser\":{\"name\":{\"_type\":\"ilike\",\"_value\":\"%te%\",\"_useParameter\":true,\"_multipleParameters\":false}}}, skip: 0, take: 10","timestamp":"2025-08-13T17:30:44.578Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"targetUserName\":\"tec\"}","timestamp":"2025-08-13T17:30:44.835Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {\"targetUser\":{\"name\":{\"_type\":\"ilike\",\"_value\":\"%tec%\",\"_useParameter\":true,\"_multipleParameters\":false}}}, skip: 0, take: 10","timestamp":"2025-08-13T17:30:44.835Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"targetUserName\":\"tech\"}","timestamp":"2025-08-13T17:30:46.169Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {\"targetUser\":{\"name\":{\"_type\":\"ilike\",\"_value\":\"%tech%\",\"_useParameter\":true,\"_multipleParameters\":false}}}, skip: 0, take: 10","timestamp":"2025-08-13T17:30:46.169Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"targetUserName\":\"d\"}","timestamp":"2025-08-13T17:30:48.534Z"}
+{"level":"info","message":"Querying credit transactions with where: {\"targetUser\":{\"name\":{\"_type\":\"ilike\",\"_value\":\"%d%\",\"_useParameter\":true,\"_multipleParameters\":false}}}, skip: 0, take: 10","timestamp":"2025-08-13T17:30:48.534Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"targetUserName\":\"de\"}","timestamp":"2025-08-13T17:30:48.643Z"}
+{"level":"info","message":"Querying credit transactions with where: {\"targetUser\":{\"name\":{\"_type\":\"ilike\",\"_value\":\"%de%\",\"_useParameter\":true,\"_multipleParameters\":false}}}, skip: 0, take: 10","timestamp":"2025-08-13T17:30:48.644Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"targetUserName\":\"dev\"}","timestamp":"2025-08-13T17:30:48.834Z"}
+{"level":"info","message":"Querying credit transactions with where: {\"targetUser\":{\"name\":{\"_type\":\"ilike\",\"_value\":\"%dev%\",\"_useParameter\":true,\"_multipleParameters\":false}}}, skip: 0, take: 10","timestamp":"2025-08-13T17:30:48.834Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T17:31:48.986Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T17:31:48.986Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"targetUserName\":\"j\"}","timestamp":"2025-08-13T17:31:56.536Z"}
+{"level":"info","message":"Querying credit transactions with where: {\"targetUser\":{\"name\":{\"_type\":\"ilike\",\"_value\":\"%j%\",\"_useParameter\":true,\"_multipleParameters\":false}}}, skip: 0, take: 10","timestamp":"2025-08-13T17:31:56.536Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"targetUserName\":\"ja\"}","timestamp":"2025-08-13T17:31:56.631Z"}
+{"level":"info","message":"Querying credit transactions with where: {\"targetUser\":{\"name\":{\"_type\":\"ilike\",\"_value\":\"%ja%\",\"_useParameter\":true,\"_multipleParameters\":false}}}, skip: 0, take: 10","timestamp":"2025-08-13T17:31:56.631Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"targetUserName\":\"jav\"}","timestamp":"2025-08-13T17:31:56.770Z"}
+{"level":"info","message":"Querying credit transactions with where: {\"targetUser\":{\"name\":{\"_type\":\"ilike\",\"_value\":\"%jav%\",\"_useParameter\":true,\"_multipleParameters\":false}}}, skip: 0, take: 10","timestamp":"2025-08-13T17:31:56.770Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"targetUserName\":\"javi\"}","timestamp":"2025-08-13T17:31:56.931Z"}
+{"level":"info","message":"Querying credit transactions with where: {\"targetUser\":{\"name\":{\"_type\":\"ilike\",\"_value\":\"%javi%\",\"_useParameter\":true,\"_multipleParameters\":false}}}, skip: 0, take: 10","timestamp":"2025-08-13T17:31:56.931Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"targetUserName\":\"javie\"}","timestamp":"2025-08-13T17:31:57.091Z"}
+{"level":"info","message":"Querying credit transactions with where: {\"targetUser\":{\"name\":{\"_type\":\"ilike\",\"_value\":\"%javie%\",\"_useParameter\":true,\"_multipleParameters\":false}}}, skip: 0, take: 10","timestamp":"2025-08-13T17:31:57.091Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"targetUserName\":\"javier\"}","timestamp":"2025-08-13T17:31:57.262Z"}
+{"level":"info","message":"Querying credit transactions with where: {\"targetUser\":{\"name\":{\"_type\":\"ilike\",\"_value\":\"%javier%\",\"_useParameter\":true,\"_multipleParameters\":false}}}, skip: 0, take: 10","timestamp":"2025-08-13T17:31:57.262Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"action\":\"purchase_success\"}","timestamp":"2025-08-13T17:32:08.266Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {\"action\":\"purchase_success\"}, skip: 0, take: 10","timestamp":"2025-08-13T17:32:08.266Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"action\":\"usage_resolution\"}","timestamp":"2025-08-13T17:32:10.600Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {\"action\":\"usage_resolution\"}, skip: 0, take: 10","timestamp":"2025-08-13T17:32:10.600Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"action\":\"welcome_bonus\"}","timestamp":"2025-08-13T17:32:13.227Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {\"action\":\"welcome_bonus\"}, skip: 0, take: 10","timestamp":"2025-08-13T17:32:13.227Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"action\":\"admin_adjustment\"}","timestamp":"2025-08-13T17:32:15.578Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {\"action\":\"admin_adjustment\"}, skip: 0, take: 10","timestamp":"2025-08-13T17:32:15.578Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"startDate\":\"2025-08-01\"}","timestamp":"2025-08-13T17:32:23.265Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {\"createdAt\":{\"_type\":\"moreThanOrEqual\",\"_value\":\"2025-08-01T00:00:00.000Z\",\"_useParameter\":true,\"_multipleParameters\":false}}, skip: 0, take: 10","timestamp":"2025-08-13T17:32:23.265Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"startDate\":\"2025-07-31\",\"endDate\":\"2025-08-16\"}","timestamp":"2025-08-13T17:32:24.344Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {\"createdAt\":{\"_type\":\"between\",\"_value\":[\"2025-07-31T00:00:00.000Z\",\"2025-08-16T23:59:59.999Z\"],\"_useParameter\":true,\"_multipleParameters\":true}}, skip: 0, take: 10","timestamp":"2025-08-13T17:32:24.344Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T17:38:26.417Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T17:38:26.417Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T17:41:38.119Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T17:41:38.119Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T17:47:37.972Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T17:47:37.972Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T17:49:02.711Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T17:49:02.712Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T17:50:18.849Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T17:50:18.849Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"targetUserName\":\"e\"}","timestamp":"2025-08-13T17:50:34.743Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {\"targetUser\":{\"name\":{\"_type\":\"ilike\",\"_value\":\"%e%\",\"_useParameter\":true,\"_multipleParameters\":false}}}, skip: 0, take: 10","timestamp":"2025-08-13T17:50:34.744Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"targetUserName\":\"ed\"}","timestamp":"2025-08-13T17:50:34.848Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {\"targetUser\":{\"name\":{\"_type\":\"ilike\",\"_value\":\"%ed%\",\"_useParameter\":true,\"_multipleParameters\":false}}}, skip: 0, take: 10","timestamp":"2025-08-13T17:50:34.848Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10,\"targetUserName\":\"edg\"}","timestamp":"2025-08-13T17:50:35.612Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {\"targetUser\":{\"name\":{\"_type\":\"ilike\",\"_value\":\"%edg%\",\"_useParameter\":true,\"_multipleParameters\":false}}}, skip: 0, take: 10","timestamp":"2025-08-13T17:50:35.612Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T17:51:58.560Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T17:51:58.560Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T17:53:01.965Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T17:53:01.965Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T17:58:27.000Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T17:58:27.000Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T17:59:20.841Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T17:59:20.842Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T17:59:34.660Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T17:59:34.660Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T17:59:39.641Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T17:59:39.641Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T17:59:47.737Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T17:59:47.737Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T17:59:51.929Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T17:59:51.929Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T18:00:20.803Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T18:00:20.803Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T18:01:39.163Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T18:01:39.163Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T18:01:47.139Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T18:01:47.139Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T18:01:50.803Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T18:01:50.803Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T18:01:52.630Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T18:01:52.630Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T18:02:33.935Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T18:02:33.935Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T18:02:34.748Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T18:02:34.748Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-13T18:27:42.951Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-13T18:27:42.951Z"}
+{"context":"CreditPackageService","level":"info","message":"Updated credit package with id 5","timestamp":"2025-08-13T18:29:27.246Z"}
+{"context":"CreditPackageService","level":"info","message":"Updated credit package with id 5","timestamp":"2025-08-13T18:29:33.566Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T18:44:58.921Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T18:44:58.923Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T19:24:52.095Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T19:24:52.097Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T19:29:50.565Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T19:29:50.567Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T19:46:36.529Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T19:46:36.532Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T19:46:46.568Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T19:46:46.571Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T19:46:49.177Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T19:46:49.180Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T19:46:52.227Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T19:46:52.230Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T19:46:55.907Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T19:46:55.910Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T19:47:00.304Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T19:47:00.307Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T19:47:06.587Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T19:47:06.589Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T19:47:09.405Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T19:47:09.408Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T19:56:07.881Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T19:56:07.887Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T19:56:59.772Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T19:56:59.775Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T20:16:20.027Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T20:16:20.029Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T20:36:44.123Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T20:36:44.126Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T20:37:07.739Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T20:37:07.743Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T21:03:19.094Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T21:03:19.097Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T23:37:17.006Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T23:37:17.008Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T23:40:12.502Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T23:40:12.504Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T23:41:32.169Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T23:41:32.173Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T23:43:19.615Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T23:43:19.617Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T23:44:23.719Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T23:44:23.721Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T23:44:38.288Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T23:44:38.291Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T23:45:06.821Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T23:45:06.823Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T23:45:25.118Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T23:45:25.120Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T23:45:27.516Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T23:45:27.520Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T23:45:43.048Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T23:45:43.050Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T23:45:53.489Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T23:45:53.491Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T23:46:12.106Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T23:46:12.108Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T23:46:49.228Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T23:46:49.231Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T23:53:32.284Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T23:53:32.286Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T23:54:11.680Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-13T23:54:11.683Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-14T00:08:02.291Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-14T00:08:02.294Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-14T00:13:27.552Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-14T00:13:27.554Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-14T00:13:41.366Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-14T00:13:41.368Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-14T00:13:43.540Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-14T00:13:43.542Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-14T00:13:53.125Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-14T00:13:53.127Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-14T00:13:59.000Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-14T00:13:59.002Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-14T00:16:00.002Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-14T00:16:00.002Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-14T00:19:22.483Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-14T00:19:22.483Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-14T00:27:17.035Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-14T00:27:17.037Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-14T00:28:11.943Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-14T00:28:11.946Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-14T00:28:17.983Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-14T00:28:17.983Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-14T00:39:02.058Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-14T00:39:02.059Z"}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-14T02:10:39.595Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-14T02:10:39.597Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-14T02:11:52.849Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-14T02:11:52.852Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-14T02:12:22.256Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-14T02:12:22.258Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-14T02:12:27.651Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-14T02:12:27.654Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-14T02:13:01.654Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-14T02:13:01.657Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-14T02:13:11.212Z"}
+{"context":"StripeService","level":"info","message":"Stripe service initialized","timestamp":"2025-08-14T02:13:11.214Z"}
+{"context":"StripeService","level":"error","message":"STRIPE_SECRET_KEY is not defined in the environment variables","timestamp":"2025-08-14T03:03:29.798Z","trace":""}
+{"context":"StripeService","level":"error","message":"STRIPE_SECRET_KEY is not defined in the environment variables","timestamp":"2025-08-14T03:03:52.975Z","trace":""}
+{"context":"StripeService","level":"error","message":"STRIPE_SECRET_KEY is not defined in the environment variables","timestamp":"2025-08-14T03:04:29.941Z","trace":""}

@@ -79,12 +79,12 @@ export function UserPwaFormComponent({
         {...form.getInputProps("email")}
         mb="md"
       />
-      <TextInput
+      {/* <TextInput
         label="País de Origen"
         placeholder="País"
         {...form.getInputProps("countryOfOrigin")}
         mb="md"
-      />
+      /> */}
       {/* <NumberInput
         label="Créditos"
         placeholder="Saldo de créditos"

@@ -12,7 +12,6 @@ import { CreditPackageEntity } from './credit-system/entities/credit-package.ent
 import { CreditTransactionEntity } from './credit-system/entities/credit-transaction.entity';
 import { CreditService } from './credit-system/services/credit.service';
 import { CreditPackageService } from './credit-system/services/credit-package.service';
-import { StripeService } from './credit-system/services/stripe.service';
 import { CreditController } from './credit-system/controllers/credit.controller';
 import { CreditPackageController } from './credit-system/controllers/credit-package.controller';
 // --- FIN: Lógica del sistema de créditos ---
@@ -63,7 +62,6 @@ import { ExercisesModule } from './exercises/exercises.module';
     AppService,
     CreditService,
     CreditPackageService,
-    StripeService,
     CustomLoggerService,
   ],
 })

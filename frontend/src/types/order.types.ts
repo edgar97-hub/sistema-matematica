@@ -25,18 +25,44 @@ export enum OrderPipelineStatus {
   GENERATING_VIDEO_PENDING = "GENERATING_VIDEO_PENDING", // Error general en el pipeline,
 }
 
+export interface BasicUserRef {
+  id: string | number;
+  name?: string;
+  email?: string;
+}
+
+export interface BasicExerciseRef {
+  id: string | number;
+  title?: string;
+}
+
 export interface OrderFE {
   id: string;
+  userId: number; // ID del usuario que hizo la orden
   topic: string;
-  educationalStageSelected: string;
-  subdivisionGradeSelected?: string;
+  ejerciseImageUrl1?: string;
+  ejerciseTitle?: string;
+  educationalStageSelected?: string; // Keep as optional if not always present
+  subdivisionGradeSelected?: string; // Keep as optional if not always present
   status: OrderPipelineStatus;
   finalVideoUrl?: string;
   createdAt: string;
   errorMessage?: string;
   originalImageUrl?: string;
-  ejerciseImageUrl1?: string;
-  ejerciseTitle?: string;
+  creditsConsumed?: number; // Créditos consumidos por la operación
+  matchType?: "Exacta" | "Similar"; // Tipo de coincidencia para la resolución
+
+  // Formatted properties from backend AdminOrderResponse
+  formatexUser?: {
+    id: number;
+    name: string;
+    email: string;
+  };
+  formatexExercise?: {
+    id: number;
+    title: string;
+    imageUrl1: string;
+  };
 }
 
 export interface PaginatedResponse<T> {

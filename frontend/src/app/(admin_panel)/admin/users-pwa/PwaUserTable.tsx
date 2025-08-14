@@ -188,7 +188,6 @@ export function PwaUserTable({
               </ActionIcon>
             </Tooltip>
             <Tooltip label="Ajustar Créditos">
-              {/* <--- NUEVO TOOLTIP Y BOTÓN --> */}
               <ActionIcon
                 variant="subtle"
                 color="orange"

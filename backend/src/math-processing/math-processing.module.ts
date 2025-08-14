@@ -5,11 +5,10 @@ import { OpenaiService } from './openai/openai.service';
 import { FileStorageModule } from '../file-storage/file-storage.module';
 import { SimpleTexService } from './services/simpletex.service';
 import { AudioService } from './services/audio.service';
-import { FFmpegService } from './services/ffmpeg.service';
 
 @Module({
   imports: [HttpModule, ConfigModule, FileStorageModule],
-  providers: [SimpleTexService, OpenaiService, AudioService, FFmpegService],
-  exports: [SimpleTexService, OpenaiService, AudioService, FFmpegService],
+  providers: [SimpleTexService, OpenaiService, AudioService],
+  exports: [SimpleTexService, OpenaiService, AudioService],
 })
 export class MathProcessingModule {}

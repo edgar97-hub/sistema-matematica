@@ -117,7 +117,11 @@ export function CreditTransactionTable({
 
     return (
       <Table.Tr key={tx.id} className={classes.dataRow}>
-        <Table.Td>{new Date(tx.createdAt).toLocaleString("es-PE")}</Table.Td>
+        <Table.Td>
+          <Tooltip label={new Date(tx.createdAt).toLocaleString("es-PE")}>
+            <Text>{new Date(tx.createdAt).toLocaleDateString("es-PE")}</Text>
+          </Tooltip>
+        </Table.Td>
         <Table.Td>
           <Tooltip label={tx.targetUser?.email || tx.targetUserId.toString()}>
             <Text truncate>
@@ -132,14 +136,16 @@ export function CreditTransactionTable({
               : "center" /*Ajuste para el badge*/,
           }}
         >
-          <Badge
-            color={actionInfo.color}
-            variant="light"
-            leftSection={actionInfo.icon}
-            size="sm"
-          >
-            {actionInfo.label}
-          </Badge>
+          <Tooltip label={actionInfo.label}>
+            <Badge
+              color={actionInfo.color}
+              variant="light"
+              leftSection={actionInfo.icon}
+              size="sm"
+            >
+              {actionInfo.label}
+            </Badge>
+          </Tooltip>
         </Table.Td>
         <Table.Td
           style={{
@@ -158,7 +164,9 @@ export function CreditTransactionTable({
           {tx.balanceAfter}
         </Table.Td>
         <Table.Td className={classes.descriptionCell}>
-          {tx.reason || "-"}
+          <Tooltip label={tx.reason}>
+            <Text>{tx.reason || "-"}</Text>
+          </Tooltip>
         </Table.Td>
         <Table.Td style={{ textAlign: "center" }}>
           {tx.paymentGateway || "-"}

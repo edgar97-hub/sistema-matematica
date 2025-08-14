@@ -42,4 +42,23 @@ export const orderService = {
     });
     return response.data;
   },
+  async getAdminResolutionOrders(
+    params: {
+      page?: number;
+      limit?: number;
+      userName?: string;
+      startDate?: string;
+      endDate?: string;
+    },
+    token: string
+  ): Promise<PaginatedResponse<OrderFE>> {
+    const response = await apiClient.get<PaginatedResponse<OrderFE>>(
+      "/orders/admin/resolution-orders",
+      {
+        headers: { Authorization: `Bearer ${token}` },
+        params,
+      }
+    );
+    return response.data;
+  },
 };

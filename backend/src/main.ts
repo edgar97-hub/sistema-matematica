@@ -11,15 +11,15 @@ import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const certPath = './cert';
-  const httpsOptions = {
-    key: fs.readFileSync(path.resolve(certPath, 'private.key')),
-    cert: fs.readFileSync(path.resolve(certPath, 'certificate.crt')),
-  };
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    httpsOptions,
-  });
+  // const httpsOptions = {
+  //   key: fs.readFileSync(path.resolve(certPath, 'private.key')),
+  //   cert: fs.readFileSync(path.resolve(certPath, 'certificate.crt')),
+  // };
+  // const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+  //   httpsOptions,
+  // });
 
-  // const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.use(
     '/api/credit-transactions/stripe-webhook',
     bodyParser.raw({ type: 'application/json' }),
@@ -36,7 +36,11 @@ async function bootstrap() {
     }),
   );
   app.setGlobalPrefix('api');
+  // if (process.env.PORT) {
   console.log('running on port ', process.env.PORT);
   await app.listen(process.env.PORT ?? 3000);
+  // } else {
+  //   await app.listen();
+  // }
 }
 bootstrap();

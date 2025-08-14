@@ -103,6 +103,26 @@ export class OrdersController {
     }
   }
 
+  @Get('admin/resolution-orders')
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  async getAdminResolutionOrders(
+    @Query('page', ParseIntPipe) page: number,
+    @Query('limit', ParseIntPipe) limit: number,
+    @Query('userName') userName?: string,
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
+  ) {
+    try {
+      return await this.ordersService.findAdminResolutionOrders(page, limit, {
+        userName,
+        startDate,
+        endDate,
+      });
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
   @Get('admin/:id')
   @UseGuards(JwtAuthGuard, AdminGuard)
   async findOrderByIdForAdmin(@Param('id', ParseIntPipe) id: number) {

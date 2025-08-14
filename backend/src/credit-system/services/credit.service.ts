@@ -12,6 +12,7 @@ import {
   Between,
   MoreThanOrEqual,
   LessThanOrEqual,
+  ILike,
 } from 'typeorm';
 import { CreditPackageEntity } from '../entities/credit-package.entity';
 import {
@@ -19,10 +20,8 @@ import {
   CreditTransactionAction,
 } from '../entities/credit-transaction.entity';
 import { UserEntity } from '../../users/entities/user.entity';
-import { StripeService } from './stripe.service';
 import { CustomLoggerService } from '../../common/services/logger.service';
 import { GetAllCreditTransactionsDto } from '../controllers/credit-transaction.controller';
-import Stripe from 'stripe';
 import { AdminUserEntity } from 'src/admin-users/entities/admin-user.entity';
 
 @Injectable()
@@ -34,7 +33,6 @@ export class CreditService {
     private creditTransactionRepository: Repository<CreditTransactionEntity>,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
-    private stripeService: StripeService,
     private logger: CustomLoggerService,
     private entityManager: EntityManager,
   ) {}
@@ -53,7 +51,7 @@ export class CreditService {
       startDate,
       endDate,
       action,
-      targetUserId, // Añadido para filtro
+      targetUserName, // Cambiado de targetUserId a targetUserName
     } = queryDto;
 
     const skip = (page - 1) * limit;
@@ -61,10 +59,11 @@ export class CreditService {
     // Construir objeto 'where' para TypeORM dinámicamente
     const where: FindOptionsWhere<CreditTransactionEntity> = {};
 
-    if (targetUserId) {
-      // Asumiendo que targetUserId en la entidad es del mismo tipo que el enviado
-      // Si targetUserId en la entidad es number y en DTO string, necesitarías parseInt
-      where.targetUserId = parseInt(targetUserId);
+    if (targetUserName) {
+      // Filtrar por el nombre del usuario relacionado
+      where.targetUser = {
+        name: ILike(`%${targetUserName}%`),
+      };
     }
     if (action) {
       where.action = action;
@@ -93,6 +92,8 @@ export class CreditService {
           order: { createdAt: 'DESC' }, // Orden por defecto, o podrías tomarlo del DTO
           skip: skip,
           take: limit,
+          // Asegurarse de que la relación 'targetUser' se cargue para poder filtrar por nombre
+          // y para que el mapeo de formattedData funcione correctamente.
         },
       );
 
@@ -298,135 +299,6 @@ export class CreditService {
   //   }
   // }
 
-  async handleSuccessfulCheckoutSession(
-    session: Stripe.Checkout.Session,
-  ): Promise<void> {
-    this.logger.log(
-      `Handling successful checkout session: ${session.id}, Payment Status: ${session.payment_status}`,
-      'CreditService',
-    );
-
-    if (session.payment_status !== 'paid') {
-      this.logger.warn(
-        `Checkout session ${session.id} not successfully paid. Status: ${session.payment_status}`,
-        'CreditService',
-      );
-      return; // No procesar si no está pagado
-    }
-
-    const gatewayTransactionId = session.id; // O session.payment_intent si es más adecuado como ID único de pago
-
-    // 1. VERIFICAR IDEMPOTENCIA: ¿Ya procesamos esta transacción de Stripe?
-    const existingTransaction = await this.creditTransactionRepository.findOne({
-      where: {
-        gatewayTransactionId: gatewayTransactionId,
-        action: CreditTransactionAction.PURCHASE_SUCCESS,
-      },
-    });
-
-    if (existingTransaction) {
-      this.logger.log(
-        `Stripe event for session ${gatewayTransactionId} already processed. Skipping.`,
-        'CreditService',
-      );
-      return; // Ya fue procesado, no hacer nada más
-    }
-
-    // Extraer metadatos
-    const userIdString = session.metadata?.userId;
-    const packageIdString = session.metadata?.packageId;
-    const creditsFromString = session.metadata?.creditsAmount;
-
-    if (!userIdString || !packageIdString || !creditsFromString) {
-      this.logger.error(
-        `Missing metadata (userId, packageId, or creditsAmount) in Stripe session: ${session.id}`,
-        JSON.stringify(session.metadata),
-        'CreditService',
-      );
-      // Podrías crear un log de transacción fallida aquí o lanzar un error para monitoreo
-      throw new BadRequestException('Stripe session metadata incomplete.');
-    }
-
-    const userId = userIdString; // Asumiendo que tu UserEntity.id es string (UUID)
-    // Si es number, necesitas: const userId = parseInt(userIdString, 10);
-    const packageId = packageIdString; // Asumiendo que CreditPackageEntity.id es string (UUID)
-    // Si es number: const packageId = parseInt(packageIdString, 10);
-    const creditsToAdd = parseInt(creditsFromString, 10);
-
-    if (isNaN(creditsToAdd)) {
-      this.logger.error(
-        `Invalid creditsAmount in metadata: ${creditsFromString} for session ${session.id}`,
-        '',
-        'CreditService',
-      );
-      throw new BadRequestException(
-        'Invalid creditsAmount in Stripe session metadata.',
-      );
-    }
-
-    // Iniciar transacción de base de datos
-    await this.entityManager.transaction(async (transactionalEntityManager) => {
-      const userRepo = transactionalEntityManager.getRepository(UserEntity);
-      const packageRepo =
-        transactionalEntityManager.getRepository(CreditPackageEntity);
-      const transactionRepo = transactionalEntityManager.getRepository(
-        CreditTransactionEntity,
-      );
-
-      const user = await userRepo.findOne({ where: { id: parseInt(userId) } });
-      if (!user) {
-        throw new NotFoundException(
-          `User with ID "${userId}" not found for credit purchase.`,
-        );
-      }
-
-      const creditPackage = await packageRepo.findOne({
-        where: { id: parseInt(packageId) },
-      });
-      if (!creditPackage) {
-        throw new NotFoundException(
-          `Credit package with ID "${packageId}" not found.`,
-        );
-      }
-
-      // Validar que los créditos del paquete coincidan con los metadatos (seguridad adicional)
-      if (creditPackage.creditAmount !== creditsToAdd) {
-        this.logger.warn(
-          `Credits mismatch for package ${packageId} in session ${session.id}. Expected ${creditPackage.creditAmount}, got ${creditsToAdd}. Using package's amount.`,
-          'CreditService',
-        );
-        // Usar creditPackage.creditAmount como la fuente de verdad
-      }
-
-      const balanceBefore = user.creditBalance; // O user.creditBalance si renombraste
-      user.creditBalance += creditPackage.creditAmount; // Actualiza el saldo del usuario
-      const balanceAfter = user.creditBalance;
-
-      await userRepo.save(user); // Guarda el usuario actualizado
-
-      // Crear y guardar la transacción de crédito
-      const transactionData: Partial<CreditTransactionEntity> = {
-        targetUserId: user.id,
-        action: CreditTransactionAction.PURCHASE_SUCCESS,
-        amount: creditPackage.creditAmount,
-        balanceBefore,
-        balanceAfter,
-        paymentGateway: 'stripe',
-        gatewayTransactionId: gatewayTransactionId,
-        gatewayTransactionStatus: session.payment_status, // 'paid'
-        gatewayResponsePayload: session, // Guardar el objeto session completo para referencia
-        creditPackageId: creditPackage.id,
-        reason: `Compra del paquete: ${creditPackage.name}`,
-      };
-      const newTransaction = transactionRepo.create(transactionData);
-      await transactionRepo.save(newTransaction);
-
-      this.logger.log(
-        `Credits added and transaction recorded for user ${userId} from Stripe session ${session.id}`,
-        'CreditService',
-      );
-    });
-  }
 
   // async useCredits(
   //   userId: number,

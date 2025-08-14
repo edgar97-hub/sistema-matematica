@@ -72,7 +72,7 @@ function CreditTransactionsPage() {
   // Formulario para los filtros
   const filterForm = useForm({
     initialValues: {
-      targetUserId: "",
+      targetUserName: "", // Changed from targetUserId to targetUserName
       action: "" as CreditTransactionActionFE | "", // Para que el select pueda estar vacío
       startDate: null as Date | null,
       endDate: null as Date | null,
@@ -98,7 +98,7 @@ function CreditTransactionsPage() {
       const params: ListCreditTransactionsParams = {
         page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
-        targetUserId: filterForm.values.targetUserId || undefined,
+        targetUserName: filterForm.values.targetUserName || undefined, // Changed from targetUserId to targetUserName
         action: filterForm.values.action || undefined,
         startDate: filterForm.values.startDate
           ? filterForm.values.startDate.toISOString().split("T")[0]
@@ -133,10 +133,26 @@ function CreditTransactionsPage() {
   };
 
   const actionOptions = Object.values(CreditTransactionActionFE).map(
-    (action) => ({
-      value: action,
-      label: action.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()), // Formatear para el select
-    })
+    (action) => {
+      let label = action.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()); // Default formatting
+      switch (action) {
+        case CreditTransactionActionFE.PURCHASE_SUCCESS:
+          label = "Compra Exitosa";
+          break;
+        case CreditTransactionActionFE.USAGE_RESOLUTION:
+          label = "Uso de Resolución";
+          break;
+        case CreditTransactionActionFE.WELCOME_BONUS:
+          label = "Bono de Bienvenida";
+          break;
+        case CreditTransactionActionFE.ADMIN_ADJUSTMENT:
+          label = "Ajuste de Administrador";
+          break;
+        default:
+          break;
+      }
+      return { value: action, label };
+    }
   );
 
   return (
@@ -172,9 +188,9 @@ function CreditTransactionsPage() {
           </Text>
           <Group grow align="flex-end">
             <TextInput
-              label="ID Usuario PWA"
-              placeholder="Filtrar por ID de usuario"
-              {...filterForm.getInputProps("targetUserId")}
+              label="Nombre de Usuario PWA" // Changed label
+              placeholder="Filtrar por nombre de usuario" // Changed placeholder
+              {...filterForm.getInputProps("targetUserName")} // Changed from targetUserId to targetUserName
             />
             <MantineSelect
               label="Tipo de Acción"

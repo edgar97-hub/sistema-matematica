@@ -24,16 +24,8 @@ import {
 import { creditPackageService } from "../../../../lib/services/credit-package.service"; // Ajusta ruta
 import { CreditPackageTable } from "./CreditPackageTable"; // Ajusta ruta
 
-const queryClientInstance = new QueryClient({
-  /* ... tus defaultOptions ... */
-});
-
 export default function CreditPackagesPageWrapper() {
-  return (
-    // <QueryClientProvider client={queryClientInstance}>
-    <CreditPackagesPage />
-    // </QueryClientProvider>
-  );
+  return <CreditPackagesPage />;
 }
 
 function CreditPackagesPage() {

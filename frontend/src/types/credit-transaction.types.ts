@@ -51,6 +51,5 @@ export interface ListCreditTransactionsParams {
   startDate?: string; // Formato YYYY-MM-DD
   endDate?: string; // Formato YYYY-MM-DD
   action?: CreditTransactionActionFE;
-  targetUserId?: string | number; // Para filtrar por un usuario específico
-  // Podrías añadir más filtros si el backend los soporta (ej. adminUserId)
+  targetUserName?: string; // Para filtrar por nombre de usuario
 }

@@ -4,7 +4,6 @@ import { CreditPackageEntity } from './entities/credit-package.entity';
 import { CreditTransactionEntity } from './entities/credit-transaction.entity';
 import { CreditService } from './services/credit.service';
 import { CreditPackageService } from './services/credit-package.service';
-import { StripeService } from './services/stripe.service';
 import { CreditController } from './controllers/credit.controller';
 import { CreditPackageController } from './controllers/credit-package.controller';
 import { UsersModule } from '../users/users.module';
@@ -25,7 +24,6 @@ import { ConfigModule } from '@nestjs/config';
   providers: [
     CreditService,
     CreditPackageService,
-    StripeService,
     CustomLoggerService,
   ],
   controllers: [
@@ -33,6 +31,6 @@ import { ConfigModule } from '@nestjs/config';
     CreditPackageController,
     CreditTransactionController,
   ],
-  exports: [CreditService, CreditPackageService, StripeService],
+  exports: [CreditService, CreditPackageService],
 })
 export class CreditSystemModule {}

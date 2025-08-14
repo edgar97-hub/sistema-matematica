@@ -65,6 +65,11 @@ export const adminMenuItems: NavLinkItem[] = [
     label: "Historial de Créditos",
     icon: IconFileSettings,
   },
+  {
+    href: "/admin/resolution-orders",
+    label: "Órdenes de Resolución",
+    icon: IconListDetails,
+  },
   //   {
   //     label: "Gestión Operativa",
   //     icon: IconListDetails, // Un icono general para este grupo

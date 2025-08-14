@@ -58,11 +58,7 @@ const queryClientInstance = new QueryClient({
 });
 
 export default function PwaUsersPageWrapper() {
-  return (
-    <QueryClientProvider client={queryClientInstance}>
-      <PwaUsersPage />
-    </QueryClientProvider>
-  );
+  return <PwaUsersPage />;
 }
 
 function PwaUsersPage() {

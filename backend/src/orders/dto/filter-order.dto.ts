@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsEnum, IsDate } from 'class-validator';
+import { IsOptional, IsString, IsEnum, IsDateString } from 'class-validator';
 import { OrderPipelineStatus } from '../enums/order-pipeline-status.enum';
 import { Type } from 'class-transformer';
 
@@ -11,12 +11,14 @@ export class FilterOrderDto {
   userId?: number;
 
   @IsOptional()
-  @Type(() => Date)
-  @IsDate()
-  startDate?: Date;
+  @IsString()
+  userName?: string;
 
   @IsOptional()
-  @Type(() => Date)
-  @IsDate()
-  endDate?: Date;
+  @IsDateString()
+  startDate?: string;
+
+  @IsOptional()
+  @IsDateString()
+  endDate?: string;
 }

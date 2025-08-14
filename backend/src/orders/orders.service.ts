@@ -27,7 +27,7 @@ import { SystemConfigurationService } from '../system-configuration/services/sys
 import { OpenaiService } from '../math-processing/openai/openai.service';
 import { UserEntity } from 'src/users/entities/user.entity';
 import { CreditTransactionAction } from 'src/credit-system/entities/credit-transaction.entity';
-import { SimpleTexService } from '../math-processing/services/simpletex.service';
+import { SimpleTexService } from 'src/math-processing/services/simpletex.service';
 import {
   SimpleTexError,
   SimpleTexResponse,
@@ -35,9 +35,22 @@ import {
 import { join, parse, basename } from 'path';
 import * as fs from 'fs';
 import { AudioService } from 'src/math-processing/services/audio.service';
-import { FFmpegService } from 'src/math-processing/services/ffmpeg.service';
 import { PaginatedResponse, PaginationDto } from './dto/pagination.dto';
 import { Exercise } from '../exercises/entities/exercise.entity';
+
+export interface AdminOrderResponse extends OrderEntity {
+  formatexUser: {
+    id: number;
+    name: string;
+    email: string;
+  };
+  formatexExercise?: {
+    id: number;
+    title: string;
+    imageUrl1: string;
+  };
+  matchType: 'Exacta' | 'Similar';
+}
 
 @Injectable()
 export class OrdersService {
@@ -393,6 +406,75 @@ export class OrdersService {
     return order;
   }
 
+  async findAdminResolutionOrders(
+    page: number = 1,
+    limit: number = 10,
+    filters?: { userName?: string; startDate?: string; endDate?: string },
+  ): Promise<PaginatedResponse<AdminOrderResponse>> {
+    // PaginatedResponse<AdminOrderResponse>
+    const queryBuilder = this.orderRepository
+      .createQueryBuilder('order')
+      .leftJoinAndSelect('order.user', 'user')
+      // .addSelect(['user.id', 'user.name', 'user.email'])
+      .leftJoinAndSelect('order.exercise', 'exercise');
+    // .addSelect(['exercise.id', 'exercise.title', 'exercise.imageUrl1']); // Select imageUrl1 from exercise
+
+    if (filters?.userName) {
+      queryBuilder.andWhere('user.name LIKE LOWER(:userName) ', {
+        userName: `%${filters.userName}%`,
+      });
+    }
+
+    if (filters?.startDate) {
+      queryBuilder.andWhere('order.createdAt >= :startDate', {
+        startDate: filters.startDate,
+      });
+    }
+
+    if (filters?.endDate) {
+      queryBuilder.andWhere('order.createdAt <= :endDate', {
+        endDate: filters.endDate + 'T23:59:59.999Z', // Incluir todo el día
+      });
+    }
+
+    queryBuilder
+      .orderBy('order.createdAt', 'DESC')
+      .skip((page - 1) * limit)
+      .take(limit);
+
+    const [data, total] = await queryBuilder.getManyAndCount();
+
+    const formattedData: AdminOrderResponse[] = data.map((order) => {
+      const formatexUser = order.user
+        ? { id: order.user.id, name: order.user.name, email: order.user.email }
+        : { id: 0, name: 'Unknown', email: 'unknown@example.com' };
+
+      const formatexExercise = order.exercise
+        ? {
+            id: order.exercise.id,
+            title: order.exercise.title,
+            imageUrl1: order.exercise.imageUrl1,
+          }
+        : undefined;
+
+      return {
+        ...order, // Spread all properties from OrderEntity
+        formatexUser: formatexUser, // Use formatexUser as requested
+        formatexExercise: formatexExercise, // Use formatexExercise as requested
+        matchType: order.exercise ? 'Exacta' : 'Similar',
+      };
+    });
+
+    return {
+      data: formattedData,
+      meta: {
+        total,
+        page,
+        lastPage: Math.ceil(total / limit),
+      },
+    };
+  }
+
   async updateOrderStatusByAdmin(
     orderId: string,
     newStatus: OrderPipelineStatus,
@@ -542,7 +624,7 @@ export class OrdersService {
           amount: -Math.abs(creditsToConsume),
           balanceBefore,
           balanceAfter,
-          reason: `Resolución de ejercicio existente ${exercise.id}`,
+          reason: `Resolución Orden ${exercise.id}`,
         },
         tem,
       );
