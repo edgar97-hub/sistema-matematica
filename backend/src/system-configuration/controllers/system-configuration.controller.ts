@@ -1,11 +1,21 @@
-import { Controller, Get, Patch, Body, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Patch,
+  Body,
+  UseGuards,
+  UseInterceptors,
+  UploadedFile,
+  BadRequestException,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { SystemConfigurationService } from '../services/system-configuration.service';
 import { UpdateConfigurationDto } from '../dto/update-configuration.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { AdminGuard } from '../../auth/guards/admin.guard';
 
 @Controller('configuration')
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 export class SystemConfigurationController {
   constructor(
     private readonly systemConfigurationService: SystemConfigurationService,
@@ -17,9 +27,16 @@ export class SystemConfigurationController {
   }
 
   @Patch()
-  updateConfiguration(@Body() updateConfigurationDto: UpdateConfigurationDto) {
+  // @UseGuards(AdminGuard)
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('logo'))
+  async updateConfiguration(
+    @Body() updateConfigurationDto: any,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
     return this.systemConfigurationService.updateConfiguration(
       updateConfigurationDto,
+      file,
     );
   }
 }

@@ -14,6 +14,7 @@ import {
   Stack,
   Divider,
   ThemeIcon,
+  Image, // Import Image component
 } from "@mantine/core";
 import { IconBrandGoogle, IconLock } from "@tabler/icons-react";
 import { useAuthStore } from "../../../store/auth.store"; // Ajusta la ruta
@@ -21,6 +22,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import Link from "next/link";
 import classes from "./login-page.module.css"; // CSS Modules para esta página
+import { useQuery } from "@tanstack/react-query"; // Import useQuery
+import { settingsService } from "../../../lib/services/settings.service"; // Import settingsService
 
 // URL de tu backend para iniciar el flujo OAuth de Google
 const GOOGLE_AUTH_URL = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`; // Usa variable de entorno
@@ -30,6 +33,14 @@ export default function PwaLoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { isAuthenticated, isLoading, error, setError } = useAuthStore();
+
+  const { data: settings } = useQuery({
+    queryKey: ["system-settings"],
+    queryFn: settingsService.getSettings,
+    staleTime: Infinity, // Settings don't change often
+  });
+
+  const logoUrl = settings?.logoUrl;
 
   // Redirigir si el usuario ya está autenticado o cuando el login es exitoso
   useEffect(() => {
@@ -76,23 +87,28 @@ export default function PwaLoginPage() {
 
   return (
     <Container size="xs" w="100%">
-      <Paper
-        withBorder
-        shadow="xl"
-        p={{ base: 'lg', sm: 'xl' }}
-        radius="lg"
-        // style={{
-        //   backgroundColor: "rgba(255, 255, 255, 0.7)",
-        //   backdropFilter: "blur(10px)",
-        //   border: "1px solid rgba(255, 255, 255, 0.9)",
-        // }}
-      >
+      <Paper withBorder shadow="xl" p={{ base: "lg", sm: "xl" }} radius="lg">
         <Stack gap={2}>
-          <Center>
-            <ThemeIcon variant="light" size={60} radius={60}>
-              <IconLock style={{ width: "60%", height: "60%" }} />
-            </ThemeIcon>
-          </Center>
+          {logoUrl && (
+            <Center mb="md">
+              <Image
+                src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads/${logoUrl}`}
+                alt="Logo"
+                style={{
+                  maxWidth: "160px",
+                  maxHeight: "90px",
+                  objectFit: "contain",
+                }}
+              />
+            </Center>
+          )}
+          {!logoUrl && ( // Fallback if no logo is set
+            <Center>
+              <ThemeIcon variant="light" size={60} radius={60}>
+                <IconLock style={{ width: "60%", height: "60%" }} />
+              </ThemeIcon>
+            </Center>
+          )}
 
           <Stack gap={2} align="center">
             <Title order={2} ta="center">

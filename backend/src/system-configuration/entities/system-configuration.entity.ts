@@ -16,4 +16,7 @@ export class SystemConfigurationEntity {
 
   @Column({ name: 'whatsapp_number', type: 'varchar', nullable: true })
   whatsappNumber: string;
+
+  @Column({ name: 'logo_url', type: 'varchar', nullable: true })
+  logoUrl: string | null;
 }

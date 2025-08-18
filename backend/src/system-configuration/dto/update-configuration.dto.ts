@@ -11,9 +11,12 @@ export class UpdateConfigurationDto {
 
   @IsOptional()
   @IsInt()
-  @Min(0)
   welcomeCreditAmount?: number;
   @IsOptional()
   @IsString()
   whatsappNumber?: string;
+
+  @IsOptional()
+  @IsString()
+  logoUrl?: string | null; // Add logoUrl to DTO
 }

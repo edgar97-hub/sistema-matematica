@@ -36,11 +36,7 @@ async function bootstrap() {
     }),
   );
   app.setGlobalPrefix('api');
-  // if (process.env.PORT) {
   console.log('running on port ', process.env.PORT);
   await app.listen(process.env.PORT ?? 3000);
-  // } else {
-  //   await app.listen();
-  // }
 }
 bootstrap();

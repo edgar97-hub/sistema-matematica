@@ -2808,3 +2808,5 @@
 {"context":"StripeService","level":"error","message":"STRIPE_SECRET_KEY is not defined in the environment variables","timestamp":"2025-08-14T03:03:29.798Z","trace":""}
 {"context":"StripeService","level":"error","message":"STRIPE_SECRET_KEY is not defined in the environment variables","timestamp":"2025-08-14T03:03:52.975Z","trace":""}
 {"context":"StripeService","level":"error","message":"STRIPE_SECRET_KEY is not defined in the environment variables","timestamp":"2025-08-14T03:04:29.941Z","trace":""}
+{"context":"CreditTransactionController","level":"info","message":"Admin fetching all credit transactions with filters: {\"page\":1,\"limit\":10}","timestamp":"2025-08-15T04:50:39.027Z"}
+{"context":"CreditService","level":"info","message":"Querying credit transactions with where: {}, skip: 0, take: 10","timestamp":"2025-08-15T04:50:39.029Z"}

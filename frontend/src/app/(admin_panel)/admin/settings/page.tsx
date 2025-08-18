@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Title,
@@ -14,6 +14,9 @@ import {
   NumberInput,
   Textarea,
   Text,
+  FileInput,
+  Image,
+  ActionIcon,
 } from "@mantine/core";
 import {
   IconAlertCircle,
@@ -21,6 +24,8 @@ import {
   IconDeviceFloppy,
   IconDiscountCheck,
   IconSettings,
+  IconUpload,
+  IconX,
 } from "@tabler/icons-react";
 import { useForm, zodResolver } from "@mantine/form";
 import { z } from "zod";
@@ -68,6 +73,9 @@ export default function SystemSettingsPage() {
     validate: zodResolver(settingsSchema),
   });
 
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+
   useEffect(() => {
     if (currentSettings) {
       form.setValues({
@@ -75,15 +83,20 @@ export default function SystemSettingsPage() {
         welcomeCreditAmount: currentSettings.welcomeCreditAmount,
         whatsappNumber: currentSettings.whatsappNumber || "",
       });
-      console.log("form.resetDirty");
-      // form.resetDirty(currentSettings);
-      // form.setDirty(false);
+      if (currentSettings.logoUrl) {
+        setLogoPreview(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads/${currentSettings.logoUrl}`
+        );
+      } else {
+        setLogoPreview(null);
+      }
+      // form.resetDirty(currentSettings); // No resetear dirty aquí para permitir cambios en logo
     }
   }, [currentSettings]);
 
   const { mutateAsync: updateSettingsMutation, isPending } = useMutation({
-    mutationFn: settingsService.updateSettings,
-    onSuccess: (updatedSettings) => {
+    mutationFn: settingsService.updateSettings, // Changed to updateSettings
+    onSuccess: (updatedSettings: SystemSettingsResponse) => {
       notifications.show({
         title: "Configuración Guardada",
         message:
@@ -93,6 +106,13 @@ export default function SystemSettingsPage() {
       });
       queryClient.setQueryData(["system-settings"], updatedSettings);
       form.resetDirty(updatedSettings);
+      if (updatedSettings.logoUrl) {
+        setLogoPreview(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads/${updatedSettings.logoUrl}`
+        );
+      } else {
+        setLogoPreview(null);
+      }
     },
     onError: (err: any) => {
       notifications.show({
@@ -105,7 +125,24 @@ export default function SystemSettingsPage() {
   });
 
   const handleSaveSettings = async (values: SystemSettingsData) => {
-    await updateSettingsMutation(values);
+    const formData = new FormData();
+    // Append all form fields
+    Object.keys(values).forEach((key) => {
+      const value = values[key as keyof SystemSettingsData];
+      if (value !== undefined && value !== null) {
+        formData.append(key, value as any);
+      }
+    });
+
+    // Append logo file if present
+    if (logoFile) {
+      formData.append("logo", logoFile); // 'logo' should match the backend's @UploadedFile() name
+    } else if (logoPreview === null && currentSettings?.logoUrl) {
+      // If logo was cleared and there was a previous logo, send null to backend
+      formData.append("logoUrl", "null"); // Explicitly send "null" string for backend to interpret as null
+    }
+
+    await updateSettingsMutation(formData);
   };
 
   const handleDiscardChanges = () => {
@@ -115,6 +152,14 @@ export default function SystemSettingsPage() {
         welcomeCreditAmount: currentSettings.welcomeCreditAmount,
         whatsappNumber: currentSettings.whatsappNumber || "",
       });
+      if (currentSettings.logoUrl) {
+        setLogoPreview(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads/${currentSettings.logoUrl}`
+        );
+      } else {
+        setLogoPreview(null);
+      }
+      setLogoFile(null); // Clear selected file
       form.resetDirty(currentSettings);
     }
     notifications.show({
@@ -123,6 +168,15 @@ export default function SystemSettingsPage() {
       color: "blue",
       autoClose: 2000,
     });
+  };
+
+  const handleLogoFileChange = (file: File | null) => {
+    setLogoFile(file);
+    if (file) {
+      setLogoPreview(URL.createObjectURL(file));
+    } else {
+      setLogoPreview(null);
+    }
   };
 
   if (isLoadingSettings) {
@@ -203,6 +257,49 @@ export default function SystemSettingsPage() {
             disabled={!form.values.welcomeCreditEnabled}
             mb="xl"
           />
+
+          <FileInput
+            label="Logo del Sistema"
+            placeholder="Selecciona una imagen para el logo"
+            accept="image/png,image/jpeg,image/svg+xml"
+            leftSection={<IconUpload size={18} />}
+            value={logoFile}
+            onChange={handleLogoFileChange}
+            clearable
+            mb="xl"
+          />
+
+          {logoPreview && (
+            <Box mb="xl" pos="relative">
+              <Text size="sm" fw={500} mb="xs">
+                Previsualización del Logo:
+              </Text>
+              <Image
+                src={logoPreview}
+                alt="Previsualización del Logo"
+                style={{
+                  maxWidth: "200px",
+                  maxHeight: "100px",
+                  objectFit: "contain",
+                }}
+              />
+              <ActionIcon
+                variant="filled"
+                color="red"
+                radius="xl"
+                pos="absolute"
+                top={0}
+                right={0}
+                onClick={() => {
+                  setLogoFile(null);
+                  setLogoPreview(null);
+                  // form.setDirty(false); // Mark form as dirty if logo is cleared
+                }}
+              >
+                <IconX size={16} />
+              </ActionIcon>
+            </Box>
+          )}
 
           <TextInput
             label="Número de WhatsApp"

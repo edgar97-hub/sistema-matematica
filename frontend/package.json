@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start -p 3001",
     "start:frontend": "node start-frontend.js",
-    "lint": "next lint"
+    "lint": "next lint",
+    "i": "npm i --f"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

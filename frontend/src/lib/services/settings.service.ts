@@ -8,8 +8,8 @@ export interface SystemSettingsData {
 }
 
 export interface SystemSettingsResponse extends SystemSettingsData {
-  id: string; // El backend probablemente devuelva el ID
-  // ... otros campos que devuelva la API (createdAt, updatedAt)
+  id: string;
+  logoUrl?: string | null;
 }
 
 export const settingsService = {
@@ -20,12 +20,15 @@ export const settingsService = {
     return response.data;
   },
 
-  async updateSettings(
-    data: SystemSettingsData
-  ): Promise<SystemSettingsResponse> {
+  async updateSettings(data: FormData): Promise<SystemSettingsResponse> {
     const response = await apiClient.patch<SystemSettingsResponse>(
       "/configuration",
-      data
+      data,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
     );
     return response.data;
   },

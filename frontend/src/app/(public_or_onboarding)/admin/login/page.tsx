@@ -16,6 +16,7 @@ import {
   Container,
   ThemeIcon,
   Divider,
+  Image,
 } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
 import { z } from "zod";
@@ -30,6 +31,8 @@ import {
 } from "../../../../store/auth.store";
 import { apiClient } from "../../../../lib/apiClient";
 import { AuthAdminResponse } from "project/types/auth.types";
+import { useQuery } from "@tanstack/react-query";
+import { settingsService } from "project/lib/services/settings.service";
 
 const loginSchema = z.object({
   username: z.string().min(3, {
@@ -51,6 +54,14 @@ export default function AdminLoginPage() {
     error: authErrorFromStore,
     isLoading: authIsLoadingFromStore,
   } = useAuthStore();
+
+  const { data: settings } = useQuery({
+    queryKey: ["system-settings"],
+    queryFn: settingsService.getSettings,
+    staleTime: Infinity, // Settings don't change often
+  });
+
+  const logoUrl = settings?.logoUrl;
 
   const form = useForm({
     initialValues: { username: "", password: "" },
@@ -112,23 +123,33 @@ export default function AdminLoginPage() {
 
   return (
     <Container size="xs" w="100%">
-      <Paper
-        withBorder
-        shadow="xl"
-        p={{ base: "lg", sm: "xl" }}
-        radius="lg"
-        // style={{
-        //   backgroundColor: "rgba(255, 255, 255, 0.7)",
-        //   backdropFilter: "blur(10px)",
-        //   border: "1px solid rgba(255, 255, 255, 0.9)",
-        // }}
-      >
+      <Paper withBorder shadow="xl" p={{ base: "lg", sm: "xl" }} radius="lg">
         <Stack gap={2}>
-          <Center>
+          {logoUrl && (
+            <Center mb="md">
+              <Image
+                src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads/${logoUrl}`}
+                alt="Logo"
+                style={{
+                  maxWidth: "160px",
+                  maxHeight: "90px",
+                  objectFit: "contain",
+                }}
+              />
+            </Center>
+          )}
+          {/* <Center>
             <ThemeIcon variant="light" size={60} radius={60}>
               <IconShieldLock style={{ width: "60%", height: "60%" }} />
             </ThemeIcon>
-          </Center>
+          </Center> */}
+          {!logoUrl && (
+            <Center>
+              <ThemeIcon variant="light" size={60} radius={60}>
+                <IconShieldLock style={{ width: "60%", height: "60%" }} />
+              </ThemeIcon>
+            </Center>
+          )}
 
           <Stack gap={2} align="center">
             <Title order={2} ta="center">
